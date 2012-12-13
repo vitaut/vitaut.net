@@ -8,3 +8,8 @@ title: A test post
 ================
 
 This is a test post to check if GitHub works for me as a bloggin platform.
+
+*Bold text*
+
+A:
+  B
