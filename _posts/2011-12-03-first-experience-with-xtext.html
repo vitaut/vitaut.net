@@ -94,7 +94,7 @@ Expression returns Expr:
 
 Concatenation returns Expr:
     Addition
-    ({BinaryExpr.left=current} op=('&amp;') right=Addition)*;
+    ({BinaryExpr.left=current} op=('&') right=Addition)*;
 
 Addition returns Expr:
     Multiplication
@@ -126,7 +126,7 @@ public class ArithmeticsJavaValidator
     @Inject
     private Calculator calculator;
     
-    private Map&lt;Expr, Type&gt; types = new HashMap&lt;Expr, Type&gt;();
+    private Map<Expr, Type> types = new HashMap<Expr, Type>();
 
     private boolean checkNumeric(Expr parent, Expr e,
             EStructuralFeature feature, int index) {
@@ -186,13 +186,13 @@ public class ArithmeticsJavaValidator
             }
         } else if (expr instanceof FunctionCall) {
             FunctionCall call = (FunctionCall) expr;
-            EList&lt;Expr&gt; args = call.getArgs();
+            EList<Expr> args = call.getArgs();
             AbstractDefinition func = ((FunctionCall) expr).getFunc();
             if (func instanceof Definition)
                 type = checkType(((Definition) func).getExpr());
             else
                 type = Type.NUMBER;
-            for (int i = 0, n = args.size(); i &lt; n; i++) {
+            for (int i = 0, n = args.size(); i < n; i++) {
                 if (!checkNumeric(expr, args.get(i),
                     ArithmeticsPackage.Literals.FUNCTION_CALL__ARGS, i))
                     type = Type.INVALID;
@@ -223,7 +223,7 @@ public class ArithmeticsJavaValidator
         if (EcoreUtil2.getContainerOfType(expr, Evaluation.class)!=null)
             return;
         
-        TreeIterator&lt;EObject&gt; contents = expr.eAllContents();
+        TreeIterator<EObject> contents = expr.eAllContents();
         while(contents.hasNext()) {
             EObject next = contents.next();
             if (next instanceof FunctionCall) {
@@ -231,7 +231,7 @@ public class ArithmeticsJavaValidator
             }
         }
         BigDecimal decimal = calculator.evaluateNumeric(expr);
-        if (decimal.toString().length()&lt;=8) {
+        if (decimal.toString().length()<=8) {
             warning(
                 "Expression could be normalized to constant '" +
                     decimal + "'", 
@@ -262,12 +262,12 @@ public class ArithmeticsJavaValidator
 ...
 public class Calculator {
     
-    private PolymorphicDispatcher&lt;Object&gt; dispatcher =
+    private PolymorphicDispatcher<Object> dispatcher =
         PolymorphicDispatcher.createForSingleTarget(
             "internalEvaluate", 2, 2, this);
     
     public Object evaluate(Expr obj) {
-        return evaluate(obj, ImmutableMap.&lt;String,Object&gt;of());
+        return evaluate(obj, ImmutableMap.<String,Object>of());
     }
 
     public BigDecimal evaluateNumeric(Expr obj) {
@@ -275,39 +275,39 @@ public class Calculator {
     }
 
     public Object evaluate(Expr obj,
-            ImmutableMap&lt;String, Object&gt; values) {
+            ImmutableMap<String, Object> values) {
         Object invoke = dispatcher.invoke(obj, values);
         return invoke;
     }
 
     public BigDecimal evaluateNumeric(Expr obj,
-            ImmutableMap&lt;String, Object&gt; values) {
+            ImmutableMap<String, Object> values) {
         return (BigDecimal)evaluate(obj, values);
     }
 
     protected Object internalEvaluate(Expr e,
-            ImmutableMap&lt;String, Object&gt; values) { 
+            ImmutableMap<String, Object> values) { 
         throw new UnsupportedOperationException(e.toString());
     }
     
     protected Object internalEvaluate(NumberLiteral e,
-            ImmutableMap&lt;String, Object&gt; values) { 
+            ImmutableMap<String, Object> values) { 
         return e.getValue();
     }
 
     protected Object internalEvaluate(StringLiteral e,
-            ImmutableMap&lt;String, Object&gt; values) { 
+            ImmutableMap<String, Object> values) { 
         return e.getValue();
     }
 
     protected Object internalEvaluate(FunctionCall e,
-            ImmutableMap&lt;String, Object&gt; values) {
+            ImmutableMap<String, Object> values) {
         if (e.getFunc() instanceof DeclaredParameter) {
             return values.get(e.getFunc().getName());
         } 
         Definition d = (Definition) e.getFunc();
-        Map&lt;String,Object&gt; params = Maps.newHashMap();
-        for (int i = 0; i &lt; e.getArgs().size(); i++) {
+        Map<String,Object> params = Maps.newHashMap();
+        for (int i = 0; i < e.getArgs().size(); i++) {
             DeclaredParameter declaredParameter = d.getArgs().get(i);
             Object evaluate = evaluate(e.getArgs().get(i), values);
             params.put(declaredParameter.getName(), evaluate);
@@ -316,7 +316,7 @@ public class Calculator {
     }
     
     protected Object internalEvaluate(BinaryExpr e,
-            ImmutableMap&lt;String, Object&gt; values) {
+            ImmutableMap<String, Object> values) {
         Resource res = e.eResource();
         if (!res.getErrors().isEmpty())
             return null;
@@ -372,7 +372,7 @@ public class InterpreterAutoEdit implements IAutoEditStrategy {
     private Object computeResult(IDocument document,
             final DocumentCommand command) {
         return ((IXtextDocument) document).readOnly(new
-            IUnitOfWork&lt;Object, XtextResource&gt;() {
+            IUnitOfWork<Object, XtextResource>() {
                 public Object exec(XtextResource state)
                         throws Exception {
                     Evaluation stmt = findEvaluation(command, state);
