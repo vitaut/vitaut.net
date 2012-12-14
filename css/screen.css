@@ -55,6 +55,10 @@ blockquote {
   margin-left: 2em;
 }
 
+.comment .content {
+  margin-left: 2em;
+}
+
 /*****************************************************************************/
 /*
 /* Home
