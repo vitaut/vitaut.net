@@ -21,8 +21,8 @@ comments: false
 
   <p>So the slowest way is to retrieve individual files by <a href=
   "http://en.wikipedia.org/wiki/File_Transfer_Protocol">FTP</a>:</p>
-{% highlight text %}
-$ time wget --recursive ftp://netlib.org/ampl
+<pre class="terminal">
+<code>$ time wget --recursive ftp://netlib.org/ampl
 ...
 Total wall clock time: 10m 9s
 Downloaded: 880 files, 45M in 2m 26s (317 KB/s)
@@ -30,7 +30,7 @@ Downloaded: 880 files, 45M in 2m 26s (317 KB/s)
 real 10m8.855s
 user 0m0.804s
 sys 0m3.704s
-{% endhighlight %}
+</code></pre>
 
   <p>It turned out that a much faster method is to use <a href=
   "http://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol">HTTP</a> instead
@@ -38,8 +38,8 @@ sys 0m3.704s
   for file transfer. Maybe its just an issue with wget? If you have any ideas
   please let me know in the comment section below.</p>
 
-{% highlight text %}
-$ time wget --recursive --include-directories=ampl \
+<pre class="terminal">
+<code>$ time wget --recursive --include-directories=ampl \
     http://www.netlib.org/ampl
 ...
 Total wall clock time: 1m 59s
@@ -48,7 +48,7 @@ Downloaded: 714 files, 41M in 30s (1.37 MB/s)
 real 1m58.986s
 user 0m0.476s
 sys 0m2.856s
-{% endhighlight %}
+</code></pre>
 
 <p>The <code>--include-directories=ampl</code> option ensures that only the
 content of the <code>ampl</code> directory is downloaded and files in other
@@ -57,24 +57,24 @@ locations referred from html files are ignored.</p>
   <p>However there is even a faster method which relies on Netlib ability to
   provide whole directories as compressed files:</p>
 
-{% highlight text %}
-$ time wget ftp://netlib.org/ampl.tar.gz
+<pre class="terminal">
+<code>$ time wget ftp://netlib.org/ampl.tar.gz
 ...
 real 0m49.365s
 user 0m0.320s
 sys 0m1.908s
-{% endhighlight %}
+</code></pre>
 
   <p><a href="http://en.wikipedia.org/wiki/Rsync">Rsync</a> is yet another
   method almost as fast as downloading compressed directories by FTP:</p>
 
-{% highlight text %}
-$ time rsync -avz netlib.org::netlib/ampl .
+<pre class="terminal">
+<code>$ time rsync -avz netlib.org::netlib/ampl .
 ...
 real 0m53.467s
 user 0m0.860s
 sys 0m2.512s
-{% endhighlight %}
+</code></pre>
 
   <p>Putting it all together: <script src="https://www.google.com/jsapi" type=
   "text/javascript"></script> <script type="text/javascript">
