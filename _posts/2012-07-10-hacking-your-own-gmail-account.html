@@ -1,0 +1,18 @@
+---
+layout: post
+title: Hacking your own GMail account
+date: 2012-07-10
+comments: false
+---
+
+<h1>{{ page.title }}</h1>
+<div class='post'>
+<p><a href="http://4.bp.blogspot.com/-wEJtp9E0ZAI/T-mTu_9iggI/AAAAAAAAAOE/tmXg9fYpASg/s320/20890569_images1911638_gmail.jpg " imageanchor="1" style=""><img border="0" height="180" width="320" src="http://4.bp.blogspot.com/-wEJtp9E0ZAI/T-mTu_9iggI/AAAAAAAAAOE/tmXg9fYpASg/s320/20890569_images1911638_gmail.jpg " /></a></p> Today I received this scary email entitled "Suspicious sign in prevented":  <blockquote>Victor,  <p>Someone recently tried to use an application to sign in to your Google Account, ... We prevented the sign-in attempt in case this was a hijacker trying to access your account. Please review the details of the sign-in attempt: </p>Tuesday, July 10, 2012 4:18:41 PM GMT <br/>IP Address: 66.87.4.45 (spcsdns.net) <br/>Location: Bethesda, MD, USA <br/><p>If you do not recognize this sign-in attempt, someone else might be trying to access your account. You should sign in to your account and reset your password immediately. Find out how at http://support.google.com/accounts?p=reset_pw </p><p>If this was you, and you want to give this application access to your account, complete the troubleshooting steps listed at http://support.google.com/mail?p=client_login </p>Sincerely,<br/>The Google Accounts Team</blockquote> <p>After checking my public IP (of course I know it by heart, but just in case =)) and making sure that it is not even close to <code>66.87.4.45</code>, I decided to change my password. </p><p>But after a cup of coffee and some thoughts, the identity of a mysterious hijacker was exposed - it was myself. To be exact, it was my recently bought Android phone acting on my behalf. When I stepped out of my apartment to buy coffee, it switched from WiFi to mobile network data connection and tried to fetch some emails.  </p><p>The only thing that I don't understand, is why Google linked the phone's IP with suspicious domain and location, while other IP locators, such as <a href="http://www.ip2location.com/">ip2location.com</a>, had no problems identifying it as belonging to the SPRINT network. </p><p>Anyway, changing your password from time to time is not a bad idea =). I'll think of it as a <a href="http://twitter.com/SFSiren/">test alarm</a> that will make me prepared for real threats. </p></div>
+<h2>Comments</h2>
+<div class='comments'>
+<div class='comment'>
+<div class='author'>Enkouyami</div>
+<div class='content'>
+Thanks for that post. I was wondering why I kept seeing that message and I kept changing my password every time to something more complicated, wondering how spcsdns.net kept getting it.</div>
+</div>
+</div>

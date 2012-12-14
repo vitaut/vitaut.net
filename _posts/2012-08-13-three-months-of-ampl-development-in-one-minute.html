@@ -1,0 +1,13 @@
+---
+layout: post
+title: Three months of AMPL development in one minute
+date: 2012-08-13
+comments: false
+---
+
+<h1>{{ page.title }}</h1>
+<div class='post'>
+<p>It's been three month since I created the <a href="https://github.com/vitaut/ampl">AMPL GitHub repository</a> which is based on AMPL material from Netlib with <a href="https://github.com/vitaut/ampl/wiki">some changes</a>. The following video shows the change history: </p><p><iframe width="560" height="315" src="http://www.youtube.com/embed/Dlt50vevmuY" frameborder="0" allowfullscreen></iframe></p><p>The video was created using <a href="http://code.google.com/p/gource/">Gource</a>: <pre><br />$ gource -1280x720 --title AMPL --hide filenames,mouse \<br />    --seconds-per-day 0.55 --date-format "%Y-%m-%d" -o - | \<br />    ffmpeg -y -r 60 -f image2pipe -vcodec ppm -i - -vcodec \<br />    libx264 -preset ultrafast -crf 1 -threads 0 -bf 0 ampl.mp4<br />$ mp3cut -o track.mp3 -t 00:00:00+000-00:01:01+000 \<br />    Constancy\ Part\ Two.mp3<br />$ ffmpeg -i ampl.mp4 -vcodec copy -i track.mp3 -acodec copy \<br />    ampl-final.mp4 -newaudio<br /></pre></p><p>Music track is Constancy Part Two from the <a href="http://incompetech.com/m/c/royalty-free/">collection of royalty-free music by Kevin MacLeod</a>. </p></div>
+<h2>Comments</h2>
+<div class='comments'>
+</div>
