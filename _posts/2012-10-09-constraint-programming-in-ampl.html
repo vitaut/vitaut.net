@@ -2,7 +2,6 @@
 layout: post
 title: Constraint Programming in AMPL
 date: 2012-10-09
-comments: false
 ---
 
 <h1>{{ page.title }}</h1>
@@ -73,7 +72,7 @@ $ git clone git://github.com/vitaut/ampl.git
 
 {% highlight python %}
 set Letters;
-var d{Letters} &gt;= 0 &lt;= 9 integer;
+var d{Letters} >= 0 <= 9 integer;
 
 s.t. nonzeroS: d['S'] != 0;
 s.t. nonzeroM: d['M'] != 0;
@@ -102,7 +101,8 @@ the model</a>
   take different values.</p>
 
   <p>Let's load the model into AMPL:</p>
-<pre>
+
+<div class="highlight"><pre>
 ampl: model money.mod;
 money.mod, line 6 (offset 148):
  Caution: Treating strict inequality constraint as a logical constraint.
@@ -111,12 +111,14 @@ context:  s.t. nonzeroS: d['S'] !=  &gt;&gt;&gt; 0; &lt;&lt;&lt;
 money.mod, line 7 (offset 176):
  Caution: Treating strict inequality constraint as a logical constraint.
 context:  s.t. nonzeroM: d['M'] !=  &gt;&gt;&gt; 0; &lt;&lt;&lt; 
-</pre>
-AMPL gives you a couple of warnings about the logical constraints. These
+</pre></div>
+
+<p>AMPL gives you a couple of warnings about the logical constraints. These
 warnings might be useful since most of the solvers don't know how to deal with
 such constraints but in this case you can safely ignore them. Now let's change
-the solver to <code>ilogcp</code>, solve the problem and display the solution:
-<pre>
+the solver to <code>ilogcp</code>, solve the problem and display the solution:</p>
+
+<div class="highlight"><pre>
 ampl: option solver ilogcp;
 ampl: solve;
 ilogcp 12.4.0: feasible solution
@@ -132,7 +134,7 @@ R  8
 S  9
 Y  2
 ;
-</pre>
+</pre></div>
 
   <p>You can find additional information such as the solver options supported
   by the ilogcp driver in the <a href=
@@ -141,7 +143,3 @@ Y  2
   the corresponding Concert API elements are documented <a href=
   "http://vitaut.github.com/ampl/solvers/ilogcp/usage.html">here</a>.</p>
 </div>
-
-<h2>Comments</h2>
-
-<div class='comments'></div>
