@@ -37,8 +37,8 @@ date: 2012-06-16
     </li>
 
     <li>Create a master:
-<pre class="terminal"><code>
-$ cd /var/lib/buildbot/masters
+<pre class="terminal">
+<code>$ cd /var/lib/buildbot/masters
 $ sudo buildbot create-master master
 $ sudo mv master/master.cfg.sample master/master.cfg
 $ sudo chown -R buildbot:buildbot master
@@ -46,13 +46,13 @@ $ sudo chown -R buildbot:buildbot master
     </li>
 
     <li>Configure the buildmaster daemon by editing /etc/default/buildmaster:
-{{ highlight text }}
+{% highlight text %}
 ...
 MASTER_ENABLED[1]=1
 ...
 MASTER_BASEDIR[1]="/var/lib/buildbot/masters/master"
 ...
-{{ endhighlight }}
+{% endhighlight %}
     </li>
 
     <li>Start the buildmaster:
@@ -60,8 +60,8 @@ MASTER_BASEDIR[1]="/var/lib/buildbot/masters/master"
     </li>
 
     <li>Create a slave:
-<pre class="terminal"><code>
-$ cd /var/lib/buildbot/slaves
+<pre class="terminal">
+<code>$ cd /var/lib/buildbot/slaves
 $ sudo buildslave create-slave slave localhost:9989 \
     example-slave pass
 $ sudo chown -R buildbot:buildbot slave
@@ -69,14 +69,14 @@ $ sudo chown -R buildbot:buildbot slave
     </li>
 
     <li>Configure the buildslave daemon by editing /etc/default/buildslave:
-{{ highlight text }}
+{% highlight text %}
 SLAVE_ENABLED[1]=1
 SLAVE_NAME[1]="buildslave #1"
 SLAVE_USER[1]="buildbot"
 SLAVE_BASEDIR[1]="/var/lib/buildbot/slaves/slave"
 SLAVE_OPTIONS[1]=""
 SLAVE_PREFIXCMD[1]=""
-{{ endhighlight }}
+{% endhighlight %}
     </li>
 
     <li>Start the buildslave:
