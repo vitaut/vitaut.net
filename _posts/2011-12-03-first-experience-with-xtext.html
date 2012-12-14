@@ -42,12 +42,10 @@ comments: false
   </ul>The main project contains the grammar file <code>Arithmetic.xtext</code>
   for the language. Following is an example of input that it accepts:
 
-{% highlight %}
-
+{% highlight text %}
 module simple
 def pi: 3.14159265;
 pi * 4;
-
 {% endhighlight %}
 
   <p>Here is how it looks in Eclipse:</p>
@@ -65,12 +63,10 @@ pi * 4;
   like <code>6.02e23,</code>&nbsp;in floating-point literals. The following
   modification of the <code>NUMBER</code> terminal does the job:
 
-{% highlight %}
-
+{% highlight text %}
 terminal NUMBER returns ecore::EBigDecimal:
     (('0'..'9')+ ('.' ('0'..'9')*)? | '.' ('0'..'9')+)
     (('e' | 'E') ('+' | '-')? ('0'..'9')+)?;
-
 {% endhighlight %}
 
   <p>Next I add support for string expressions. To check for errors like
@@ -80,13 +76,11 @@ terminal NUMBER returns ecore::EBigDecimal:
   represented by the following simple enum added to the main project:</p>
 
 {% highlight java %}
-
 public enum Type {
     INVALID,
     NUMBER,
     STRING
 }
-
 {% endhighlight %}
 
   <p>Then I add a string concatenation expression which uses the &amp;
@@ -94,7 +88,6 @@ public enum Type {
   class <code>BinaryExpr</code> to make writing validation checks easier:</p>
 
 {% highlight java %}
-
 ...
 Expression returns Expr:
     Concatenation;
@@ -118,7 +111,6 @@ PrimaryExpression returns Expr:
     {FunctionCall} func=[AbstractDefinition]
         ('(' args+=Expression (',' args+=Expression)* ')')?;
 ...
-
 {% endhighlight %}
 
   <p>The next step is to add the type checks to the validator. Unfortunately
@@ -128,7 +120,6 @@ PrimaryExpression returns Expr:
   manually:</p>
 
 {% highlight java %}
-
 ...
 public class ArithmeticsJavaValidator
         extends AbstractArithmeticsJavaValidator {
@@ -251,8 +242,8 @@ public class ArithmeticsJavaValidator
         }
     }
 }
-
 {% endhighlight %}
+
   <p>As you can see from the above code the type checks aren't really pretty
   with all the <code>instanceof</code>s and casts. If I had more control over
   the generated AST classes I would apply the <a href=
@@ -268,7 +259,6 @@ public class ArithmeticsJavaValidator
   an expression can be a string or a number:</p>
 
 {% highlight java %}
-
 ...
 public class Calculator {
     
@@ -346,14 +336,12 @@ public class Calculator {
         throw new UnsupportedOperationException(e.getOp());
     }
 }
-
 {% endhighlight %}
 
   <p>And finally I change the <code>InterpreterAutoEdit</code> class in the
   ui project to check types before evaluation:</p>
 
 {% highlight java %}
-
 ...
 public class InterpreterAutoEdit implements IAutoEditStrategy {
 
@@ -440,7 +428,6 @@ public class InterpreterAutoEdit implements IAutoEditStrategy {
 
     ...
 }
-
 {% endhighlight %}
 
   <p>After implementing the above changes and re-generating Xtext artefacts, I
