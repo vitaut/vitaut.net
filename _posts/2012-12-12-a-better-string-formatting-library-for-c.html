@@ -2,22 +2,18 @@
 layout: post
 title: A better string formatting library for C++
 date: 2012-12-12
-comments: false
 ---
 
 <h1>{{ page.title }}</h1>
 
 <div class='post'>
-  <div class="separator" style="clear: both; text-align: center;">
-    <a href=
-    "http://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Calabi-Yau-alternate.png/240px-Calabi-Yau-alternate.png"
-    style=
-    "clear:right; float:right; margin-left:1em; margin-bottom:1em"><img border=
+  <div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
+    <img border=
     "0" height="240" src=
     "http://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Calabi-Yau-alternate.png/240px-Calabi-Yau-alternate.png"
     title=
-    "This image nicely reflects the current situation with string formatting libraries in C++."
-    width="240"></a>
+    "This image nicely reflects the current situation with string formatting in C++."
+    width="240">
   </div>
 
   <p>When I started learning C++ many years ago I kind of liked the <a href=
@@ -56,7 +52,7 @@ comments: false
   group uses functions with variable number of arguments. It includes
   <code>printf</code> and friends, Fast Format and tinyformat. Here is an
   example using <code>printf</code>:</p>
-{% highlight c++ %}
+{% highlight c %}
 printf("%s, %s %d\n", weekday, month, day);
 {% endhighlight %}
 
@@ -185,7 +181,5 @@ std::string s = format.str(); // s == 0123456789
   "https://github.com/vitaut/format">this repository</a> on GitHub. Feel free
   to use it and post your comments below.</p>
 </div>
-
-<h2>Comments</h2>
 
 <div class='comments'></div>
