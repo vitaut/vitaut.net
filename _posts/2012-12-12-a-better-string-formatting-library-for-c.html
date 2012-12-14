@@ -32,9 +32,7 @@ comments: false
 
   <ul>
     <li>Poor error handling</li>
-
     <li>Poor separation between formatting and I/O</li>
-
     <li>Poor support for i18n</li>
   </ul>The popular <a href=
   "http://google-styleguide.googlecode.com/svn/trunk/cppguide.xml">Google C++
@@ -58,9 +56,9 @@ comments: false
   group uses functions with variable number of arguments. It includes
   <code>printf</code> and friends, Fast Format and tinyformat. Here is an
   example using <code>printf</code>:</p>
-  <pre class="brush: c++; gutter: false;" style="font-size:10px">
-<br>printf("%s, %s %d\n", weekday, month, day);<br>
-</pre>
+  {% highlight c++ %}
+  printf("%s, %s %d\n", weekday, month, day);
+  {% endhighlight %}
 
   <p>One way to implement this kind of API is to use <a href=
   "http://en.wikipedia.org/wiki/Stdarg.h">varargs</a>. This method is
@@ -75,25 +73,44 @@ comments: false
   provides a macro <a href=
   "https://github.com/c42f/tinyformat#wrapping-tfmformat-inside-a-user-defined-format-function">
   TINYFORMAT_WRAP_FORMAT</a> for this purpose which is used as follows:</p>
-  <pre class="brush: c++; gutter: false;" style="font-size:10px">
-<br>#undef TINYFORMAT_WRAP_FORMAT_EXTRA_ARGS<br>#define TINYFORMAT_WRAP_FORMAT_EXTRA_ARGS int code,<br>TINYFORMAT_WRAP_FORMAT(<br>    void,                                        /* return type */<br>    error,                                       /* function name */<br>    /*empty*/,                                   /* function declaration suffix (eg, const) */<br>    std::cerr &lt;&lt; "error (code " &lt;&lt; code &lt;&lt; ")";, /* stuff before format()*/<br>    std::cerr,                                   /* stream name */<br>    /*empty*/                                    /* stuff after format() */<br>)<br>#undef TINYFORMAT_WRAP_FORMAT_EXTRA_ARGS<br>#define TINYFORMAT_WRAP_FORMAT_EXTRA_ARGS<br>
-</pre>This is obviously far from ideal so I rejected variadic functions in the
-core API although I am considering adding them in the future on top of existing
-interface.
+  {% highlight c++ %}
+  #undef TINYFORMAT_WRAP_FORMAT_EXTRA_ARGS
+  #define TINYFORMAT_WRAP_FORMAT_EXTRA_ARGS int code,
+  TINYFORMAT_WRAP_FORMAT(
+      void,                                        /* return type */
+      error,                                       /* function name */
+      /*empty*/,                                   /* function declaration suffix (eg, const) */
+      std::cerr &lt;&lt; "error (code " &lt;&lt; code &lt;&lt; ")";, /* stuff before format()*/
+      std::cerr,                                   /* stream name */
+      /*empty*/                                    /* stuff after format() */
+      )
+  #undef TINYFORMAT_WRAP_FORMAT_EXTRA_ARGS
+  #define TINYFORMAT_WRAP_FORMAT_EXTRA_ARGS
+  {% endhighlight %}
+  This is obviously far from ideal so I rejected variadic functions in the
+  core API although I am considering adding them in the future on top of existing
+  interface.
 
   <p>The second group of libraries uses overloaded operators such as
   <code>operator&lt;&lt;</code> for passing arguments. It includes IOStreams,
   Boost Format and SafeFormat. They all use different operators:</p>
-  <pre class="brush: c++; gutter: false;" style="font-size:10px">
-<br>// IOStreams:<br>std::cout &lt;&lt; weekday &lt;&lt; ", " &lt;&lt; month &lt;&lt; " " &lt;&lt; day &lt;&lt; "\n";<br>// Boost Format:<br>std::string s =<br>  str(boost::format("%1%, %2% %3%\n") % weekday % month % day);<br>// SafeFormat:<br>Loki::SPrintf(s, "%s, %d %d\n")(weekday)(month)(day);<br>
-</pre>
+  {% highlight c++ %}
+  // IOStreams:
+  std::cout &lt;&lt; weekday &lt;&lt; ", " &lt;&lt; month &lt;&lt; " " &lt;&lt; day &lt;&lt; "\n";
+
+  // Boost Format:
+  std::string s = str(boost::format("%1%, %2% %3%\n") % weekday % month % day);
+
+  // SafeFormat:
+  Loki::SPrintf(s, "%s, %d %d\n")(weekday)(month)(day);
+  {% endhighlight %}
 
   <p>Instead of yet another arbitrary operator choice, I decided to use the
   conventional isertion operator <code>&lt;&lt;</code> since it is used by the
   standard streams:</p>
-  <pre class="brush: c++; gutter: false;" style="font-size:10px">
-<br>std::string s =<br>  str(fmt::Format("{0}, {1} {2}\n") &lt;&lt; weekday &lt;&lt; month &lt;&lt; day);<br>
-</pre>
+  {% highlight c++ %}
+  std::string s = str(fmt::Format("{0}, {1} {2}\n") &lt;&lt; weekday &lt;&lt; month &lt;&lt; day);
+  {% endhighlight %}
 
   <p>As you can see the API is quite similar to Boost Format.
   <code>Format</code> is a function that takes a format string as an argument
@@ -102,33 +119,40 @@ interface.
   result into an <code>std::string</code>. There is also a <code>c_str</code>
   function that converts the result into a C string which can be useful for
   working with C code:</p>
-  <pre class="brush: c++; gutter: false;" style="font-size:10px">
-<br>rmdir(c_str(fmt::Format("{0}.lock") &lt;&lt; pid));<br>
-</pre>
+  {% highlight c++ %}
+  rmdir(c_str(fmt::Format("{0}.lock") &lt;&lt; pid));
+  {% endhighlight %}
 
   <p>So far this is similar to existing APIs. What is different is the ability
   to define your own functions that look exactly like <code>Format</code> but
   do additional things, for example:</p>
-  <pre class="brush: c++; gutter: false;" style="font-size:10px">
-<br>ReportError("File not found: {0}") &lt;&lt; path;<br>
-</pre>
+  {% highlight c++ %}
+  ReportError("File not found: {0}") &lt;&lt; path;
+  {% endhighlight %}
 
   <p>Let's say I want to define a function <code>ReportError</code> that
   formats and prints an error to <code>std::cerr</code> adding a newline. To
   this end I need to create a small class (struct will do since it has only one
   public member) that defines <code>operator()(const fmt::Formatter
   &amp;)</code> which does the output:</p>
-  <pre class="brush: c++; gutter: false;" style="font-size:10px">
-<br>struct PrintError {<br>  void operator()(const fmt::Formatter &amp;f) const {<br>    std::cerr &lt;&lt; "Error: " &lt;&lt; f.str() &lt;&lt; std::endl;<br>  }<br>};<br>
-</pre>
+  {% highlight c++ %}
+  struct PrintError {
+    void operator()(const fmt::Formatter &amp;f) const {
+       std::cerr &lt;&lt; "Error: " &lt;&lt; f.str() &lt;&lt; std::endl;
+    }
+  };
+  {% endhighlight %}
 
   <p><code>Formatter</code> is a class that does all the formatting and stores
   the output in a buffer. The <code>str()</code> method converts the output to
   <code>std::string</code>, there are other access methods as well. Now I can
   define the <code>ReportError</code> function:</p>
-  <pre class="brush: c++; gutter: false;" style="font-size:10px">
-<br>fmt::ActiveFormatter&lt;PrintError&gt; ReportError(const char *format) {<br>  fmt::ActiveFormatter&lt;PrintError&gt; af(format);<br>  return af;<br>}<br>
-</pre>
+  {% highlight c++ %}
+  fmt::ActiveFormatter&lt;PrintError&gt; ReportError(const char *format) {
+    fmt::ActiveFormatter&lt;PrintError&gt; af(format);
+    return af;
+  }
+  {% endhighlight %}
 
   <p><code>ActiveFormatter</code> is used only in wrapper functions like the
   one above. It is responsible for passing arguments to <code>Formatter</code>
@@ -144,9 +168,12 @@ interface.
   <p>The <code>Formatter</code> class can also be used on its own if you need
   to efficiently merge the output of multiple format operations, for
   example:</p>
-  <pre class="brush: c++; gutter: false;" style="font-size:10px">
-<br>fmt::Formatter format;<br>for (int i = 0; i &lt; 10; i++)<br>  format("{0}") &lt;&lt; i;<br>std::string s = format.str(); // s == 0123456789<br>
-</pre>
+  {% highlight c++ %}
+  fmt::Formatter format;
+  for (int i = 0; i &lt; 10; i++)
+    format("{0}") &lt;&lt; i;
+  std::string s = format.str(); // s == 0123456789<br>
+  {% endhighlight %}
 
   <p>This concludes the first and the most important part about the API. In the
   next part I am going to write about performance and related design
