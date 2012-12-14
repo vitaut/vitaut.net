@@ -6,23 +6,142 @@ comments: false
 ---
 
 <h1>{{ page.title }}</h1>
+
 <div class='post'>
-<p><a href="http://www.netlib.org/">Netlib</a> is a repository for mathematical software such as <a href="http://www.netlib.org/blas">BLAS</a>, <a href="http://www.netlib.org/lapack">LAPACK</a> and, most importantly =), <a href="http://www.netlib.org/ampl">AMPL Solver Library (ASL)</a>. The software can be retrieved using a number of protocols and as I found out the download speed can vary greatly. For example, it took me 10 minutes to retrieve entire ASL by FTP using <a href="http://www.gnu.org/software/wget/">wget</a> while other options can reduce this time to tens of seconds. This was the reason why I decided to do this small comparison of different methods to retrieve software from Netlib.</p> <p>So the slowest way is to retrieve individual files by <a href="http://en.wikipedia.org/wiki/File_Transfer_Protocol">FTP</a>:  <pre><br />$ time wget --recursive ftp://netlib.org/ampl<br />...<br />Total wall clock time: 10m 9s<br />Downloaded: 880 files, 45M in 2m 26s (317 KB/s)<br /><br />real 10m8.855s<br />user 0m0.804s<br />sys 0m3.704s<br /></pre></p> <p>It turned out that a much faster method is to use <a href="http://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol">HTTP</a> instead of FTP. This is a complete surprise to me, considering that FTP was designed for file transfer. Maybe its just an issue with wget? If you have any ideas please let me know in the comment section below. <pre><br />$ time wget --recursive --include-directories=ampl http://www.netlib.org/ampl<br />...<br />Total wall clock time: 1m 59s<br />Downloaded: 714 files, 41M in 30s (1.37 MB/s)<br /><br />real 1m58.986s<br />user 0m0.476s<br />sys 0m2.856s<br /></pre>The <code>--include-directories=ampl</code> option ensures that only the content of the <code>ampl</code> directory is downloaded and files in other locations referred from html files are ignored. </p> <p>However there is even a faster method which relies on Netlib ability to provide whole directories as compressed files: <pre><br />$ time wget ftp://netlib.org/ampl.tar.gz<br />...<br />real 0m49.365s<br />user 0m0.320s<br />sys 0m1.908s<br /></pre></p> <p><a href="http://en.wikipedia.org/wiki/Rsync">Rsync</a> is yet another method almost as fast as downloading compressed directories by FTP: <pre><br />$ time rsync -avz netlib.org::netlib/ampl .<br />...<br />real 0m53.467s<br />user 0m0.860s<br />sys 0m2.512s<br /></pre></p> <p>Putting it all together:  <script type="text/javascript" src="https://www.google.com/jsapi"></script>    <script type="text/javascript">      google.load("visualization", "1", {packages:["corechart"]});       google.setOnLoadCallback(drawChart);       function drawChart() {         var data = google.visualization.arrayToDataTable([           ['Method', 'Time, seconds'],           ['FTP recursive',  608.855],           ['HTTP',  118.986],           ['FTP tar.gz',  49.365],           ['rsync',  53.467],           ['FileZilla', 348]         ]);          var options = {           title: 'Comparison of Download Methods',           vAxis: {title: 'Method',  titleTextStyle: {color: 'red'}}         };          var chart = new google.visualization.BarChart(document.getElementById('chart_div'));         chart.draw(data, options);       }     </script>     <div id="chart_div" style="width: 500px; height: 300px;"></div></p> <p>The conclusion is simple: using rsync or retrieving compressed directories by FTP are by far the fastest methods of downloading from Netlib. Recursive HTTP download is more than two times slower and recursive FTP is painfully slow. </p><p><b>Update:</b> found possible explanation of poor performance of recursive FTP <a href="http://mywiki.wooledge.org/FtpMustDie#I_Love_Sitting_Around_Waiting_For_Ten_Round_Trips_To_Get_One_File.21">here</a>: <blockquote>Retrieving a single file from an FTP server involves an unbelievable number of back-and-forth handshaking steps.</blockquote><p></div>
+  <p><a href="http://www.netlib.org/">Netlib</a> is a repository for
+  mathematical software such as <a href="http://www.netlib.org/blas">BLAS</a>,
+  <a href="http://www.netlib.org/lapack">LAPACK</a> and, most importantly =),
+  <a href="http://www.netlib.org/ampl">AMPL Solver Library (ASL)</a>. The
+  software can be retrieved using a number of protocols and as I found out the
+  download speed can vary greatly. For example, it took me 10 minutes to
+  retrieve entire ASL by FTP using <a href=
+  "http://www.gnu.org/software/wget/">wget</a> while other options can reduce
+  this time to tens of seconds. This was the reason why I decided to do this
+  small comparison of different methods to retrieve software from Netlib.</p>
+
+  <p>So the slowest way is to retrieve individual files by <a href=
+  "http://en.wikipedia.org/wiki/File_Transfer_Protocol">FTP</a>:</p>
+{% highlight text %}
+$ time wget --recursive ftp://netlib.org/ampl
+...
+Total wall clock time: 10m 9s
+Downloaded: 880 files, 45M in 2m 26s (317 KB/s)
+
+real 10m8.855s
+user 0m0.804s
+sys 0m3.704s
+{% endhighlight %}
+
+  <p>It turned out that a much faster method is to use <a href=
+  "http://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol">HTTP</a> instead
+  of FTP. This is a complete surprise to me, considering that FTP was designed
+  for file transfer. Maybe its just an issue with wget? If you have any ideas
+  please let me know in the comment section below.</p>
+
+{% highlight text %}
+$ time wget --recursive --include-directories=ampl http://www.netlib.org/ampl
+...
+Total wall clock time: 1m 59s
+Downloaded: 714 files, 41M in 30s (1.37 MB/s)
+
+real 1m58.986s
+user 0m0.476s
+sys 0m2.856s
+{% endhighlight %}
+
+<p>The <code>--include-directories=ampl</code> option ensures that only the
+content of the <code>ampl</code> directory is downloaded and files in other
+locations referred from html files are ignored.</p>
+
+  <p>However there is even a faster method which relies on Netlib ability to
+  provide whole directories as compressed files:</p>
+
+{% highlight text %}
+$ time wget ftp://netlib.org/ampl.tar.gz
+...
+real 0m49.365s
+user 0m0.320s
+sys 0m1.908s
+{% endhighlight %}
+
+  <p><a href="http://en.wikipedia.org/wiki/Rsync">Rsync</a> is yet another
+  method almost as fast as downloading compressed directories by FTP:</p>
+
+{% highlight text %}
+$ time rsync -avz netlib.org::netlib/ampl .
+...
+real 0m53.467s
+user 0m0.860s
+sys 0m2.512s
+{% endhighlight %}
+
+  <p>Putting it all together: <script src="https://www.google.com/jsapi" type=
+  "text/javascript"></script> <script type="text/javascript">
+    google.load("visualization", "1", {packages:["corechart"]});       google.setOnLoadCallback(drawChart);       function drawChart() {         var data = google.visualization.arrayToDataTable([           ['Method', 'Time, seconds'],           ['FTP recursive',  608.855],           ['HTTP',  118.986],           ['FTP tar.gz',  49.365],           ['rsync',  53.467],           ['FileZilla', 348]         ]);          var options = {           title: 'Comparison of Download Methods',           vAxis: {title: 'Method',  titleTextStyle: {color: 'red'}}         };          var chart = new google.visualization.BarChart(document.getElementById('chart_div'));         chart.draw(data, options);       }     
+  </script></p>
+
+  <div id="chart_div" style="width: 500px; height: 300px;"></div>
+
+  <p>The conclusion is simple: using rsync or retrieving compressed directories
+  by FTP are by far the fastest methods of downloading from Netlib. Recursive
+  HTTP download is more than two times slower and recursive FTP is painfully
+  slow.</p>
+
+  <p><strong>Update:</strong> found possible explanation of poor performance of
+  recursive FTP <a href=
+  "http://mywiki.wooledge.org/FtpMustDie#I_Love_Sitting_Around_Waiting_For_Ten_Round_Trips_To_Get_One_File.21">
+  here</a>:</p>
+
+  <blockquote>
+    Retrieving a single file from an FTP server involves an unbelievable number
+    of back-and-forth handshaking steps.
+  </blockquote>
+</div>
+
 <h2>Comments</h2>
+
 <div class='comments'>
-<div class='comment'>
-<div class='author'>Paul Rubin</div>
-<div class='content'>
-I think the link in your update accounts for this. Most of the steps listed there are done once per session, but I had forgotten that each file is transfered on a separate socket, with additional handshakes. That also suggests, though, that if you FTP client and the server can agree on enough simultaneous data channels, FTP might be faster than HTTP.</div>
-</div>
-<div class='comment'>
-<div class='author'>Victor Zverovich</div>
-<div class='content'>
-I don&#39;t think that the problem is in the FTP service being overloaded, because I tried it at different times with almost identical results. Besides FTP performs fine when retrieving archives. I think that the main issue is the number of roundtrips required to retrieve each file and large number of files (~900 in the ampl dir). Unfortunately my ftp client doesn&#39;t support recursive mget. I&#39;ve tried FileZilla (see the updated chart) and it was roughly twice as fast as recursive FTP. I think this is because it uses two concurrent transfers by default. Still much slower than rsync or getting a gzipped tarball by FTP.</div>
-</div>
-<div class='comment'>
-<div class='author'>Paul Rubin</div>
-<div class='content'>
-I too am surprised by your results. Maybe the FTP service was more heavily loaded than the web service?  Also, did you try command-line FTP (with mget) or a client such as FileZilla?</div>
-</div>
+  <div class='comment'>
+    <div class='author'>
+      Paul Rubin
+    </div>
+
+    <div class='content'>
+      I think the link in your update accounts for this. Most of the steps
+      listed there are done once per session, but I had forgotten that each
+      file is transfered on a separate socket, with additional handshakes. That
+      also suggests, though, that if you FTP client and the server can agree on
+      enough simultaneous data channels, FTP might be faster than HTTP.
+    </div>
+  </div>
+
+  <div class='comment'>
+    <div class='author'>
+      Victor Zverovich
+    </div>
+
+    <div class='content'>
+      I don't think that the problem is in the FTP service being overloaded,
+      because I tried it at different times with almost identical results.
+      Besides FTP performs fine when retrieving archives. I think that the main
+      issue is the number of roundtrips required to retrieve each file and
+      large number of files (~900 in the ampl dir). Unfortunately my ftp client
+      doesn't support recursive mget. I've tried FileZilla (see the updated
+      chart) and it was roughly twice as fast as recursive FTP. I think this is
+      because it uses two concurrent transfers by default. Still much slower
+      than rsync or getting a gzipped tarball by FTP.
+    </div>
+  </div>
+
+  <div class='comment'>
+    <div class='author'>
+      Paul Rubin
+    </div>
+
+    <div class='content'>
+      I too am surprised by your results. Maybe the FTP service was more
+      heavily loaded than the web service? Also, did you try command-line FTP
+      (with mget) or a client such as FileZilla?
+    </div>
+  </div>
 </div>
