@@ -26,42 +26,41 @@ date: 2012-08-07
   <p>1. Download the archive containing the source code for <a href=
   "http://scip.zib.de/download.php?fname=scipoptsuite-3.0.0.tgz">SCIP
   Optimization Suite</a> and extract its content:</p>
-{% highlight text %}
-$ tar xzf scipoptsuite-3.0.0.tgz
-{% endhighlight %}
+
+<pre class="terminal"><code>$ tar xzf scipoptsuite-3.0.0.tgz</code></pre>
 
   <p>2. Install the dependencies:</p>
 
-{% highlight text %}
-$ sudo apt-get install g++ zlib1g-dev bison flex \
+<pre class="terminal">
+<code>$ sudo apt-get install g++ zlib1g-dev bison flex \
     libgmp-dev libreadline-dev libncurses5-dev
-{% endhighlight %}
+</code></pre>
 
   <p>3. Build SCIP:</p>
 
-{% highlight text %}
-$ cd scipoptsuite-3.0.0/
+<pre class="terminal">
+<code>$ cd scipoptsuite-3.0.0/
 $ make
-{% endhighlight %}
+</code></pre>
 
   <p>4. Download and build the AMPL solver library:</p>
 
-{% highlight text %}
-$ cd scip-3.0.0/interfaces/ampl/
+<pre class="terminal">
+<code>$ cd scip-3.0.0/interfaces/ampl/
 $ ./get.ASL
 $ cd solvers/
 $ sh configurehere
 $ make
 $ cd ..
-{% endhighlight %}
+</code></pre>
 
   <p>5. Build the SCIP-AMPL interface and copy <tt>scipampl</tt> somewhere on
   the path:</p>
 
-{% highlight text %}
-$ make
+<pre class="terminal">
+<code>$ make
 $ sudo cp scipampl /usr/local/bin/
-{% endhighlight %}
+</code></pre>
 
   <p>Now you should be able to use SCIP with AMPL by setting the
   <tt>solver</tt> option to <tt>scipampl</tt>:</p>
