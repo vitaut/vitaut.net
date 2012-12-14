@@ -16,7 +16,7 @@ date: 2012-12-12
     width="240">
   </div>
 
-  <p>When I started learning C++ many years ago I kind of liked the <a href=
+  <p>When I started learning C++ I kind of liked the <a href=
   "http://en.wikipedia.org/wiki/Input/output_(C%2B%2B)">IOStreams</a> library.
   It was safe, <a href=
   "http://www.boost.org/doc/libs/1_37_0/libs/iostreams/doc/index.html">extensible</a>
@@ -30,9 +30,11 @@ date: 2012-12-12
     <li>Poor error handling</li>
     <li>Poor separation between formatting and I/O</li>
     <li>Poor support for i18n</li>
-  </ul>The popular <a href=
+  </ul>
+
+  <p>The popular <a href=
   "http://google-styleguide.googlecode.com/svn/trunk/cppguide.xml">Google C++
-  Style Guide</a> even permits the use of streams only for logging.
+  Style Guide</a> even permits the use of streams only for logging.</p>
 
   <p>So I started looking for a better solution and discovered the following
   libraries: <a href="http://www.boost.org/doc/libs/1_52_0/libs/format/">Boost
@@ -52,7 +54,7 @@ date: 2012-12-12
   group uses functions with variable number of arguments. It includes
   <code>printf</code> and friends, Fast Format and tinyformat. Here is an
   example using <code>printf</code>:</p>
-{% highlight c %}
+{% highlight c++ %}
 printf("%s, %s %d\n", weekday, month, day);
 {% endhighlight %}
 
@@ -73,19 +75,22 @@ printf("%s, %s %d\n", weekday, month, day);
 #undef TINYFORMAT_WRAP_FORMAT_EXTRA_ARGS
 #define TINYFORMAT_WRAP_FORMAT_EXTRA_ARGS int code,
 TINYFORMAT_WRAP_FORMAT(
-    void,                                        /* return type */
-    error,                                       /* function name */
-    /*empty*/,                                   /* function declaration suffix (eg, const) */
-    std::cerr << "error (code " << code << ")";, /* stuff before format()*/
-    std::cerr,                                   /* stream name */
-    /*empty*/                                    /* stuff after format() */
-    )
+  void,                                        /* return type */
+  error,                                       /* function name */
+  /*empty*/,                                   /* function declaration
+                                                  suffix (eg, const) */
+  std::cerr << "error (code " << code << ")";, /* stuff before
+                                                  format()*/
+  std::cerr,                                   /* stream name */
+  /*empty*/                                    /* stuff after
+                                                  format() */
+  )
 #undef TINYFORMAT_WRAP_FORMAT_EXTRA_ARGS
 #define TINYFORMAT_WRAP_FORMAT_EXTRA_ARGS
 {% endhighlight %}
-  This is obviously far from ideal so I rejected variadic functions in the
+  <p>This is obviously far from ideal so I rejected variadic functions in the
   core API although I am considering adding them in the future on top of existing
-  interface.
+  interface.</p>
 
   <p>The second group of libraries uses overloaded operators such as
   <code>operator&lt;&lt;</code> for passing arguments. It includes IOStreams,
