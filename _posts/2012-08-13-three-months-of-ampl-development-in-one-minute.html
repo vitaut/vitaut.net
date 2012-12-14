@@ -19,8 +19,8 @@ date: 2012-08-13
   <p>The video was created using <a href=
   "http://code.google.com/p/gource/">Gource</a>:</p>
 
-<pre class="terminal"><code>
-$ gource -1280x720 --title AMPL --hide filenames,mouse \
+<pre class="terminal">
+<code>$ gource -1280x720 --title AMPL --hide filenames,mouse \
     --seconds-per-day 0.55 --date-format "%Y-%m-%d" -o - | \
     ffmpeg -y -r 60 -f image2pipe -vcodec ppm -i - -vcodec \
     libx264 -preset ultrafast -crf 1 -threads 0 -bf 0 ampl.mp4
