@@ -6,23 +6,488 @@ comments: false
 ---
 
 <h1>{{ page.title }}</h1>
+
 <div class='post'>
-<p>In this post I describe my experience with the recent version (2.1) of <a href="http://www.eclipse.org/Xtext/">Xtext</a>, a framework for developing domain specific languages (DSLs). <p></p>The main input for Xtext is a grammar file written in an elegant little <a href="http://git.eclipse.org/c/tmf/org.eclipse.xtext.git/tree/plugins/org.eclipse.xtext/src/org/eclipse/xtext/Xtext.xtext">language</a>. The grammar language uses a variation of <a href="http://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_Form">Extended Backus–Naur Form</a> to define rules for both terminals and nonterminals. <p></p>So far this is very similar to parser generators like <a href="http://www.gnu.org/s/bison/">GNU bison</a> or <a href="http://www.antlr.org/">ANTLR</a> which can create parsers out of similar grammar definitions. I have a lot of experience with parser generators and have become a bit sceptical about them. A hand-written parser is often easier to debug and maintain compared to a generated one. From my experience other parts of the language development process like semantic analysis or code generation are usually more complicated and at the same time these receive much less attention from the developers of automated tools. <p></p>What makes Xtext different is that it not only generates a parser and a lexer but also a full-blown Eclipse IDE tailored for your language. So I decided to give Xtext a try and develop a toy language with it. <p></p>I take a shortcut and start from one of the examples that come with Xtext. Choosing <code>File -> New -> Example... </code>and selecting <code>Xtext Simple Arithmetic Example</code> under the <code>Xtext Examples</code> category creates three projects: <ul> <li>org.eclipse.xtext.example.arithmetics (main)</li> <li>org.eclipse.xtext.example.arithmetics.tests (tests)</li> <li>org.eclipse.xtext.example.arithmetics.ui (ui)</li></ul>The main project contains the grammar file <code>Arithmetic.xtext</code> for the language. Following is an example of input that it accepts: <pre><br />module simple<br />def pi: 3.14159265;<br />pi * 4;<br /></pre><p>Here is how it looks in Eclipse: </p><div class="separator" style="clear: both; text-align: center;"><a href="http://3.bp.blogspot.com/-Fpffgjy0c3E/TtsWbHcZKRI/AAAAAAAAClg/_3mEXmFHUmM/s1600/eclipse-calc.png" imageanchor="1" style=""><img border="0" height="237" width="400" src="http://3.bp.blogspot.com/-Fpffgjy0c3E/TtsWbHcZKRI/AAAAAAAAClg/_3mEXmFHUmM/s400/eclipse-calc.png" /></a></div> Syntax colouring, content assist, the Outline and Problems views - all work nicely. <p></p>Let's now extend this language. First I add support for <a href="http://en.wikipedia.org/wiki/Scientific_notation">scientific notation</a>, like <code>6.02e23,</code> in floating-point literals. The following modification of the <code>NUMBER</code> terminal does the job:  <div style="font-size: 0.95em"><pre><br />terminal NUMBER returns ecore::EBigDecimal:<br />    (('0'..'9')+ ('.' ('0'..'9')*)? | '.' ('0'..'9')+)<br />    (('e' | 'E') ('+' | '-')? ('0'..'9')+)?;<br /></pre></div><p></p>Next I add support for string expressions. To check for errors like trying to divide a string by a number I introduce a simple type system that consists of three types - <code>NUMBER</code>, <code>STRING</code> and <code>INVALID</code> with the latter used in case of errors. The type is represented by the following simple enum added to the main project:  <div style="font-size: 0.95em"><pre class="brush: java; gutter: false;"><br />public enum Type {<br />    INVALID,<br />    NUMBER,<br />    STRING<br />}<br /></pre></div><p></p>Then I add a string concatenation expression which uses the &amp; operator and replace multiple classes for binary expressions with a single class <code>BinaryExpr</code> to make writing validation checks easier:  <div style="font-size: 0.95em"><pre class="brush: java; gutter: false;"><br />...<br />Expression returns Expr:<br />    Concatenation;<br /><br />Concatenation returns Expr:<br />    Addition<br />    ({BinaryExpr.left=current} op=('&') right=Addition)*;<br /><br />Addition returns Expr:<br />    Multiplication<br />    ({BinaryExpr.left=current} op=('+' | '-') right=Multiplication)*;<br /><br />Multiplication returns Expr:<br />    PrimaryExpression<br />    ({BinaryExpr.left=current} op=('*' | '/') right=PrimaryExpression)*;<br /><br />PrimaryExpression returns Expr:<br />    '(' Expression ')' |<br />    {NumberLiteral} value=NUMBER |<br />    {StringLiteral} value=STRING |<br />    {FunctionCall} func=[AbstractDefinition]<br />        ('(' args+=Expression (',' args+=Expression)* ')')?;<br />...<br /></pre></div> <p>The next step is to add the type checks to the validator. Unfortunately Xtext validator does pre-order traversal of the AST while to check expression types we need post-order, because the type of an expression depends on the types of its subexpressions. It is easy to implement such traversal manually:  <div style="font-size: 0.90em"><pre class="brush: java; gutter: false; bloggerMode: true;"><br />...<br />public class ArithmeticsJavaValidator<br />        extends AbstractArithmeticsJavaValidator {<br />    @Inject<br />    private Calculator calculator;<br />    <br />    private Map&lt;Expr, Type> types = new HashMap&lt;Expr, Type>();<br /><br />    private boolean checkNumeric(Expr parent, Expr e,<br />            EStructuralFeature feature, int index) {<br />        Type type = checkType(e);<br />        if (type == Type.NUMBER)<br />            return true;<br />        if (type != Type.INVALID) {<br />            error("Expected numeric expression.", parent, feature,<br />                index);<br />        }<br />        return false;<br />    }<br /><br />    private boolean checkString(Expr parent, Expr e,<br />      EStructuralFeature feature) {<br />        Type type = checkType(e);<br />        if (type == Type.STRING)<br />            return true;<br />        if (type != Type.INVALID) {<br />            error("Expected numeric expression.", parent, feature,<br />                    ValidationMessageAcceptor.INSIGNIFICANT_INDEX);<br />        }<br />        return false;<br />    }<br /><br />    private boolean checkNumeric(Expr parent, Expr e,<br />      EStructuralFeature feature) {<br />        return checkNumeric(parent, e, feature,<br />                ValidationMessageAcceptor.INSIGNIFICANT_INDEX);<br />    }<br /><br />    public Type checkType(Expr expr) {<br />        Type type = types.get(expr);<br />        if (type != null)<br />            return type;<br /><br />        if (expr instanceof NumberLiteral) {<br />            type = Type.NUMBER;<br />        } else if (expr instanceof StringLiteral) {<br />            type = Type.STRING;<br />        } else if (expr instanceof BinaryExpr) {<br />            BinaryExpr be = (BinaryExpr) expr;<br />            type = Type.INVALID;<br />            Expr left = be.getLeft(), right = be.getRight();<br />            if (!be.getOp().equals("&")) {<br />                if (checkNumeric(expr, left,<br />                  ArithmeticsPackage.Literals.BINARY_EXPR__LEFT)<br />                    && checkNumeric(expr, right,<br />                        ArithmeticsPackage.Literals.BINARY_EXPR__RIGHT))<br />                    type = Type.NUMBER;<br />            } else {<br />                if (checkString(expr, left,<br />                        ArithmeticsPackage.Literals.BINARY_EXPR__LEFT)<br />                    && checkString(expr, right,<br />                        ArithmeticsPackage.Literals.BINARY_EXPR__RIGHT))<br />                    type = Type.STRING;<br />            }<br />        } else if (expr instanceof FunctionCall) {<br />            FunctionCall call = (FunctionCall) expr;<br />            EList&lt;Expr> args = call.getArgs();<br />            AbstractDefinition func = ((FunctionCall) expr).getFunc();<br />            if (func instanceof Definition)<br />                type = checkType(((Definition) func).getExpr());<br />            else<br />                type = Type.NUMBER;<br />            for (int i = 0, n = args.size(); i < n; i++) {<br />                if (!checkNumeric(expr, args.get(i),<br />                    ArithmeticsPackage.Literals.FUNCTION_CALL__ARGS, i))<br />                    type = Type.INVALID;<br />            }<br />        }<br />        types.put(expr, type);<br />        return type;<br />    }<br /><br />    @Check<br />    public void check(Module m) {<br />        types.clear();<br />    }<br /><br />    public final static String NORMALIZABLE = "normalizable-expression";<br /><br />    @Check<br />    public void check(Expr expr) {<br />        Type type = checkType(expr);<br />        if (type != Type.NUMBER)<br />            return;<br />        <br />        // ignore literals<br />        if ((expr instanceof NumberLiteral) ||<br />            (expr instanceof FunctionCall)) <br />            return;<br />        // ignore evaluations<br />        if (EcoreUtil2.getContainerOfType(expr, Evaluation.class)!=null)<br />            return;<br />        <br />        TreeIterator&lt;EObject> contents = expr.eAllContents();<br />        while(contents.hasNext()) {<br />            EObject next = contents.next();<br />            if (next instanceof FunctionCall) {<br />                return;<br />            }<br />        }<br />        BigDecimal decimal = calculator.evaluateNumeric(expr);<br />        if (decimal.toString().length()<=8) {<br />            warning(<br />                "Expression could be normalized to constant '" +<br />                    decimal + "'", <br />                null,<br />                ValidationMessageAcceptor.INSIGNIFICANT_INDEX,<br />                NORMALIZABLE,<br />                decimal.toString());<br />        }<br />    }<br />}<br /></pre></div> As you can see from the above code the type checks aren't really pretty with all the <code>instanceof</code>s and casts. If I had more control over the generated AST classes I would apply the <a href="http://en.wikipedia.org/wiki/Visitor_pattern">Visitor pattern</a> and implemented the type checker as a visitor. However this can be mitigated with the help of the poorly documented <a href="http://download.eclipse.org/modeling/tmf/xtext/javadoc/2.0.0/org/eclipse/xtext/util/PolymorphicDispatcher.html">PolymorphicDispatcher</a>. </p><p>Next I modify the <code>Calculator</code> class that implements evaluation to handle string concatenation. Also the evaluation methods should return <code>Object</code> instead of <code>BigDecimal</code> because the value of an expression can be a string or a number:  <div style="font-size: 0.95em"><pre class="brush: java; gutter: false;"><br />...<br />public class Calculator {<br />    <br />    private PolymorphicDispatcher&lt;Object> dispatcher =<br />        PolymorphicDispatcher.createForSingleTarget(<br />            "internalEvaluate", 2, 2, this);<br />    <br />    public Object evaluate(Expr obj) {<br />        return evaluate(obj, ImmutableMap.&lt;String,Object>of());<br />    }<br /><br />    public BigDecimal evaluateNumeric(Expr obj) {<br />        return (BigDecimal)evaluate(obj);<br />    }<br /><br />    public Object evaluate(Expr obj,<br />            ImmutableMap&lt;String, Object> values) {<br />        Object invoke = dispatcher.invoke(obj, values);<br />        return invoke;<br />    }<br /><br />    public BigDecimal evaluateNumeric(Expr obj,<br />            ImmutableMap&lt;String, Object> values) {<br />        return (BigDecimal)evaluate(obj, values);<br />    }<br /><br />    protected Object internalEvaluate(Expr e,<br />            ImmutableMap&lt;String, Object> values) { <br />        throw new UnsupportedOperationException(e.toString());<br />    }<br />    <br />    protected Object internalEvaluate(NumberLiteral e,<br />            ImmutableMap&lt;String, Object> values) { <br />        return e.getValue();<br />    }<br /><br />    protected Object internalEvaluate(StringLiteral e,<br />            ImmutableMap&lt;String, Object> values) { <br />        return e.getValue();<br />    }<br /><br />    protected Object internalEvaluate(FunctionCall e,<br />            ImmutableMap&lt;String, Object> values) {<br />        if (e.getFunc() instanceof DeclaredParameter) {<br />            return values.get(e.getFunc().getName());<br />        } <br />        Definition d = (Definition) e.getFunc();<br />        Map&lt;String,Object> params = Maps.newHashMap();<br />        for (int i = 0; i &lt; e.getArgs().size(); i++) {<br />            DeclaredParameter declaredParameter = d.getArgs().get(i);<br />            Object evaluate = evaluate(e.getArgs().get(i), values);<br />            params.put(declaredParameter.getName(), evaluate);<br />        }<br />        return evaluate(d.getExpr(),ImmutableMap.copyOf(params));<br />    }<br />    <br />    protected Object internalEvaluate(BinaryExpr e,<br />            ImmutableMap&lt;String, Object> values) {<br />        Resource res = e.eResource();<br />        if (!res.getErrors().isEmpty())<br />            return null;<br />        char op = e.getOp().charAt(0);<br />        if (op == '&') {<br />            return (String)evaluate(e.getLeft(), values) +<br />                evaluate(e.getRight(), values);<br />        }<br />        BigDecimal left = evaluateNumeric(e.getLeft(), values);<br />        BigDecimal right = evaluateNumeric(e.getRight(), values);<br />        switch (op) {<br />        case '+': return left.add(right);<br />        case '-': return left.subtract(right); <br />        case '*': return left.multiply(right); <br />        case '/': return left.divide(right, 20, RoundingMode.HALF_UP); <br />        }<br />        throw new UnsupportedOperationException(e.getOp());<br />    }<br />}<br /></pre></div></p> And finally I change the <code>InterpreterAutoEdit</code> class in the ui project to check types before evaluation:  <div style="font-size: 0.90em"><pre class="brush: java; gutter: false;"><br />...<br />public class InterpreterAutoEdit implements IAutoEditStrategy {<br /><br />    public void customizeDocumentCommand(IDocument document,<br />            DocumentCommand command) {<br />        for (String lineDelimiter : document.getLegalLineDelimiters()) {<br />            if (command.text.equals(lineDelimiter)) {<br />                int line;<br />                int lineStart;<br />                try {<br />                    line = document.getLineOfOffset(command.offset);<br />                    lineStart = document.getLineOffset(line);<br />                    if (!document.get(lineStart, 3).equals("def")) {<br />                        Object computedResult = computeResult(document,<br />                                command);<br />                        if (computedResult != null) {<br />                            command.text = lineDelimiter + "// = " +<br />                                computedResult + lineDelimiter;<br />                        }<br />                    }<br />                } catch (BadLocationException e) {<br />                    // ignore<br />                }<br />            }<br />        }<br />    }<br /><br />    private Object computeResult(IDocument document,<br />            final DocumentCommand command) {<br />        return ((IXtextDocument) document).readOnly(new<br />            IUnitOfWork&lt;Object, XtextResource>() {<br />                public Object exec(XtextResource state)<br />                        throws Exception {<br />                    Evaluation stmt = findEvaluation(command, state);<br />                    if (stmt == null)<br />                        return null;<br />                    return evaluate(stmt);<br />                }<br />            });<br />    }<br /><br />    protected Object evaluate(Evaluation stmt) {<br />        ArithmeticsJavaValidator validator =<br />            new ArithmeticsJavaValidator();<br />        Expr expr = stmt.getExpression();<br /> <br />        // Ignore all messages.<br />        validator.setMessageAcceptor(new ValidationMessageAcceptor() {<br /> <br />            public void acceptError(String message, EObject object,<br />                EStructuralFeature feature, int index, String code,<br />                String... issueData) {<br />            }<br /> <br />            public void acceptError(String message, EObject object,<br />                int offset, int length, String code,<br />                String... issueData) {<br />            }<br /> <br />            public void acceptWarning(String message, EObject object,<br />                EStructuralFeature feature, int index, String code,<br />                String... issueData) {<br />            }<br /> <br />            public void acceptWarning(String message, EObject object,<br />                int offset, int length, String code,<br />                String... issueData) {<br />            }<br /> <br />            public void acceptInfo(String message, EObject object,<br />                EStructuralFeature feature, int index, String code,<br />                String... issueData) {<br />            }<br /> <br />            public void acceptInfo(String message, EObject object,<br />                int offset, int length, String code,<br />                String... issueData) {<br />            }<br />        });<br /> <br />        return validator.checkType(expr) != Type.INVALID ?<br />                new Calculator().evaluate(expr) : "?";<br />    }<br /><br />    ...<br />}<br /></pre></div> <p>After implementing the above changes and re-generating Xtext artefacts, I get an Eclipse IDE for the language with simple string expressions and type checking: </p> <div class="separator" style="clear: both; text-align: center;"><a href="http://4.bp.blogspot.com/-EtJlFWF8hXI/Ttsv7K5-ZLI/AAAAAAAACls/YiIict9o-wI/s1600/eclipse-calc-with-strings.png" imageanchor="1" style=""><img border="0" height="245" width="400" src="http://4.bp.blogspot.com/-EtJlFWF8hXI/Ttsv7K5-ZLI/AAAAAAAACls/YiIict9o-wI/s400/eclipse-calc-with-strings.png" /></a></div></div>
+  <p>In this post I describe my experience with the recent version (2.1) of
+  <a href="http://www.eclipse.org/Xtext/">Xtext</a>, a framework for developing
+  domain specific languages (DSLs).</p>The main input for Xtext is a grammar
+  file written in an elegant little <a href=
+  "http://git.eclipse.org/c/tmf/org.eclipse.xtext.git/tree/plugins/org.eclipse.xtext/src/org/eclipse/xtext/Xtext.xtext">
+  language</a>. The grammar language uses a variation of&nbsp;<a href=
+  "http://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_Form">Extended
+  Backus–Naur Form</a> to define rules for both terminals and nonterminals. So
+  far this is very similar to parser generators like <a href=
+  "http://www.gnu.org/s/bison/">GNU bison</a> or <a href=
+  "http://www.antlr.org/">ANTLR</a> which can create parsers out of similar
+  grammar definitions. I have a lot of experience with parser generators and
+  have become a bit sceptical about them. A hand-written parser is often easier
+  to debug and maintain compared to a generated one. From my experience other
+  parts of the language development process like semantic analysis or code
+  generation are usually more complicated and at the same time these receive
+  much less attention from the developers of automated tools. What makes Xtext
+  different is that it not only generates a parser and a lexer but also a
+  full-blown Eclipse IDE tailored for your language. So I decided to give Xtext
+  a try and develop a toy language with it. I take a shortcut and start from
+  one of the examples that come with Xtext. Choosing <code>File -&gt; New -&gt;
+  Example...&nbsp;</code>and selecting&nbsp;<code>Xtext Simple Arithmetic
+  Example</code> under the <code>Xtext Examples</code> category creates three
+  projects:
+
+  <ul>
+    <li>org.eclipse.xtext.example.arithmetics (main)</li>
+
+    <li>org.eclipse.xtext.example.arithmetics.tests (tests)</li>
+
+    <li>org.eclipse.xtext.example.arithmetics.ui (ui)</li>
+  </ul>The main project contains the grammar file <code>Arithmetic.xtext</code>
+  for the language. Following is an example of input that it accepts:
+
+{% highlight %}
+
+module simple
+def pi: 3.14159265;
+pi * 4;
+
+{% endhighlight %}
+
+  <p>Here is how it looks in Eclipse:</p>
+
+  <div class="separator" style="clear: both; text-align: center;">
+    <a href=
+    "http://3.bp.blogspot.com/-Fpffgjy0c3E/TtsWbHcZKRI/AAAAAAAAClg/_3mEXmFHUmM/s1600/eclipse-calc.png"
+    style=""><img border="0" height="237" src=
+    "http://3.bp.blogspot.com/-Fpffgjy0c3E/TtsWbHcZKRI/AAAAAAAAClg/_3mEXmFHUmM/s400/eclipse-calc.png"
+    width="400"></a>
+  </div>Syntax colouring, content assist, the Outline and Problems views - all
+  work nicely. Let's now extend this language. First I add support
+  for&nbsp;<a href=
+  "http://en.wikipedia.org/wiki/Scientific_notation">scientific notation</a>,
+  like <code>6.02e23,</code>&nbsp;in floating-point literals. The following
+  modification of the <code>NUMBER</code> terminal does the job:
+
+{% highlight %}
+
+terminal NUMBER returns ecore::EBigDecimal:
+    (('0'..'9')+ ('.' ('0'..'9')*)? | '.' ('0'..'9')+)
+    (('e' | 'E') ('+' | '-')? ('0'..'9')+)?;
+
+{% endhighlight %}
+
+  <p>Next I add support for string expressions. To check for errors like
+  trying to divide a string by a number I introduce a simple type system that
+  consists of three types - <code>NUMBER</code>, <code>STRING</code> and
+  <code>INVALID</code> with the latter used in case of errors. The type is
+  represented by the following simple enum added to the main project:</p>
+
+{% highlight java %}
+
+public enum Type {
+    INVALID,
+    NUMBER,
+    STRING
+}
+
+{% endhighlight %}
+
+  <p>Then I add a string concatenation expression which uses the &amp;
+  operator and replace multiple classes for binary expressions with a single
+  class <code>BinaryExpr</code> to make writing validation checks easier:</p>
+
+{% highlight java %}
+
+...
+Expression returns Expr:
+    Concatenation;
+
+Concatenation returns Expr:
+    Addition
+    ({BinaryExpr.left=current} op=('&amp;') right=Addition)*;
+
+Addition returns Expr:
+    Multiplication
+    ({BinaryExpr.left=current} op=('+' | '-') right=Multiplication)*;
+
+Multiplication returns Expr:
+    PrimaryExpression
+    ({BinaryExpr.left=current} op=('*' | '/') right=PrimaryExpression)*;
+
+PrimaryExpression returns Expr:
+    '(' Expression ')' |
+    {NumberLiteral} value=NUMBER |
+    {StringLiteral} value=STRING |
+    {FunctionCall} func=[AbstractDefinition]
+        ('(' args+=Expression (',' args+=Expression)* ')')?;
+...
+
+{% endhighlight %}
+
+  <p>The next step is to add the type checks to the validator. Unfortunately
+  Xtext validator does pre-order traversal of the AST while to check expression
+  types we need post-order, because the type of an expression depends on the
+  types of its subexpressions. It is easy to implement such traversal
+  manually:</p>
+
+{% highlight java %}
+
+...
+public class ArithmeticsJavaValidator
+        extends AbstractArithmeticsJavaValidator {
+    @Inject
+    private Calculator calculator;
+    
+    private Map&lt;Expr, Type&gt; types = new HashMap&lt;Expr, Type&gt;();
+
+    private boolean checkNumeric(Expr parent, Expr e,
+            EStructuralFeature feature, int index) {
+        Type type = checkType(e);
+        if (type == Type.NUMBER)
+            return true;
+        if (type != Type.INVALID) {
+            error("Expected numeric expression.", parent, feature,
+                index);
+        }
+        return false;
+    }
+
+    private boolean checkString(Expr parent, Expr e,
+      EStructuralFeature feature) {
+        Type type = checkType(e);
+        if (type == Type.STRING)
+            return true;
+        if (type != Type.INVALID) {
+            error("Expected numeric expression.", parent, feature,
+                    ValidationMessageAcceptor.INSIGNIFICANT_INDEX);
+        }
+        return false;
+    }
+
+    private boolean checkNumeric(Expr parent, Expr e,
+      EStructuralFeature feature) {
+        return checkNumeric(parent, e, feature,
+                ValidationMessageAcceptor.INSIGNIFICANT_INDEX);
+    }
+
+    public Type checkType(Expr expr) {
+        Type type = types.get(expr);
+        if (type != null)
+            return type;
+
+        if (expr instanceof NumberLiteral) {
+            type = Type.NUMBER;
+        } else if (expr instanceof StringLiteral) {
+            type = Type.STRING;
+        } else if (expr instanceof BinaryExpr) {
+            BinaryExpr be = (BinaryExpr) expr;
+            type = Type.INVALID;
+            Expr left = be.getLeft(), right = be.getRight();
+            if (!be.getOp().equals("&amp;")) {
+                if (checkNumeric(expr, left,
+                  ArithmeticsPackage.Literals.BINARY_EXPR__LEFT)
+                    &amp;&amp; checkNumeric(expr, right,
+                        ArithmeticsPackage.Literals.BINARY_EXPR__RIGHT))
+                    type = Type.NUMBER;
+            } else {
+                if (checkString(expr, left,
+                        ArithmeticsPackage.Literals.BINARY_EXPR__LEFT)
+                    &amp;&amp; checkString(expr, right,
+                        ArithmeticsPackage.Literals.BINARY_EXPR__RIGHT))
+                    type = Type.STRING;
+            }
+        } else if (expr instanceof FunctionCall) {
+            FunctionCall call = (FunctionCall) expr;
+            EList&lt;Expr&gt; args = call.getArgs();
+            AbstractDefinition func = ((FunctionCall) expr).getFunc();
+            if (func instanceof Definition)
+                type = checkType(((Definition) func).getExpr());
+            else
+                type = Type.NUMBER;
+            for (int i = 0, n = args.size(); i &lt; n; i++) {
+                if (!checkNumeric(expr, args.get(i),
+                    ArithmeticsPackage.Literals.FUNCTION_CALL__ARGS, i))
+                    type = Type.INVALID;
+            }
+        }
+        types.put(expr, type);
+        return type;
+    }
+
+    @Check
+    public void check(Module m) {
+        types.clear();
+    }
+
+    public final static String NORMALIZABLE = "normalizable-expression";
+
+    @Check
+    public void check(Expr expr) {
+        Type type = checkType(expr);
+        if (type != Type.NUMBER)
+            return;
+        
+        // ignore literals
+        if ((expr instanceof NumberLiteral) ||
+            (expr instanceof FunctionCall)) 
+            return;
+        // ignore evaluations
+        if (EcoreUtil2.getContainerOfType(expr, Evaluation.class)!=null)
+            return;
+        
+        TreeIterator&lt;EObject&gt; contents = expr.eAllContents();
+        while(contents.hasNext()) {
+            EObject next = contents.next();
+            if (next instanceof FunctionCall) {
+                return;
+            }
+        }
+        BigDecimal decimal = calculator.evaluateNumeric(expr);
+        if (decimal.toString().length()&lt;=8) {
+            warning(
+                "Expression could be normalized to constant '" +
+                    decimal + "'", 
+                null,
+                ValidationMessageAcceptor.INSIGNIFICANT_INDEX,
+                NORMALIZABLE,
+                decimal.toString());
+        }
+    }
+}
+
+{% endhighlight %}
+  <p>As you can see from the above code the type checks aren't really pretty
+  with all the <code>instanceof</code>s and casts. If I had more control over
+  the generated AST classes I would apply the <a href=
+  "http://en.wikipedia.org/wiki/Visitor_pattern">Visitor pattern</a> and
+  implemented the type checker as a visitor. However this can be mitigated with
+  the help of the poorly documented <a href=
+  "http://download.eclipse.org/modeling/tmf/xtext/javadoc/2.0.0/org/eclipse/xtext/util/PolymorphicDispatcher.html">
+  PolymorphicDispatcher</a>.</p>
+
+  <p>Next I modify the <code>Calculator</code> class that implements evaluation
+  to handle string concatenation. Also the evaluation methods should return
+  <code>Object</code> instead of <code>BigDecimal</code> because the value of
+  an expression can be a string or a number:</p>
+
+{% highlight java %}
+
+...
+public class Calculator {
+    
+    private PolymorphicDispatcher&lt;Object&gt; dispatcher =
+        PolymorphicDispatcher.createForSingleTarget(
+            "internalEvaluate", 2, 2, this);
+    
+    public Object evaluate(Expr obj) {
+        return evaluate(obj, ImmutableMap.&lt;String,Object&gt;of());
+    }
+
+    public BigDecimal evaluateNumeric(Expr obj) {
+        return (BigDecimal)evaluate(obj);
+    }
+
+    public Object evaluate(Expr obj,
+            ImmutableMap&lt;String, Object&gt; values) {
+        Object invoke = dispatcher.invoke(obj, values);
+        return invoke;
+    }
+
+    public BigDecimal evaluateNumeric(Expr obj,
+            ImmutableMap&lt;String, Object&gt; values) {
+        return (BigDecimal)evaluate(obj, values);
+    }
+
+    protected Object internalEvaluate(Expr e,
+            ImmutableMap&lt;String, Object&gt; values) { 
+        throw new UnsupportedOperationException(e.toString());
+    }
+    
+    protected Object internalEvaluate(NumberLiteral e,
+            ImmutableMap&lt;String, Object&gt; values) { 
+        return e.getValue();
+    }
+
+    protected Object internalEvaluate(StringLiteral e,
+            ImmutableMap&lt;String, Object&gt; values) { 
+        return e.getValue();
+    }
+
+    protected Object internalEvaluate(FunctionCall e,
+            ImmutableMap&lt;String, Object&gt; values) {
+        if (e.getFunc() instanceof DeclaredParameter) {
+            return values.get(e.getFunc().getName());
+        } 
+        Definition d = (Definition) e.getFunc();
+        Map&lt;String,Object&gt; params = Maps.newHashMap();
+        for (int i = 0; i &lt; e.getArgs().size(); i++) {
+            DeclaredParameter declaredParameter = d.getArgs().get(i);
+            Object evaluate = evaluate(e.getArgs().get(i), values);
+            params.put(declaredParameter.getName(), evaluate);
+        }
+        return evaluate(d.getExpr(),ImmutableMap.copyOf(params));
+    }
+    
+    protected Object internalEvaluate(BinaryExpr e,
+            ImmutableMap&lt;String, Object&gt; values) {
+        Resource res = e.eResource();
+        if (!res.getErrors().isEmpty())
+            return null;
+        char op = e.getOp().charAt(0);
+        if (op == '&amp;') {
+            return (String)evaluate(e.getLeft(), values) +
+                evaluate(e.getRight(), values);
+        }
+        BigDecimal left = evaluateNumeric(e.getLeft(), values);
+        BigDecimal right = evaluateNumeric(e.getRight(), values);
+        switch (op) {
+        case '+': return left.add(right);
+        case '-': return left.subtract(right); 
+        case '*': return left.multiply(right); 
+        case '/': return left.divide(right, 20, RoundingMode.HALF_UP); 
+        }
+        throw new UnsupportedOperationException(e.getOp());
+    }
+}
+
+{% endhighlight %}
+
+  <p>And finally I change the <code>InterpreterAutoEdit</code> class in the
+  ui project to check types before evaluation:</p>
+
+{% highlight java %}
+
+...
+public class InterpreterAutoEdit implements IAutoEditStrategy {
+
+    public void customizeDocumentCommand(IDocument document,
+            DocumentCommand command) {
+        for (String lineDelimiter : document.getLegalLineDelimiters()) {
+            if (command.text.equals(lineDelimiter)) {
+                int line;
+                int lineStart;
+                try {
+                    line = document.getLineOfOffset(command.offset);
+                    lineStart = document.getLineOffset(line);
+                    if (!document.get(lineStart, 3).equals("def")) {
+                        Object computedResult = computeResult(document,
+                                command);
+                        if (computedResult != null) {
+                            command.text = lineDelimiter + "// = " +
+                                computedResult + lineDelimiter;
+                        }
+                    }
+                } catch (BadLocationException e) {
+                    // ignore
+                }
+            }
+        }
+    }
+
+    private Object computeResult(IDocument document,
+            final DocumentCommand command) {
+        return ((IXtextDocument) document).readOnly(new
+            IUnitOfWork&lt;Object, XtextResource&gt;() {
+                public Object exec(XtextResource state)
+                        throws Exception {
+                    Evaluation stmt = findEvaluation(command, state);
+                    if (stmt == null)
+                        return null;
+                    return evaluate(stmt);
+                }
+            });
+    }
+
+    protected Object evaluate(Evaluation stmt) {
+        ArithmeticsJavaValidator validator =
+            new ArithmeticsJavaValidator();
+        Expr expr = stmt.getExpression();
+ 
+        // Ignore all messages.
+        validator.setMessageAcceptor(new ValidationMessageAcceptor() {
+ 
+            public void acceptError(String message, EObject object,
+                EStructuralFeature feature, int index, String code,
+                String... issueData) {
+            }
+ 
+            public void acceptError(String message, EObject object,
+                int offset, int length, String code,
+                String... issueData) {
+            }
+ 
+            public void acceptWarning(String message, EObject object,
+                EStructuralFeature feature, int index, String code,
+                String... issueData) {
+            }
+ 
+            public void acceptWarning(String message, EObject object,
+                int offset, int length, String code,
+                String... issueData) {
+            }
+ 
+            public void acceptInfo(String message, EObject object,
+                EStructuralFeature feature, int index, String code,
+                String... issueData) {
+            }
+ 
+            public void acceptInfo(String message, EObject object,
+                int offset, int length, String code,
+                String... issueData) {
+            }
+        });
+ 
+        return validator.checkType(expr) != Type.INVALID ?
+                new Calculator().evaluate(expr) : "?";
+    }
+
+    ...
+}
+
+{% endhighlight %}
+
+  <p>After implementing the above changes and re-generating Xtext artefacts, I
+  get an Eclipse IDE for the language with simple string expressions and type
+  checking:</p>
+
+  <div class="separator" style="clear: both; text-align: center;">
+    <a href=
+    "http://4.bp.blogspot.com/-EtJlFWF8hXI/Ttsv7K5-ZLI/AAAAAAAACls/YiIict9o-wI/s1600/eclipse-calc-with-strings.png"
+    style=""><img border="0" height="245" src=
+    "http://4.bp.blogspot.com/-EtJlFWF8hXI/Ttsv7K5-ZLI/AAAAAAAACls/YiIict9o-wI/s400/eclipse-calc-with-strings.png"
+    width="400"></a>
+  </div>
+</div>
+
 <h2>Comments</h2>
+
 <div class='comments'>
-<div class='comment'>
-<div class='author'>asdasd</div>
-<div class='content'>
-How to run the .calc file?</div>
-</div>
-<div class='comment'>
-<div class='author'>Victor Zverovich</div>
-<div class='content'>
-Could be, but there is already an Eclipse-based IDE for AMPL called AMPLDev: http://bit.ly/KLuJYS . This was more of a test drive to get a better understanding of Xtext features.</div>
-</div>
-<div class='comment'>
-<div class='author'>Paul Rubin</div>
-<div class='content'>
-Next step: use Xtext to create an Eclipse-based IDE for AMPL?</div>
-</div>
+  <div class='comment'>
+    <div class='author'>
+      asdasd
+    </div>
+
+    <div class='content'>
+      How to run the .calc file?
+    </div>
+  </div>
+
+  <div class='comment'>
+    <div class='author'>
+      Victor Zverovich
+    </div>
+
+    <div class='content'>
+      Could be, but there is already an Eclipse-based IDE for AMPL called
+      AMPLDev: http://bit.ly/KLuJYS . This was more of a test drive to get a
+      better understanding of Xtext features.
+    </div>
+  </div>
+
+  <div class='comment'>
+    <div class='author'>
+      Paul Rubin
+    </div>
+
+    <div class='content'>
+      Next step: use Xtext to create an Eclipse-based IDE for AMPL?
+    </div>
+  </div>
 </div>
