@@ -171,16 +171,16 @@ public class ArithmeticsJavaValidator
             BinaryExpr be = (BinaryExpr) expr;
             type = Type.INVALID;
             Expr left = be.getLeft(), right = be.getRight();
-            if (!be.getOp().equals("&amp;")) {
+            if (!be.getOp().equals("&")) {
                 if (checkNumeric(expr, left,
                   ArithmeticsPackage.Literals.BINARY_EXPR__LEFT)
-                    &amp;&amp; checkNumeric(expr, right,
+                    && checkNumeric(expr, right,
                         ArithmeticsPackage.Literals.BINARY_EXPR__RIGHT))
                     type = Type.NUMBER;
             } else {
                 if (checkString(expr, left,
                         ArithmeticsPackage.Literals.BINARY_EXPR__LEFT)
-                    &amp;&amp; checkString(expr, right,
+                    && checkString(expr, right,
                         ArithmeticsPackage.Literals.BINARY_EXPR__RIGHT))
                     type = Type.STRING;
             }
@@ -321,7 +321,7 @@ public class Calculator {
         if (!res.getErrors().isEmpty())
             return null;
         char op = e.getOp().charAt(0);
-        if (op == '&amp;') {
+        if (op == '&') {
             return (String)evaluate(e.getLeft(), values) +
                 evaluate(e.getRight(), values);
         }
