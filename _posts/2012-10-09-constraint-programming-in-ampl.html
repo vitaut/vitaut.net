@@ -29,7 +29,7 @@ date: 2012-10-09
   "https://github.com/vitaut/ampl">this AMPL GitHub repository</a> which you
   can get using <a href="http://git-scm.com/">Git</a>:</p>
 
-{% highlight c++ %}
+{% highlight text %}
 $ git clone git://github.com/vitaut/ampl.git
 {% endhighlight %}
 
@@ -49,12 +49,12 @@ $ git clone git://github.com/vitaut/ampl.git
   <ul>
     <li>Go to the <code>ampl</code> directory containing the source code.</li>
 
-    <li>Run "<code>cmake .</code>" to generate native makefiles or build
+    <li>Run <code>cmake .</code> to generate native makefiles or build
     projects.</li>
 
     <li>If you use a Linux/UNIX system, you should now see a Makefile in the
     current directory. Now you can build the binaries by running
-    "<code>make</code>". If you use Windows and have Vistual Studio installed,
+    <code>make</code>. If you use Windows and have Vistual Studio installed,
     an AMPL.sln file and several .vcproj files will be created. You can build
     them using Visual Studio.</li>
   </ul>
@@ -70,7 +70,7 @@ $ git clone git://github.com/vitaut/ampl.git
   In addition the most significant digit of each number shouldn't be zero. This
   can be easily modeled as a constraint programming problem in AMPL:</p>
 
-{% highlight python %}
+{% highlight text %}
 set Letters;
 var d{Letters} >= 0 <= 9 integer;
 
@@ -102,23 +102,23 @@ the model</a>
 
   <p>Let's load the model into AMPL:</p>
 
-<div class="highlight"><pre>
+{% highlight text %}
 ampl: model money.mod;
 money.mod, line 6 (offset 148):
  Caution: Treating strict inequality constraint as a logical constraint.
-context:  s.t. nonzeroS: d['S'] !=  &gt;&gt;&gt; 0; &lt;&lt;&lt; 
+context:  s.t. nonzeroS: d['S'] !=  >>> 0; <<<
 
 money.mod, line 7 (offset 176):
  Caution: Treating strict inequality constraint as a logical constraint.
-context:  s.t. nonzeroM: d['M'] !=  &gt;&gt;&gt; 0; &lt;&lt;&lt; 
-</pre></div>
+context:  s.t. nonzeroM: d['M'] !=  >>> 0; <<<
+{% endhighlight %}
 
 <p>AMPL gives you a couple of warnings about the logical constraints. These
 warnings might be useful since most of the solvers don't know how to deal with
 such constraints but in this case you can safely ignore them. Now let's change
 the solver to <code>ilogcp</code>, solve the problem and display the solution:</p>
 
-<div class="highlight"><pre>
+{% highlight text %}
 ampl: option solver ilogcp;
 ampl: solve;
 ilogcp 12.4.0: feasible solution
@@ -134,7 +134,7 @@ R  8
 S  9
 Y  2
 ;
-</pre></div>
+{% endhighlight %}
 
   <p>You can find additional information such as the solver options supported
   by the ilogcp driver in the <a href=
