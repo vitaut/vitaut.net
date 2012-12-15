@@ -18,14 +18,17 @@ the author of [tinyformat](https://github.com/c42f/tinyformat) library.
 I changed the benchmark to include my new formatting library and ran it three
 times taking the best time for each method:
 
-<table>
-<tr><td>test name</td><td>run time</td></tr>
-<tr><td>libc printf</td><td>1.28s</td></tr>
-<tr><td>std::ostream</td><td>2.09s</td></tr>
-<tr><td>format</td><td>1.32s</td></tr>
-<tr><td>tinyformat</td><td>2.55s</td></tr>
-<tr><td>boost::format</td><td>10.42s</td></tr>
-</table>
+{% highlight text %}
+============== ========
+test name      run time
+============== ========
+libc printf     1.28s
+std::ostream    2.09s
+format          1.32s
+tinyformat      2.55s
+boost::format  10.42s
+============== ========
+{% endhighlight %}
 
 The instructions on running the tests are available
 [here](https://github.com/vitaut/format#running-the-tests) so you can easily
