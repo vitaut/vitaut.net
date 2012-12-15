@@ -109,7 +109,7 @@ different post.) So there is no need to copy arguments, it is enough to store
 references or pointers to them and use when necessary avoiding dynamic memory
 allocations. This is the main thing that makes format so fast.
 
-Another thing that allows to avoid dynamic allocations in many cases is
+Another thing that allows format to avoid dynamic allocations in many cases is
 a special array data structure optimized for small size. If the number of
 elements is smaller than some number defined at compile time this data
 structure stores them in a fixed sized array in the object itself.
@@ -117,7 +117,7 @@ It uses dynamic allocation for larger sizes and can grow as `std::vector`.
 
 The rest is just careful implementation and avoiding unnecessary work.
 For example, my initial implementation used `snprintf` for all built-in
-which was inefficient because it required constructing a new format
+types which was inefficient because it required constructing a new format
 string for each argument that had to be parsed by `snprintf`. This was
 a lot of extra work, so the new implementation formats integers, strings
 and characters itself and only uses `snprintf` to format floating-point
