@@ -169,7 +169,7 @@ and pointer formatting looks pretty efficient. `DoFormat` does most of the
 job parsing the format string, copying the literal parts and formatting
 strings and characters.
 
-When I started the project I was not sure if it is possible to be as fast as
-`printf` and at the same time be type safe, support user-defined types and
-positional arguments. It turned out that it is possible with the right design
-and careful implementation.
+When I started the project I was not sure if it is possible to implement a
+formatting library as fast as `printf` without compromising on type safety,
+support for user-defined types and positional arguments. It turned out that it
+is possible with the right design and careful implementation.
