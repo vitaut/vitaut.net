@@ -151,12 +151,12 @@ struct PrintError {
   <code>std::string</code>, there are other access methods as well. Now I can
   define the <code>ReportError</code> function:</p>
 {% highlight c++ %}
-fmt::ActiveFormatter<PrintError> ReportError(const char *format) {
-  return fmt::ActiveFormatter<PrintError>(format);
+fmt::TempFormatter<PrintError> ReportError(const char *format) {
+  return fmt::TempFormatter<PrintError>(format);
 }
 {% endhighlight %}
 
-  <p><code>ActiveFormatter</code> is used only in wrapper functions like the
+  <p><code>TempFormatter</code> is used only in wrapper functions like the
   one above. It is responsible for passing arguments to <code>Formatter</code>
   and calling a user supplied action like <code>PrintError</code> once
   formatting is complete.</p>
