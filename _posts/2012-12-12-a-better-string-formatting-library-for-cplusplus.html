@@ -152,8 +152,7 @@ struct PrintError {
   define the <code>ReportError</code> function:</p>
 {% highlight c++ %}
 fmt::ActiveFormatter<PrintError> ReportError(const char *format) {
-  fmt::ActiveFormatter<PrintError> af(format);
-  return af;
+  return fmt::ActiveFormatter<PrintError>(format);
 }
 {% endhighlight %}
 
