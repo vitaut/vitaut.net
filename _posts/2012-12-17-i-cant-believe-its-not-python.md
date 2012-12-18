@@ -25,7 +25,7 @@ In fact the implementation of such function is almost trivial:
 {% highlight c++ %}
 template <typename T>
 std::string str(const T &value) {
-  return (fmt::Format("{0}") << value).str();
+  return fmt::str(fmt::Format("{0}") << value);
 }
 {% endhighlight %}
 
