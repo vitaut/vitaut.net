@@ -9,8 +9,8 @@ date: 2012-12-17
 
 <div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
     <img border=
-    "0" height="240" src=
-    "/zverovich.net/img/python.png"
+    "0" src=
+    "/img/python.png"
     title=
     "If it looks like Python and behaves like Python, then it probably is Python."
     width="240">
