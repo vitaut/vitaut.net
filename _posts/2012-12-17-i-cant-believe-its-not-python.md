@@ -48,7 +48,6 @@ class Date {
   }
 };
 
-using fmt::str;
 auto s = str(Date(2012, 12, 9));
 // s == "2012-12-9"
 {% endhighlight %}
