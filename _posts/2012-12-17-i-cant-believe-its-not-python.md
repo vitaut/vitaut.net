@@ -59,7 +59,7 @@ if you want to have control over formatting you should use `Format` instead.
 Being based on `Format`, `str` uses IOStreams only for user-defined types,
 but not for built-in types which it handles
 [much more efficiently](/2012/12/15/making-string-formatting-fast.html).
-Additional performance improvement can be achieved by getting rid of the
-format string and passing arguments to the formatter directly.
+Additional performance improvement in `str` can be achieved by getting rid
+of the format string and passing arguments to the formatter directly.
 This requires minor changes to the library since this functionality is
 currently private to the `Formatter` class.
