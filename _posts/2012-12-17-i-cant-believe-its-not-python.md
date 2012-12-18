@@ -20,7 +20,7 @@ I've been recently experimenting with a [new string formatting
 library for C++](https://github.com/vitaut/format) and realized
 that it can be used for converting objects to strings à la Python's
 [str](http://docs.python.org/2/library/functions.html#str) function.
-In fact it the implementation of such function is almost trivial:
+In fact the implementation of such function is almost trivial:
 
 {% highlight c++ %}
 template <typename T>
@@ -33,13 +33,14 @@ See [this post](/2012/12/12/a-better-string-formatting-library-for-cplusplus.htm
 to learn more about `fmt::Format`.
 
 The `str` function, unlike `sprintf`, can work with any type that has
-correspondent `std::ostream` inserter operator `<<`. For example:
+appropriate `std::ostream` inserter operator `<<`. For example:
 
 {% highlight c++ %}
 class Date {
   int year_, month_, day_;
  public:
-  Date(int year, int month, int day) : year_(year), month_(month), day_(day) {}
+  Date(int year, int month, int day)
+  : year_(year), month_(month), day_(day) {}
 
   friend std::ostream &operator<<(std::ostream &os, const Date &d) {
     os << d.year_ << '-' << d.month_ << '-' << d.day_;
