@@ -15,7 +15,7 @@ I apologize for bringing this topic up again.
 
 Today my attention was drawn by
 [Boost Karma](http://www.boost.org/doc/libs/1_52_0/libs/spirit/doc/html/spirit/karma.html),
-which a less-known Boost library for output generation.
+which is a less-known Boost library for output generation.
 The authors of this library
 [claim](http://www.boost.org/doc/libs/1_52_0/libs/spirit/doc/html/spirit/karma/tutorials/quick_start.html)
 that it is much faster than `printf`, `std::stream` and `boost::format`,
