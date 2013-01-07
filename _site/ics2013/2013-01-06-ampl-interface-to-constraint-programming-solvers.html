@@ -1,0 +1,824 @@
+<!doctype html>
+<html>
+<head>
+  <title>The AMPL Interface to Constraint Programming Solvers</title>
+
+  <meta name="author" content="Victor Zverovich">
+
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+  <link rel="stylesheet" href="css/reveal.min.css">
+  <link rel="stylesheet" href="css/theme/beige.css" id="theme">
+
+<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+<script>
+	document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+</script>
+<style>
+
+.node circle {
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+.node {
+  font: 20px sans-serif;
+}
+
+.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 1.5px;
+}
+
+</style>
+</head>
+
+<body>
+<div class="reveal">
+<div class="slides">
+
+<section data-markdown>
+
+The AMPL Interface to Constraint Programming Solvers
+----------------------------------------------------
+
+Victor Zverovich, Robert Fourer
+
+<div>
+<a href="http://www.ampl.com/"><img src="ampl-logo.jpg" width="100px" style="height:75px;vertical-align:middle"/>
+<span style="">AMPL Optimization</span></a>
+</div>
+
+<div>
+<a href="http://www.informs.org/Community/Conferences/ICS2013">
+<img src="ICS2013.jpg" width="100px"/><br/>
+<small>
+The 13th INFORMS Computing Society Conference (ICS)<br/>
+January 6th - 8th, 2013, Santa Fe, New Mexico, USA
+</small>
+</a>
+</div>
+
+</section>
+
+<section data-markdown>
+
+Why AMPL?
+---------
+
+* [AMPL](http://www.ampl.com/) is a popular algebraic modeling language:
+  - used in businesses, government agencies, and academic institutions
+    (over 100 courses in 2012)
+  - large community <br/>
+    (> 1,300 members in [AMPL Google Group](https://groups.google.com/group/ampl) alone)
+  - the most popular input format on [NEOS](http://www.neos-server.org/neos/) <br/>
+    (> 200,000 or 57% submissions in 2012)
+
+* AMPL supports a wide range of problem types:
+  linear, mixed integer, quadratic, second-order cone, nonlinear,
+  complementarity problems and more.
+
+</section>
+
+<section data-markdown>
+
+Constraint Programming in AMPL
+------------------------------
+
+* [Constraint programming](http://en.wikipedia.org/wiki/Constraint_programming)
+  (CP) allows natural formulation of many combinatorial optimization problems.
+
+* AMPL has supported CP since early 2000s when the paper
+  Extending an Algebraic Modeling Language to Support Constraint Programming
+  [[1](http://users.iems.northwestern.edu/~4er/WRITINGS/extmodcp.pdf)]
+  was published.
+
+* CP solvers connected to AMPL:
+  - [IBM/ILOG CP Optimizer](http://www-01.ibm.com/software/integration/optimization/cplex-cp-optimizer/) (ilogcp)
+  - [Gecode](http://www.gecode.org/)
+
+</section>
+
+<section data-markdown><script type="text/template">
+
+Supported CP Constructs
+-----------------------
+
+* Logical operators: `and`, `or`, `not`; iterated `exists`, `forall`
+* Conditional operators: `if-then`, `if-then-else`, `==>`, `==> else`, `<==`, `<==>`
+* Counting operators: iterated `count`, `atmost`, `atleast`, `exactly`, `numberof`
+* Pairwise operators: `alldiff`
+
+<br/>
+
+See [http://www.ampl.com/NEW/LOGIC/index.html](http://www.ampl.com/NEW/LOGIC/index.html)
+
+</script></section>
+
+<section data-markdown>
+
+AMPL Solver Library
+-------------------
+
+AMPL Solver Library (ASL) is an open source library for connecting solvers
+to AMPL.
+
+* Available from:
+  - Netlib: [http://www.netlib.org/ampl/](http://www.netlib.org/ampl/)
+  - GitHub: [https://github.com/vitaut/ampl](https://github.com/vitaut/ampl)
+
+* Includes drivers for several solvers:
+  - CPLEX
+  - Gurobi
+  - MINOS <br/>
+    ...
+
+</section>
+
+<section data-markdown>
+
+AMPL Solver Interfaces
+----------------------
+
+* C interface:
+  - described in [Hooking Your Solver to AMPL](http://www.ampl.com/hooking.html)
+  - used by most solvers
+
+* C++ interface (new):
+  - a very thin wrapper around the C interface
+  - type-safe, no casts needed when working with expression trees
+  - easy to use, less boilerplate code
+  - efficient
+  - used by [ilogcp](https://github.com/vitaut/ampl/tree/master/solvers/ilogcp) and
+    [gecode](https://github.com/vitaut/ampl/tree/master/solvers/gecode)
+
+</section>
+
+<section data-markdown>
+
+Performance
+-----------
+
+<small>
+<div id="apiperformance"></div>
+Time is in milliseconds.
+</small>
+
+</section>
+
+<section data-markdown>
+
+Solver Workflow
+---------------
+
+1. Get a problem instance in AMPL form
+2. Process solver options
+3. Convert the problem from AMPL to solver form
+4. Solve the problem
+5. Return solution(s)
+
+<hr/>
+
+Step 3 is the most interesting especially for a CP solver, because
+it has to deal with expression trees. Other steps are easy to implement.
+
+</section>
+
+<section data-markdown>
+
+Choice of Language
+------------------
+
+<img src="c-and-cpp.png" />
+
+Both IBM/ILOG CP Optimizer and Gecode use C++ for their main APIs.
+Therefore I'll give all examples in C++ with the new interface library. 
+
+However, everything discussed here is possible to do with the C API with
+a bit more work.
+
+</section>
+
+<section>
+<h2>Expression Trees</h2>
+
+<div style="" id="trees"/>
+
+</section>
+
+<section data-markdown><script type="text/template">
+
+Working with Expressions
+------------------------
+
+* `c.value()` returns the value of a numeric or logical constant `c`.
+
+* `e.arg()` returns an argument of a unary expression `e`.
+
+* `e.lhs()` and `e.rhs()` return arguments of a binary expression `e`.
+
+* `Cast<ExprType>(e)` casts expression `e` to `ExprType` if possible, otherwise returns a null expression.
+  Fast alternative to `dynamic_cast`.
+
+</script></section>
+
+<section data-markdown><script type="text/template">
+
+<h2>Iterating over Arguments<img src="warn-cpp11.svg" width="100px" style="height:75px;vertical-align:text-bottom;border:0px; box-shadow:0 0 0"/></h2>
+
+* Iterating over arguments of an expression `e` with variable number of arguments:
+
+        for (auto arg: e) // C++11
+          // use arg
+
+  or
+
+        for (SumExpr::iterator i = e.begin(); i != e.end(); ++i)
+          // use *i
+
+* Works with `VarArgExpr`, `SumExpr`, `CountExpr`, `NumberOfExpr`, `IteratedLogicalExpr` and `AllDiffExpr`.
+
+</script></section>
+
+<section data-markdown><script type="text/template">
+
+Tree Traversal with Visitors
+----------------------------
+
+ilogcp
+
+    class IlogCPSolver :
+      public ExprVisitor<IlogCPSolver, IloExpr, IloConstraint> {
+     public:
+      // Convert logical expressions.
+      // Convert numeric expressions.
+    };
+
+gecode
+
+    class NLToGecodeConverter :
+      private ExprVisitor<NLToGecodeConverter,
+                          Gecode::LinExpr, Gecode::BoolExpr> {
+      // Convert logical expressions.
+      // Convert numeric expressions.
+     public:
+      LinExpr ConvertFullExpr(NumericExpr e) { return Visit(e); }
+      BoolExpr ConvertFullExpr(LogicalExpr e) {
+        // Process global constraints calling Visit(e)
+        // for nested expressions.
+      }
+    };
+
+</script></section>
+
+<section data-markdown><script type="text/template">
+
+Converting Numeric Expressions
+------------------------------
+
+      IloExpr VisitNumericConstant(NumericConstant n) {
+        return IloExpr(env_, n.value());
+      }
+
+      IloExpr VisitVariable(Variable v) {
+        return vars_[v.index()];
+      }
+
+      IloExpr VisitPlus(BinaryExpr e) {
+        return Visit(e.lhs()) + Visit(e.rhs());
+      }
+
+      IloExpr VisitPow(BinaryExpr e) {
+        return IloPower(Visit(e.lhs()), Visit(e.rhs()));
+      }
+
+      IloExpr VisitSum(SumExpr e) {
+        IloExpr sum(env_);
+        for (auto arg: e) // C++11
+          sum += Visit(arg);
+        return sum;
+      }
+
+</script></section>
+
+<section data-markdown><script type="text/template">
+
+Converting Logical Expressions
+------------------------------
+
+      IloConstraint VisitLogicalConstant(LogicalConstant c) {
+        return IloNumVar(env_, 1, 1) == c.value();
+      }
+
+      IloConstraint VisitEqual(RelationalExpr e) {
+        return Visit(e.lhs()) == Visit(e.rhs());
+      }
+
+      IloConstraint VisitGreater(RelationalExpr e) {
+        return Visit(e.lhs()) > Visit(e.rhs());
+      }
+
+      IloConstraint VisitAnd(BinaryLogicalExpr e) {
+        return Visit(e.lhs()) && Visit(e.rhs());
+      }
+
+      IloConstraint IlogCPSolver::VisitExists(IteratedLogicalExpr e) {
+        IloOr disjunction(env_);
+        for (auto arg: e) // C++11
+          disjunction.add(Visit(arg));
+        return disjunction;
+      }
+
+</script></section>
+
+<section data-markdown><script type="text/template">
+
+Handling Numberof
+-----------------
+
+    class IlogCPSolver {
+      // CreateVar is a functor that creates an IlogCP variable.
+      NumberOfMap<IloIntVar, CreateVar> numberofs_;
+      ...
+    };
+
+    IloExpr IlogCPSolver::VisitNumberOf(NumberOfExpr e) {
+      NumericExpr value = e.value();
+      if (NumericConstant num = Cast<NumericConstant>(value))
+        return numberofs_.Add(num.value(), e);
+      IloExpr sum(env_);
+      IloExpr concert_value(Visit(value));
+      for (Expr arg: e)
+        sum += (Visit(arg) == concert_value);
+      return sum;
+    }
+
+`NumberOfMap` is a map from `numberof` expressions with the same argument lists to
+values and corresponding variables. Such expression can be converted to a single
+`IloDistribute` constraint.
+
+</script></section>
+
+<section data-markdown>
+
+Expression Visitor
+------------------
+
+<div style='display:inline-block;vertical-align:middle'>
+  <img src="LLVM_Logo.svg" style="height:200px"/>
+</div>
+
+<div style="display:inline-block; width: 70%;vertical-align:middle">
+Copy the great architectures. <br/>-- Edward Tufte <br/><br/>
+<ul>
+<li> Inspired by the AST visitor from the <a href="http://clang.llvm.org/">Clang compiler frontend</a>
+<li> Visitor design pattern with static instead of dynamic polymorphism
+<li> Uses <a href="http://en.wikipedia.org/wiki/Curiously_recurring_template_pattern">curiously recurring template pattern</a>
+<li> Very efficient: no virtual function calls, <code>Visit*</code> functions can be inlined
+</ul>
+</div>
+
+</section>
+
+<section data-markdown>
+
+Two-Level Conversion
+--------------------
+
+1. Top level - global constraints such as `alldiff` and possible optimizations for the case
+   when expression value is not used
+
+   - ilogcp: no extra work is necessary, the Concert interface does necessary processing
+   - gecode: manual handling of `alldiff` in `ConvertFullExpr`
+
+2. General case for nested expressions
+
+   Example:
+
+         s.t. c: alldiff ({j in 1..n} Row[j]+j);
+
+   `alldiff (...)` - top level expression
+
+   `Row[j] + j` - subexpression
+
+</section>
+
+<section data-markdown>
+
+Supporting Multiple Solvers
+---------------------------
+
+* Separate hierarchies for logical and numeric expressions (ilogcp and gecode) are handled easily
+* Possible to deal with more complex expression hierarchies, but with more efforts
+* Not necessary to convert all expressions, solver will report an error when
+  unhandled expression is encountered and exit gracefully.
+  For example, gecode doesn't support many nonlinear expressions.
+
+</section>
+
+<section data-markdown><script type="text/template">
+
+Example
+-------
+
+<div style='display:inline-block; vertical-align: middle'>
+  <img src="8queens.png"/>
+</div>
+
+<div style='display:inline-block; width: 70%; vertical-align: middle'>
+<pre>
+<code class="cs">
+  # Place n queens on an n by n board
+  # so that no two queens can attack
+  # each other (nqueens.mod).
+
+  param n integer > 0;
+  var Row {1..n} integer >= 1 <= n;
+
+  subj to c1: alldiff ({j in 1..n} Row[j]);
+  subj to c2: alldiff ({j in 1..n} Row[j]+j);
+  subj to c3: alldiff ({j in 1..n} Row[j]-j);
+</code>
+</pre>
+</div>
+
+More examples available at [http://www.ampl.com/NEW/LOGIC/examples.html](http://www.ampl.com/NEW/LOGIC/examples.html)
+
+</script></section>
+
+<section data-markdown><script type="text/template">
+
+Example - ilogcp
+----------------
+
+    ampl: model nqueens.mod;
+    ampl: let n := 20;
+    ampl: option solver ilogcp;
+    ampl: solve;
+    ilogcp 12.4.0: feasible solution
+    2898 choice points, 1286 fails
+    ampl: display Row;
+    Row [*] :=
+     1  14
+     2  16
+     3   8
+     4   6
+     5  15
+     6   3
+      ...
+    19  10
+    20   5
+    ;
+
+</script></section>
+
+<section data-markdown><script type="text/template">
+
+Example - gecode
+----------------
+
+    ampl: model nqueens.mod;
+    ampl: let n := 20;
+    ampl: option solver gecode;
+    ampl: solve;
+    gecode 3.7.3: feasible solution
+    220 nodes, 105 fails
+    ampl: display Row;
+    Row [*] :=
+     1   1
+     2   3
+     3   5
+     4   7
+     5  14
+     6  10
+      ...
+    19  15
+    20  13
+    ;
+
+
+</script></section>
+
+<section data-markdown>
+
+Links
+-----
+
+* GitHub repository:
+
+  [https://github.com/vitaut/ampl](https://github.com/vitaut/ampl)
+
+* C++ Solver API:
+
+  solvers/util
+
+* Gecode AMPL solver:
+
+  solvers/gecode
+
+* IlogCP AMPL solver:
+
+  solvers/ilogcp
+
+</section>
+
+	<!--section>
+		<h2>Pretty Code</h2>
+		<pre><code contenteditable>
+function linkify( selector ) {
+if( supports3DTransforms ) {
+
+var nodes = document.querySelectorAll( selector );
+
+for( var i = 0, len = nodes.length; i &lt; len; i++ ) {
+var node = nodes[i];
+
+if( !node.className ) ) {
+node.className += ' roll';
+}
+};
+}
+}
+		</code></pre>
+		<p>Courtesy of <a href="http://softwaremaniacs.org/soft/highlight/en/description/">highlight.js</a>.</p>
+	</section>
+
+	<section>
+		<h2>Export to PDF</h2>
+		<p>Presentations can be <a href="https://github.com/hakimel/reveal.js#pdf-export">exported to PDF</a>, below is an example that's been uploaded to SlideShare.</p>
+		<iframe id="slideshare" src="http://www.slideshare.net/slideshow/embed_code/13872948" width="455" height="356" style="margin:0;overflow:hidden;border:1px solid #CCC;border-width:1px 1px 0;margin-bottom:5px" allowfullscreen> </iframe>
+		<script>
+			document.getElementById('slideshare').attributeName = 'allowfullscreen';
+		</script>
+	</section-->
+
+</div>
+
+</div>
+
+<script src="lib/js/head.min.js"></script>
+<script src="js/reveal.min.js"></script>
+
+<script>
+
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+	controls: true,
+	progress: true,
+	history: true,
+	center: true,
+  rollingLinks: false,
+
+	theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+	transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/none
+
+	// Optional libraries used to extend on reveal.js
+	dependencies: [
+		{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+		{ src: 'plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+		{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+		{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+		{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+		{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+		// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+	]
+});
+
+</script>
+
+</body>
+
+<script src="d3/d3.v3.min.js"></script>
+<script>
+
+var m = [0, 120, 20, 120],
+    w = 1280 - m[1] - m[3],
+    h = 600 - m[0] - m[2],
+    i = 0;
+
+var tree = d3.layout.tree()
+    .size([h, w]);
+
+var diagonal = d3.svg.diagonal()
+    .projection(function(d) { return [d.y, d.x]; });
+
+var vis = d3.select("#trees").append("svg:svg")
+    .attr("width", w + m[1] + m[3])
+    .attr("height", h + m[0] + m[2])
+  .append("svg:g")
+    .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
+
+var root = {
+ "name": "Expr",
+ "children": [
+  {
+   "name": "NumericExpr",
+   "children": [
+    {"name": "UnaryExpr (unary -, abs, tan, ...)"},
+    {"name": "BinaryExpr (+, -, *, /, div, less, ...)"},
+    {"name": "VarArgExpr (min, max)"},
+    {"name": "SumExpr"},
+    {"name": "CountExpr"},
+    {"name": "IfExpr"},
+    {"name": "PiecewiseLinearTerm"},
+    {"name": "NumericConstant"},
+    {"name": "Variable"},
+    {"name": "NumberOfExpr"}
+   ]
+  },
+  {
+   "name": "LogicalExpr",
+   "children": [
+    {"name": "LogicalConstant (0 or 1)"},
+    {"name": "RelationalExpr (<, <=, =, !=, >=, >)"},
+    {"name": "NotExpr (!)"},
+    {"name": "LogicalCountExpr (atleast, atmost, exactly)"},
+    {"name": "BinaryLogicalExpr (||, &&, <==>)"},
+    {"name": "ImplicationExpr (==> else)"},
+    {"name": "IteratedLogicalExpr (exists, forall)"},
+    {"name": "AllDiffExpr"}
+   ]
+  }
+ ]
+};
+
+root.x0 = h / 2;
+root.y0 = 0;
+
+function toggleAll(d) {
+  if (d.children) {
+    d.children.forEach(toggleAll);
+    toggle(d);
+  }
+}
+
+// Initialize the display to show a few nodes.
+//root.children.forEach(toggleAll);
+//toggle(root.children[1]);
+//toggle(root.children[1].children[2]);
+//toggle(root.children[9]);
+//toggle(root.children[9].children[0]);
+
+update(root);
+
+function update(source) {
+  var duration = d3.event && d3.event.altKey ? 5000 : 500;
+
+  // Compute the new tree layout.
+  var nodes = tree.nodes(root).reverse();
+
+  // Normalize for fixed-depth.
+  nodes.forEach(function(d) { d.y = d.depth * 180; });
+
+  // Update the nodes…
+  var node = vis.selectAll("g.node")
+      .data(nodes, function(d) { return d.id || (d.id = ++i); });
+
+  // Enter any new nodes at the parent's previous position.
+  var nodeEnter = node.enter().append("svg:g")
+      .attr("class", "node")
+      .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
+      .on("click", function(d) { toggle(d); update(d); });
+
+  nodeEnter.append("svg:circle")
+      .attr("r", 1e-6)
+      .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+
+  nodeEnter.append("svg:text")
+      .attr("x", function(d) { return d.children || d._children ? -10 : 10; })
+      .attr("dy", ".35em")
+      .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
+      .text(function(d) { return d.name; })
+      .style("fill-opacity", 1e-6);
+
+  // Transition nodes to their new position.
+  var nodeUpdate = node.transition()
+      .duration(duration)
+      .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
+
+  nodeUpdate.select("circle")
+      .attr("r", 4.5)
+      .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+
+  nodeUpdate.select("text")
+      .style("fill-opacity", 1);
+
+  // Transition exiting nodes to the parent's new position.
+  var nodeExit = node.exit().transition()
+      .duration(duration)
+      .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
+      .remove();
+
+  nodeExit.select("circle")
+      .attr("r", 1e-6);
+
+  nodeExit.select("text")
+      .style("fill-opacity", 1e-6);
+
+  // Update the links…
+  var link = vis.selectAll("path.link")
+      .data(tree.links(nodes), function(d) { return d.target.id; });
+
+  // Enter any new links at the parent's previous position.
+  link.enter().insert("svg:path", "g")
+      .attr("class", "link")
+      .attr("d", function(d) {
+        var o = {x: source.x0, y: source.y0};
+        return diagonal({source: o, target: o});
+      })
+    .transition()
+      .duration(duration)
+      .attr("d", diagonal);
+
+  // Transition links to their new position.
+  link.transition()
+      .duration(duration)
+      .attr("d", diagonal);
+
+  // Transition exiting nodes to the parent's new position.
+  link.exit().transition()
+      .duration(duration)
+      .attr("d", function(d) {
+        var o = {x: source.x, y: source.y};
+        return diagonal({source: o, target: o});
+      })
+      .remove();
+
+  // Stash the old positions for transition.
+  nodes.forEach(function(d) {
+    d.x0 = d.x;
+    d.y0 = d.y;
+  });
+}
+
+// Toggle children.
+function toggle(d) {
+  if (d.children) {
+    d._children = d.children;
+    d.children = null;
+  } else {
+    d.children = d._children;
+    d._children = null;
+  }
+}
+
+// ---------------------------------------------
+// table
+
+data = d3.csv.parse(
+'Problem,Input+Conv Time,C API Time,C++ API Time,C/C++ Ratio,,\n\
+assign1,2.001,0.0156233,0.0154757,1.009537533,,\n\
+balassign1,2.106,0.086136,0.085996,1.0016279827,,\n\
+flowshp1,0.529,0.000594689,0.000598812,0.9931147004,,\n\
+flowshp2,0.784,0.000593329,0.00059615,0.9952679695,,\n\
+magic,0.558,0.00276411,0.0028042,0.9857035875,,\n\
+mapcoloring,0.557,8.6488E-007,8.6538E-007,0.9994222191,,\n\
+money,0.472,0.000241843,0.000238001,1.0161427893,,\n\
+nqueens,1.073,8.6449E-007,8.6593E-007,0.998337048,,\n\
+sched1,0.595,0.0172613,0.0174135,0.9912596549,,\n\
+sched2,0.684,0.0142709,0.0146368,0.9750013664,,\n\
+party1,33.688,3.88768,3.94516,0.9854302487,,\n\
+party2,126.194,1.20008,1.21847,0.9849073018,,\n\
+sudokuHard,0.661,8.6618E-007,8.6361E-007,1.0029758803,,\n\
+sudokuVeryEasy,0.726,8.6547E-007,8.6383E-007,1.0018985217,,\n\
+,,,,0.9957590574,,')
+
+console.log(data)
+
+    // the columns you'd like to display
+    var columns = ["Problem", "Input+Conv Time", "C API Time", "C++ API Time", "C/C++ Ratio"];
+
+    var table = d3.select("#apiperformance").append("table"),
+        thead = table.append("thead"),
+        tbody = table.append("tbody");
+
+    // append the header row
+    thead.append("tr")
+        .selectAll("th")
+        .data(columns)
+        .enter()
+        .append("th").append("b")
+            .text(function(column) { return column; });
+
+    // create a row for each object in the data
+    var rows = tbody.selectAll("tr")
+        .data(data)
+        .enter()
+        .append("tr");
+
+    // create a cell in each row for each column
+    var cells = rows.selectAll("td")
+        .data(function(row) {
+            return columns.map(function(column) {
+                return {column: column, value: row[column]};
+            });
+        })
+        .enter()
+        .append("td")
+            .text(function(d) { return d.value; });
+</script>
+</html>
