@@ -136,8 +136,8 @@ ReportError("File not found: {0}") << path;
   <p>Let's say I want to define a function <code>ReportError</code> that
   formats and prints an error to <code>std::cerr</code> adding a newline. To
   this end I need to create a small class (struct will do since it has only one
-  public member) that defines <code>operator()(const fmt::Formatter
-  &amp;)</code> which does the output:</p>
+  public member) that defines <code>operator()(const fmt::Formatter &amp;)</code>
+  which does the output:</p>
 {% highlight c++ %}
 struct PrintError {
   void operator()(const fmt::Formatter &f) const {
