@@ -27,7 +27,7 @@ s.t. define_original: original = sum{i in Digits} d[i] * 10 ^ i;
 s.t. relation:
   exists{i in Digits}
     (original + sum{j in Digits: j != i}
-                  d[j] * 10 ^ (if j < i then j else j -1) = 41751);
+                  d[j] * 10 ^ (if j < i then j else j - 1) = 41751);
 {% endhighlight %}
 
 `Digits` is a set of digit positions starting from 0 for the least
