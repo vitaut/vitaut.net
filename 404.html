@@ -3,13 +3,18 @@
   <head>
     <meta charset="utf-8">
     <script type="text/javascript">
-      old_url = "http://zverovich.net/ampl/doc"
-      if (window.location.href.indexOf(old_url) == 0)
-        window.location.href = window.location.href.replace(old_url, "http://ampl.github.io")
+      domains = ["zverovich.net", "vitaut.github.com"]
+      for (var i = 0; i < domains.length; i++) {
+        s = domains[i] + "/ampl/doc"
+        if (window.location.href.indexOf(s) != -1)
+          window.location.href = window.location.href.replace(s, "ampl.github.io")
+      }
     </script>
     <title>Page not found</title>
   </head>
   <body>
-    Page not found.
+    <h1>404</h1>
+    <p>There is no page here.</p>
+    <p>Go to <a href="http://zverovich.net">zverovich.net</a></p>
   </body>
 </html>
