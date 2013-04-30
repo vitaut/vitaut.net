@@ -3,11 +3,17 @@
   <head>
     <meta charset="utf-8">
     <script type="text/javascript">
-      domains = ["zverovich.net", "vitaut.github.com"]
+      domains = ["zverovich.net", "vitaut.github.com"];
+      replacements = {
+        "/ampl/doc": "ampl.github.io",
+        "/ampl/solvers/amplgsl/doc": "ampl.github.io/amplgsl"
+      };
       for (var i = 0; i < domains.length; i++) {
-        s = domains[i] + "/ampl/doc"
-        if (window.location.href.indexOf(s) != -1)
-          window.location.href = window.location.href.replace(s, "ampl.github.io")
+        for (var r in replacements) {
+          s = domains[i] + r;
+          if (window.location.href.indexOf(s) != -1)
+            window.location.href = window.location.href.replace(s, replacements[r])
+        }
       }
     </script>
     <title>Page not found</title>
