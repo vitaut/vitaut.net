@@ -8,12 +8,12 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
-  <link rel="stylesheet" href="css/reveal.min.css">
-  <link rel="stylesheet" href="css/theme/beige.css" id="theme">
+  <link rel="stylesheet" href="../common/css/reveal.min.css">
+  <link rel="stylesheet" href="../common/css/theme/beige.css" id="theme">
 
 <!-- If the query includes 'print-pdf', use the PDF print sheet -->
 <script>
-	document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+	document.write( '<link rel="stylesheet" href="../common/css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
 </script>
 <style>
 
@@ -559,8 +559,8 @@ node.className += ' roll';
 
 </div>
 
-<script src="lib/js/head.min.js"></script>
-<script src="js/reveal.min.js"></script>
+<script src="../common/lib/js/head.min.js"></script>
+<script src="../common/js/reveal.min.js"></script>
 
 <script>
 
@@ -578,12 +578,12 @@ Reveal.initialize({
 
 	// Optional libraries used to extend on reveal.js
 	dependencies: [
-		{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
-		{ src: 'plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-		{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-		{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
-		{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
-		{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+		{ src: '../common/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+		{ src: '../common/plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+		{ src: '../common/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+		{ src: '../common/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+		{ src: '../common/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+		{ src: '../common/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
 		// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
 	]
 });
@@ -592,7 +592,7 @@ Reveal.initialize({
 
 </body>
 
-<script src="d3/d3.v3.min.js"></script>
+<script src="../common/d3/d3.v3.min.js"></script>
 <script>
 
 var m = [0, 120, 20, 120],
