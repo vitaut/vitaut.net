@@ -857,6 +857,17 @@ body {
 }
 
 
+  #post .input_area pre {
+    border: 0;
+    background: none;
+  }
+
+  #post .output_area pre {
+    border: 0;
+    background: none;
+  }
+
+  
 .input_area .highlight .hll { background-color: #ffffcc }
 .input_area .highlight  { background: #f8f8f8; }
 .input_area .highlight .c { color: #408080; font-style: italic } /* Comment */
