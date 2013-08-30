@@ -10,7 +10,7 @@ date: 2013-08-29
 One of the first IDEs that I used was Visual Studio 6.0 (shudder). It was a daunting
 experience, both the IDE and compiler were buggy, I remember having to reformulate
 perfectly valid programs to avoid internal compiler errors, standard compliance
-was virtually nonexistent. I'm not sure how I didn't give up programming altogether.
+was something unheard of. I'm not sure how I didn't give up programming altogether.
 The reason I used it despite all the problems is that I didn't know about anything
 better at that time and due to the work requirements. Fortunately none of these is
 longer the case.
