@@ -112,8 +112,8 @@ shell './fortsp --smps-obj-sense=minimize --sp-alg=intlshaped trnloc1';
 
 Let's run this script and measure time:
 
-{% highlight bash %}
-$ ampl trnloc-modern-benders.ampl
+{% highlight text %}
+$ time ampl trnloc-modern-benders.ampl
 ...
 Optimal solution found, objective = 5.73521e+06.
 Solution time = 0.075748 s.
