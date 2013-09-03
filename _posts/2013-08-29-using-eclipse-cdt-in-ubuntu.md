@@ -83,4 +83,14 @@ Eclipse and no longer require any user intervention. The pace of Eclipse develop
 is pretty high and bugs are often fixed quickly, so it is important to have the
 most recent version of the software.
 
+**Update**
+
+If Eclipse complains about some C++11 library feature add `__GXX_EXPERIMENTAL_CXX0X__`
+to Preprocessor Symbols in Project Properties -> C++ Include Paths and Symbols
+and rebuild the index:
+
+<img border="0" src="/img/eclipse-cxx0x-macro.png"
+ title="Eclipse Preprocessor Symbols" width="640"/>
+
+
 Happy coding!
