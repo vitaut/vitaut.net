@@ -136,30 +136,30 @@ ReportError("File not found: {0}") << path;
   <p>Let's say I want to define a function <code>ReportError</code> that
   formats and prints an error to <code>std::cerr</code> adding a newline. To
   this end I need to create a small class (struct will do since it has only one
-  public member) that defines <code>operator()(const fmt::Formatter &amp;)</code>
+  public member) that defines <code>operator()(const fmt::Writer &amp;)</code>
   which does the output:</p>
 {% highlight c++ %}
 struct PrintError {
-  void operator()(const fmt::Formatter &f) const {
-     std::cerr << "Error: " << f.str() << std::endl;
+  void operator()(const fmt::Writer &w) const {
+     std::cerr << "Error: " << w.str() << std::endl;
   }
 };
 {% endhighlight %}
 
-  <p><code>Formatter</code> is a class that does all the formatting and stores
+  <p><code>Writer</code> is a class that does all the formatting and stores
   the output in a buffer. The <code>str()</code> method converts the output to
   <code>std::string</code>, there are other access methods as well. Now I can
   define the <code>ReportError</code> function:</p>
 {% highlight c++ %}
-fmt::TempFormatter<PrintError> ReportError(const char *format) {
-  return fmt::TempFormatter<PrintError>(format);
+fmt::Formatter<PrintError> ReportError(const char *format) {
+  return fmt::Formatter<PrintError>(format);
 }
 {% endhighlight %}
 
-  <p><code>TempFormatter</code> is used only in wrapper functions like the
-  one above. It is responsible for passing arguments to <code>Formatter</code>
-  and calling a user supplied action like <code>PrintError</code> once
-  formatting is complete.</p>
+  <p><code>Formatter</code> is used only in wrapper functions like the
+  one above. It is responsible for receiving arguments via <code>operator<<</code>,
+  completing the format operation and calling a user supplied action like
+  <code>PrintError</code> after that.</p>
 
   <p>As you can see creating wrappers is relatively easy. It doesn't require
   any preprocessor tricks or defining functions for different number of
@@ -167,14 +167,14 @@ fmt::TempFormatter<PrintError> ReportError(const char *format) {
   <code>fmt::Format</code>, in fact the latter is implemented in exactly the
   same way.</p>
 
-  <p>The <code>Formatter</code> class can also be used on its own if you need
+  <p>The <code>Writer</code> class can also be used on its own if you need
   to efficiently merge the output of multiple format operations, for
   example:</p>
 {% highlight c++ %}
-fmt::Formatter format;
+fmt::Writer out;
 for (int i = 0; i < 10; i++)
-  format("{0}") << i;
-std::string s = format.str(); // s == 0123456789
+  out.Format("{0}") << i;
+std::string s = out.str(); // s == 0123456789
 {% endhighlight %}
 
   <p>This concludes the first and the most important part about the API. In the
