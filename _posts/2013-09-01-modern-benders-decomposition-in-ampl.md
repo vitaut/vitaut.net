@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Modern Benders Decomposition in AMPL
+title: Modern Benders decomposition in AMPL
 date: 2013-09-01
 ---
 
