@@ -106,7 +106,7 @@ not particularly fast for integer formatting. It has about the same performance 
 can be is that it parses the format string, but so does `fmt::Format` which is two
 times faster than `sprintf`. Anyway, the good thing is that you don't have to
 use `sprintf` even for performance reasons. There are much faster or at least equally
-slow methods even in the standard library.
+slow but safer methods even in the standard library.
 
 The benchmark results were obtained on Ubuntu 13.04 with GCC 4.7.3 and the following
 compiler flags: `-O3 -DNDEBUG -std=c++11`.
