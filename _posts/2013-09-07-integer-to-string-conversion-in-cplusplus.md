@@ -139,5 +139,5 @@ comment section if there is a better version available somewhere.
 **Update 2:**
 Added [decimal_from](http://ideone.com/nrQfA8) function suggested by Alf P. Steinbach.
 It has approximately the same performance as `fmt::Writer`, the difference of 0.5% is
-probably less than then measurement error. As `sprintf` and `ltoa` and unlike
+probably less than the measurement error. As `sprintf` and `ltoa` and unlike
 `fmt::Writer` it requires preallocated buffer.
