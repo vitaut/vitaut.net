@@ -75,7 +75,7 @@ var data = google.visualization.arrayToDataTable([
 ]);
 
 var table = new google.visualization.Table(document.getElementById('table_div'));
-table.draw(data, {});
+table.draw(data.clone(), {});
 
 var options = {
   title: 'Conversion time',
