@@ -28,6 +28,7 @@ of integer to string conversion in C++:
 6. [fmt::Writer](http://zverovich.net/format/#project0classfmt_1_1_basic_writer) from the [format library](https://github.com/vitaut/format)
 7. [fmt::Format](http://zverovich.net/format/#fmt::Format__StringRef) from the [format library](https://github.com/vitaut/format)
 8. [Public-domain ltoa](http://www8.cs.umu.se/~isak/snippets/ltoa.c) implementation
+9. [decimal_from](http://ideone.com/nrQfA8) function suggested by Alf P. Steinbach
 
 To measure the performance I used a
 [benchmark from Boost Karma](http://www.boost.org/doc/libs/1_52_0/libs/spirit/doc/html/spirit/karma/performance_measurements/numeric_performance/int_performance.html).
@@ -57,19 +58,20 @@ google.setOnLoadCallback(drawChart);
 function drawChart() {
 var data = google.visualization.arrayToDataTable([
 ['Method'                      , 'Time, s' , 'Time ratio' ],
-['fmt::Writer'                 ,   0.133356,           1.0],
-['karma::generate'             ,   0.184496, 1.38348480758],
-['fmt::Writer+std::string'     ,   0.378122, 2.83543297639],
-['fmt::Format'                 ,   0.386579, 2.89884969555],
-['karma::generate+std::string' ,   0.408521, 3.06338672426],
-['ltoa'                        ,   0.505352, 3.78949578572],
-['fmt::Format+std::string'     ,   0.632557, 4.74337112691],
-['std::stringstream'           ,   0.844208, 6.33048381775],
-['sprintf'                     ,   0.846803, 6.34994300969],
-['boost::lexical_cast'         ,   0.995631, 7.46596328624],
-['sprintf+std::string'         ,    1.16461, 8.73309037464],
-['std::to_string'              ,    1.42826,  10.710129278],
-['boost::format'               ,    4.32976, 32.4676804943]
+['fmt::Writer'                 ,   0.130211,           1.0],
+['cppx::decimal_from'          ,   0.130927, 1.00549876739],
+['karma::generate'             ,   0.181713,  1.3955272596],
+['fmt::Writer+std::string'     ,   0.373154, 2.86576402915],
+['fmt::Format'                 ,    0.38189, 2.93285513513],
+['karma::generate+std::string' ,   0.417616, 3.20722519603],
+['ltoa'                        ,   0.507622,  3.8984571196],
+['fmt::Format+std::string'     ,    0.63117, 4.84728632758],
+['std::stringstream'           ,   0.825743, 6.34157636452],
+['sprintf'                     ,   0.874222, 6.71388745958],
+['boost::lexical_cast'         ,   0.992158, 7.61961739024],
+['sprintf+std::string'         ,     1.1608, 8.91476142569],
+['std::to_string'              ,    1.44342, 11.0852385743],
+['boost::format'               ,     4.3039, 33.0532750689]
 ]);
 
 var table = new google.visualization.Table(document.getElementById('table_div'));
@@ -133,3 +135,9 @@ Since I don't have `ltoa` on my platform, I've added a basic
 public-domain implementation of this function from
 [here](http://www8.cs.umu.se/~isak/snippets/ltoa.c). Let me know in the
 comment section if there is a better version available somewhere.
+
+**Update 2:**
+Added [decimal_from](http://ideone.com/nrQfA8) function suggested by Alf P. Steinbach.
+It has approximately the same performance as `fmt::Writer`, the difference of 0.5% is
+probably less than then measurement error. As `sprintf` and `ltoa` and unlike
+`fmt::Writer` it requires preallocated buffer.
