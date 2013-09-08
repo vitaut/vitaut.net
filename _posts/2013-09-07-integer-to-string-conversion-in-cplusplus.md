@@ -27,6 +27,7 @@ of integer to string conversion in C++:
 5. karma::generate from the [Boost Spirit Parser framework](http://www.boost.org/doc/libs/1_54_0/libs/spirit/doc/html/index.html)
 6. [fmt::Writer](http://zverovich.net/format/#project0classfmt_1_1_basic_writer) from the [format library](https://github.com/vitaut/format)
 7. [fmt::Format](http://zverovich.net/format/#fmt::Format__StringRef) from the [format library](https://github.com/vitaut/format)
+8. [Public-domain ltoa](http://www8.cs.umu.se/~isak/snippets/ltoa.c) implementation
 
 To measure the performance I used a
 [benchmark from Boost Karma](http://www.boost.org/doc/libs/1_52_0/libs/spirit/doc/html/spirit/karma/performance_measurements/numeric_performance/int_performance.html).
@@ -61,6 +62,7 @@ var data = google.visualization.arrayToDataTable([
 ['fmt::Writer+std::string'     ,   0.378122, 2.83543297639],
 ['fmt::Format'                 ,   0.386579, 2.89884969555],
 ['karma::generate+std::string' ,   0.408521, 3.06338672426],
+['ltoa'                        ,   0.505352, 3.78949578572],
 ['fmt::Format+std::string'     ,   0.632557, 4.74337112691],
 ['std::stringstream'           ,   0.844208, 6.33048381775],
 ['sprintf'                     ,   0.846803, 6.34994300969],
@@ -125,3 +127,9 @@ $ ./int-generator-test.py
 You can find out more about `fmt::Writer` and `fmt::Format` in the [format
 library repository](https://github.com/vitaut/format) on GitHub and in the
 [documentation](http://zverovich.net/format/).
+
+**Update:**
+Since I don't have `ltoa` on my platform, I've added a basic
+public-domain implementation of this function from
+[here](http://www8.cs.umu.se/~isak/snippets/ltoa.c). Let me know in the
+comment section if there is a better version available somewhere.
