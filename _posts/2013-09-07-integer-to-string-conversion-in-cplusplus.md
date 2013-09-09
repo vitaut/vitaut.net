@@ -29,6 +29,7 @@ of integer to string conversion in C++:
 7. [fmt::Format](http://zverovich.net/format/#fmt::Format__StringRef) from the [format library](https://github.com/vitaut/format)
 8. [Public-domain ltoa](http://www8.cs.umu.se/~isak/snippets/ltoa.c) implementation
 9. [decimal_from](http://ideone.com/nrQfA8) function suggested by Alf P. Steinbach
+10. `fmt::FormatInt` from the [format library](https://github.com/vitaut/format)
 
 To measure the performance I used a
 [benchmark from Boost Karma](http://www.boost.org/doc/libs/1_52_0/libs/spirit/doc/html/spirit/karma/performance_measurements/numeric_performance/int_performance.html).
