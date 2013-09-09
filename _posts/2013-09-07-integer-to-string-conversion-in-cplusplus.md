@@ -58,20 +58,21 @@ google.setOnLoadCallback(drawChart);
 function drawChart() {
 var data = google.visualization.arrayToDataTable([
 ['Method'                      , 'Time, s' , 'Time ratio' ],
-['fmt::Writer'                 ,   0.130211,           1.0],
-['cppx::decimal_from'          ,   0.130927, 1.00549876739],
-['karma::generate'             ,   0.181713,  1.3955272596],
-['fmt::Writer+std::string'     ,   0.373154, 2.86576402915],
-['fmt::Format'                 ,    0.38189, 2.93285513513],
-['karma::generate+std::string' ,   0.417616, 3.20722519603],
-['ltoa'                        ,   0.507622,  3.8984571196],
-['fmt::Format+std::string'     ,    0.63117, 4.84728632758],
-['std::stringstream'           ,   0.825743, 6.34157636452],
-['sprintf'                     ,   0.874222, 6.71388745958],
-['boost::lexical_cast'         ,   0.992158, 7.61961739024],
-['sprintf+std::string'         ,     1.1608, 8.91476142569],
-['std::to_string'              ,    1.44342, 11.0852385743],
-['boost::format'               ,     4.3039, 33.0532750689]
+['fmt::FormatInt'              ,   0.102263,           1.0],
+['fmt::Writer'                 ,   0.132242, 1.29315588238],
+['cppx::decimal_from'          ,   0.132803, 1.29864173748],
+['karma::generate'             ,   0.180376, 1.76384420563],
+['fmt::Writer+std::string'     ,    0.37101, 3.62799839629],
+['fmt::Format'                 ,   0.381366,  3.7292666947],
+['karma::generate+std::string' ,   0.400726, 3.91858247851],
+['ltoa'                        ,   0.507336,  4.9610905215],
+['fmt::Format+std::string'     ,   0.631735, 6.17755199828],
+['std::stringstream'           ,   0.825538, 8.07269491409],
+['sprintf'                     ,   0.836687, 8.18171772782],
+['boost::lexical_cast'         ,   0.982763, 9.61015225448],
+['sprintf+std::string'         ,    1.13878, 11.1357969158],
+['std::to_string'              ,    1.42617, 13.9460997624],
+['boost::format'               ,    4.21271, 41.1948603112]
 ]);
 
 var table = new google.visualization.Table(document.getElementById('table_div'));
@@ -141,3 +142,32 @@ Added [decimal_from](http://ideone.com/nrQfA8) function suggested by Alf P. Stei
 It has approximately the same performance as `fmt::Writer`, the difference of 0.5% is
 probably less than the measurement error. As `sprintf` and `ltoa` and unlike
 `fmt::Writer` it requires preallocated buffer.
+
+**Update 3:**
+Inspired by a lesson learned from Alexandrescu's talk that "no work is less work than
+some work" I've come with a faster method of integer to string conversion. Unlike other
+methods it does one pass over the digits. All other methods I know do two passes and
+can be divided into two categories:
+
+1. Count digits (pass 1), then convert digits to chars writing from the end of the
+   buffer (pass 2).
+2. Convert digits to chars writing from the beginning of the buffer (pass 1).
+   Reverse the string in the buffer (pass 2).
+
+Instead of doing this, I just convert digits to chars writing from the end of the
+buffer and return the pointer to the start of the converted string. In most cases
+there is some space left in the beginning of the buffer, but that's fine because
+the same is true for the second category of methods above, they just have this
+space at the end of the buffer. This avoids unnecessary copying within a buffer
+that is discarded anyway.
+
+I've implemented this method in the `fmt::FormatInt` class which can be used as follows:
+
+{% highlight c++ %}
+fmt::FormatInt(42).str();   // convert to std::string
+fmt::FormatInt(42).c_str(); // convert and get as a C string
+                            // (mind the lifetime, same as std::string::c_str())
+{% endhighlight %}
+
+I've updated the test results and as you can see it is about 30% faster than the
+previous winner, `fmt::Writer`.
