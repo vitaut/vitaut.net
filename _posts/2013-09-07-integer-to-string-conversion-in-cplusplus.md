@@ -146,9 +146,9 @@ probably less than the measurement error. As `sprintf` and `ltoa` and unlike
 
 **Update 3:**
 Inspired by a lesson learned from Alexandrescu's talk that "no work is less work than
-some work" I've come with a faster method of integer to string conversion. Unlike other
-methods it does one pass over the digits. All other methods I know do two passes and
-can be divided into two categories:
+some work" I've come up with a faster method of integer to string conversion. Unlike
+other methods it does one pass over the digits. All other methods I know do two passes
+and can be divided into two categories:
 
 1. Count digits (pass 1), then convert digits to chars writing from the end of the
    buffer (pass 2).
