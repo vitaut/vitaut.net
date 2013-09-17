@@ -1,0 +1,834 @@
+<!doctype html>
+<html>
+<head>
+  <title>Constraint Programming in AMPL</title>
+
+  <meta name="author" content="Victor Zverovich">
+
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+  <link rel="stylesheet" href="../common/css/reveal.min.css">
+  <link rel="stylesheet" href="../common/css/theme/beige.css" id="theme">
+
+<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+<script>
+	document.write( '<link rel="stylesheet" href="../common/css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+</script>
+<style>
+
+.node circle {
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+.node {
+  font: 20px sans-serif;
+}
+
+.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 1.5px;
+}
+
+.reveal {
+  font-size: 32px;
+}
+
+.reveal .title {
+  text-align: center;
+}
+
+.reveal section {
+  text-align: left;
+}
+
+.reveal p,
+.reveal li {
+  margin-bottom: 1ex;
+}
+
+.reveal section img {
+  border: 0;
+  box-shadow: 0 0 0;
+}
+
+.reveal .shadow {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.dense li {
+  margin-bottom: 0;
+}
+
+.reveal h1,
+.reveal h2,
+.reveal h3,
+.reveal h4,
+.reveal h5,
+.reveal h6 {
+  font-size: 180%;
+  text-transform: none;
+  text-align: center;
+}
+</style>
+</head>
+
+<body>
+<div class="reveal">
+<div class="slides">
+
+<section data-markdown class="title">
+
+Constraint Programming in AMPL
+==============================
+
+Victor Zverovich
+
+<div>
+<a href="http://www.ampl.com/"><img src="ampl-logo.png" width="100px" style="vertical-align:middle;border:0;box-shadow:0 0 0;"/>
+<span style="">AMPL Optimization</span></a>
+</div>
+
+<div>
+<small>
+<a href="http://cp2013.a4cp.org/workshops/cpsolvers">
+CP Solvers: Modeling, Applications, Integration, and Standardization
+</a><br/>
+<a href="http://cp2013.a4cp.org/">CP2013, Uppsala, Sweden, September 16, 2013</a>
+</small>
+</div>
+
+</section>
+
+<section data-markdown>
+
+About AMPL
+----------
+
+* [AMPL](http://www.ampl.com/) is a popular modeling system
+  - used in businesses, government agencies, and academic institutions
+    (over 100 courses in 2012)
+  - large community <br/>
+    (> 1,400 members in [AMPL Google Group](https://groups.google.com/group/ampl) alone)
+
+    - the most popular input format on [NEOS](http://www.neos-server.org/neos/) <br/>
+    (> 200,000 or 57% submissions in 2012)
+
+* AMPL is high-level, solver-independent and efficient.
+
+* Supports a variety of solvers and problem types:
+  linear, mixed integer, quadratic, second-order cone, nonlinear,
+  complementarity problems and more.
+
+</section>
+
+<section data-markdown>
+
+AMPL Application Areas
+----------------------
+
+* Transportation (air, rail, truck)
+* Production planning and supply chain
+* Finance (investment banking, insurance)
+* Natural resources (electric power, gas, mining)
+* Telecommunications
+* Internet services
+
+Examples:
+
+<img src="Zara_Logo.svg" style="width:200px;vertical-align:middle"/> - clothing and accessories retailer<br/>
+<img src="Norske_Skog.svg" style="width:200px;vertical-align:middle"/> - paper manufacturer
+
+</section>
+
+<section data-markdown>
+
+Solver Support
+--------------
+
+* AMPL provides consistent interface to a large number of solvers.
+* Switching between solvers is easy.
+* Connecting new solvers is easy using the open-source AMPL Solver Library.
+* Solver-specific features are supported such as the whole set of solver options.
+* Features missing in a solver are often implemented in an AMPL solver driver.
+  Examples: meaningful solution log, reformulation of missing constructs.
+
+</section>
+
+<section data-markdown><script type="text/template">
+
+Connected CP Solvers
+--------------------
+
+* Solvers:
+  - ilogcp: [IBM/ILOG CP Optimizer](http://www-01.ibm.com/software/integration/optimization/cplex-cp-optimizer/)
+  - gecode: [Generic constraint development environment](http://www.gecode.org/).
+    **New:** Gecode 4.2
+  - jacop: [Java constraint solver](http://jacop.osolpro.com/)
+
+* How to get:
+
+  - Ilogcp is available to all CPLEX-for-AMPL users
+
+  - AMPL Gecode and JaCoP (soon) downloads:
+    [https://code.google.com/p/ampl/](https://code.google.com/p/ampl/)
+
+  - Source code: [https://github.com/vitaut/ampl](https://github.com/vitaut/ampl)
+    [solvers/gecode](https://github.com/vitaut/ampl/tree/master/solvers/gecode) | 
+    [solvers/ilogcp](https://github.com/vitaut/ampl/tree/master/solvers/ilogcp) | 
+    [solvers/jacop](https://github.com/vitaut/ampl/tree/master/solvers/jacop)
+
+</script></section>
+
+<section data-markdown>
+
+AMPL User Interfaces
+--------------------
+
+* Classical command-line interactive environment
+
+* Eclipse-based IDEs:
+
+  - AMPL IDE
+  - AMPLDev (adds stochastic programming features)
+
+* Solver Studio for Excel
+
+* Matlab (TOMLAB)
+
+* IPython (experimental)
+
+</section>
+
+<section data-markdown>
+
+AMPL IDE (Beta)
+---------------
+
+Based on the Eclipse platform well-known for its Java and Android IDEs.
+
+Some of the features:
+
+* Cross-platform with native look and feel on each platform
+* Interactive console with command history
+* Context-sensitive syntax highlighting
+* Quick links to error locations
+* Solution process can be interrupted by a user at any time and
+  the best solution found so far will be available
+* Freely available from [http://www.ampl.com/IDE/beta.html](http://www.ampl.com/IDE/beta.html)
+
+</section>
+
+<section data-markdown>
+
+AMPL IDE (Beta)
+---------------
+
+<div style="text-align: center">
+<img src="ampl-ide.png" class="shadow"/>
+</div>
+
+</section>
+
+<section data-markdown>
+
+Solver Studio for Excel
+-----------------------
+
+* Create and edit AMPL models without leaving Excel
+* Solve using local solvers or in the cloud via NEOS
+* Integrated model and data editors
+* Automatic data exchange with model
+* Freely available from [http://solverstudio.org](http://solverstudio.org/)
+
+</section>
+
+<section data-markdown>
+
+Solver Studio for Excel
+-----------------------
+
+<div style="text-align: center">
+<img src="solver-studio.png" width="80%" class="shadow"/>
+</div>
+
+</section>
+
+<section data-markdown>
+
+AMPL IPython Plugin
+-------------------
+
+<div style="text-align: center">
+<img src="ipython-ampl.png" class="shadow"/>
+</div>
+
+</section>
+
+<section data-markdown>
+
+AMPL IPython Plugin
+-------------------
+
+<div style="text-align: center">
+<img src="ipython-ampl-map.png" class="shadow"/>
+</div>
+
+</section>
+
+<section data-markdown>
+
+Database and Spreadsheet Access
+-------------------------------
+
+* Crucial for integration into real-world applications
+* AMPL provides streamlined database access on major platforms
+  <div style="text-align:center">
+  <img src="tux.svg" height="50px"/>
+  <img src="apple-logo.svg" height="50px" style="padding-left:50px"/>
+  <img src="windows-logo.svg" height="50px" style="padding-left:50px"/>
+  </div>
+
+* Supports any database system that has an ODBC driver
+  <div style="text-align:center">
+  <img src="databases.png"/>
+  </div>
+</section>
+
+<section data-markdown>
+
+History of CP Support in AMPL
+-----------------------------
+
+* 1996: first experiments with adding logic programming features to AMPL.
+
+* Fourer (1998). *Extending a General-Purpose Algebraic Modeling Language to
+  Combinatorial Optimization: A Logic Programming Approach*
+  [[1](http://iems.northwestern.edu/~4er/WRITINGS/loglang.pdf)]
+
+* Fourer and Gay (2001). *Hooking a Constraint Programming Solver to an Algebraic Modeling Language*
+
+* Fourer and Gay (2002). *Extending an Algebraic Modeling Language to Support
+  Constraint Programming* [[2](http://users.iems.northwestern.edu/~4er/WRITINGS/extmodcp.pdf)]
+
+* Initially [IBM/ILOG CP Optimizer](http://www-01.ibm.com/software/integration/optimization/cplex-cp-optimizer/)
+  was connected.
+
+* [Gecode](http://www.gecode.org/) was connected in 2012,
+  [JaCoP](http://www.osolpro.com/jacop/index.php) - in early 2013.
+
+</section>
+
+<section data-markdown><script type="text/template">
+
+Supported CP Constructs
+-----------------------
+
+* Logical operators: `and`, `or`, `not`
+* Iterated logical operators: `exists`, `forall`
+* Conditional operators: <br/>
+  `if-then`, `if-then-else`, `==>`, `==> else`, `<==`, `<==>`
+* Counting operators: <br/>
+  `count`, `atmost`, `atleast`, `exactly`, `numberof`
+* Pairwise operator: `alldiff`
+* All kinds of arithmetic expressions and functions available in AMPL
+  (if can be handled by a solver or reformulated)
+
+See [http://www.ampl.com/NEW/LOGIC/](http://www.ampl.com/NEW/LOGIC/) for details.
+
+</script></section>
+
+<section data-markdown>
+
+Example: Transportation Model
+-----------------------------
+
+An example from a multicommodity transportation model
+[multmip3.mod](http://www.ampl.com/BOOK/EXAMPLES/EXAMPLES2/multmip3.mod)
+
+For every origin `i` and destination `j` the total shipments <br/>
+`sum {p in PROD} Trans[i,j,p]` should be either zero or between
+`minload` and `limit[i,j]`.
+
+MIP formulation:
+<div style='display:inline-block; width: 90%; vertical-align: middle'>
+<pre>
+<code class="cs">
+var Trans {ORIG,DEST,PROD} >= 0;
+var Use {ORIG,DEST} binary;
+subject to Multi {i in ORIG, j in DEST}:
+  sum {p in PROD} Trans[i,j,p] <= limit[i,j] * Use[i,j];
+subject to Min_Ship {i in ORIG, j in DEST}:
+  sum {p in PROD} Trans[i,j,p] >= minload * Use[i,j];
+  </code>
+</pre>
+</div>
+
+</section>
+
+<section data-markdown>
+
+Transportation Example using CP
+-------------------------------
+
+<div style='display:inline-block; width: 90%; vertical-align: middle'>
+<p style="text-align: left">
+Disjunctive constraint:
+</p>
+<pre>
+<code class="cs">
+subject to Multi_Min_Ship {i in ORIG, j in DEST}:
+  sum {p in PROD} Trans[i,j,p] = 0 or
+  minload &lt;= sum {p in PROD} Trans[i,j,p] &lt;= limit[i,j];
+</code>
+</pre>
+</div>
+
+<div style='display:inline-block; width: 90%; vertical-align: middle'>
+<p style="text-align: left">
+Implication:
+</p>
+<pre>
+<code class="cs">
+subject to Multi_Min_Ship {i in ORIG, j in DEST}:
+  sum {p in PROD} Trans[i,j,p] > 0 ==>
+    minload <= sum {p in PROD} Trans[i,j,p] <= limit[i,j];
+</code>
+</pre>
+</div>
+
+* No need for auxiliary binary variables.
+* The formulation is more straightforward.
+
+</section>
+
+<section data-markdown><script type="text/template">
+
+Example: Scheduling Model
+-------------------------
+
+The goal is to find a minimal cost assignment of jobs to machines.
+
+MIP formulation:
+
+<div style='display:inline-block; width: 90%; vertical-align: middle'>
+<pre>
+<code class="cs">
+param n integer > 0;
+
+set JOBS := 1..n;
+set MACHINES := 1..n;
+
+param cap {MACHINES} integer >= 0;
+
+param cost {JOBS,MACHINES} > 0;
+var Assign {JOBS,MACHINES} binary;
+
+minimize TotalCost:
+   sum {j in JOBS, k in MACHINES} cost[j,k] * Assign[j,k];
+
+subj to OneMachinePerJob {j in JOBS}:
+   sum {k in MACHINES} Assign[j,k] = 1;
+
+subj to CapacityOfMachine {k in MACHINES}:
+   sum {j in JOBS} Assign[j,k] <= cap[k];
+</code>
+</pre>
+</div>
+</script></section>
+
+<section data-markdown>
+
+Scheduling Example using CP
+---------------------------
+
+Using the `count` operator:
+
+<div style='display:inline-block; width: 90%; vertical-align: middle'>
+<pre>
+<code class="cs">
+subj to CapacityOfMachine {k in MACHINES}:
+   count {j in JOBS} (MachineForJob[j] = k) <= cap[k];
+</code>
+</pre>
+</div>
+
+Using the `numberof` operator:
+
+<div style='display:inline-block; width: 90%; vertical-align: middle'>
+<pre>
+<code class="cs">
+subj to CapacityOfMachine {k in MACHINES}:
+   numberof k in ({j in JOBS} MachineForJob[j]) <= cap[k];
+</code>
+</pre>
+</div>
+
+<ul>
+<li>No need for \(n^2\) binary variables.
+<li>All the <code>numberof</code> constraints can be converted into a single
+<code>IloDistribute</code> constraint in <code>ilogcp</code>.
+</ul>
+
+</section>
+
+<section data-markdown><script type="text/template">
+
+N Queens Example with Alldiff
+-----------------------------
+
+<div style='display:inline-block; vertical-align: middle'>
+  <img src="8queens.png"/>
+</div>
+
+<div style='display:inline-block; width: 70%; vertical-align: middle'>
+<pre>
+<code class="cs">
+  # Place n queens on an n by n board
+  # so that no two queens can attack
+  # each other (nqueens.mod).
+
+  param n integer > 0;
+  var Row {1..n} integer >= 1 <= n;
+
+  s.t. c1: alldiff ({j in 1..n} Row[j]);
+  s.t. c2: alldiff ({j in 1..n} Row[j]+j);
+  s.t. c3: alldiff ({j in 1..n} Row[j]-j);
+</code>
+</pre>
+</div>
+
+More examples available at [http://www.ampl.com/NEW/LOGIC/EXAMPLES](http://www.ampl.com/NEW/LOGIC/EXAMPLES).
+
+</script></section>
+
+<section data-markdown>
+
+Work in Progress
+----------------
+
+* Variables in subscripts
+
+* Multiple solutions
+
+* Element constraint
+
+* Restart functionality in the Gecode driver
+
+* Use constraint suffixes (attributes) for fine-grained control over
+  some of the search options, e.g. icl in Gecode.
+
+</section>
+
+<section data-markdown>
+
+Summary
+-------
+
+* AMPL provides a consistent and intuitive interface to multiple
+  constraint programming solvers.
+
+* CP functionality in AMPL is production-ready and new features
+  are actively added.
+  
+* New user interfaces make model development easier.
+
+* Database access functionality facilitates integration into
+  real-world applications.
+
+</section>
+
+<section data-markdown>
+
+Links
+-----
+
+* AMPL Logic and Constraint Programming Extensions:
+  [http://www.ampl.com/NEW/LOGIC/](http://www.ampl.com/NEW/LOGIC/)
+
+* Trial version of AMPL with IBM/ILOG CP:
+  [http://www.ampl.com/trial.html](http://www.ampl.com/trial.html)
+  
+* Open-source AMPL solvers and libraries including Gecode:
+  [https://code.google.com/p/ampl/](https://code.google.com/p/ampl/)
+
+* AMPL models by Hakan Kjellerstrand including 100 CP models:
+  [http://www.hakank.org/ampl/](http://www.hakank.org/ampl/)
+
+* Source code for ilogcp, gecode and jacop interfaces on GitHub:
+  [https://github.com/vitaut/ampl](https://github.com/vitaut/ampl)
+
+
+</section>
+
+</div>
+
+</div>
+
+<script src="../common/lib/js/head.min.js"></script>
+<script src="../common/js/reveal.min.js"></script>
+
+<script>
+
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+	controls: true,
+	progress: true,
+	history: true,
+	center: true,
+  rollingLinks: false,
+
+	theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+	transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/none
+
+	// Optional libraries used to extend on reveal.js
+	dependencies: [
+		{ src: '../common/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+		{ src: '../common/plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+		{ src: '../common/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+		{ src: '../common/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+		{ src: '../common/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+		{ src: '../common/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+		{ src: 'http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML', async: true }
+		// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+	]
+});
+
+</script>
+
+</body>
+
+<script src="../common/d3/d3.v3.min.js"></script>
+<script>
+
+var m = [0, 120, 20, 120],
+    w = 1280 - m[1] - m[3],
+    h = 600 - m[0] - m[2],
+    i = 0;
+
+var tree = d3.layout.tree()
+    .size([h, w]);
+
+var diagonal = d3.svg.diagonal()
+    .projection(function(d) { return [d.y, d.x]; });
+
+var vis = d3.select("#trees").append("svg:svg")
+    .attr("width", w + m[1] + m[3])
+    .attr("height", h + m[0] + m[2])
+  .append("svg:g")
+    .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
+
+var root = {
+ "name": "Expr",
+ "children": [
+  {
+   "name": "NumericExpr",
+   "children": [
+    {"name": "UnaryExpr (unary -, abs, tan, ...)"},
+    {"name": "BinaryExpr (+, -, *, /, div, less, ...)"},
+    {"name": "VarArgExpr (min, max)"},
+    {"name": "SumExpr"},
+    {"name": "CountExpr"},
+    {"name": "IfExpr"},
+    {"name": "PiecewiseLinearTerm"},
+    {"name": "NumericConstant"},
+    {"name": "Variable"},
+    {"name": "NumberOfExpr"}
+   ]
+  },
+  {
+   "name": "LogicalExpr",
+   "children": [
+    {"name": "LogicalConstant (0 or 1)"},
+    {"name": "RelationalExpr (<, <=, =, !=, >=, >)"},
+    {"name": "NotExpr (!)"},
+    {"name": "LogicalCountExpr (atleast, atmost, exactly)"},
+    {"name": "BinaryLogicalExpr (||, &&, <==>)"},
+    {"name": "ImplicationExpr (==> else)"},
+    {"name": "IteratedLogicalExpr (exists, forall)"},
+    {"name": "AllDiffExpr"}
+   ]
+  }
+ ]
+};
+
+root.x0 = h / 2;
+root.y0 = 0;
+
+function toggleAll(d) {
+  if (d.children) {
+    d.children.forEach(toggleAll);
+    toggle(d);
+  }
+}
+
+// Initialize the display to show a few nodes.
+//root.children.forEach(toggleAll);
+//toggle(root.children[1]);
+//toggle(root.children[1].children[2]);
+//toggle(root.children[9]);
+//toggle(root.children[9].children[0]);
+
+update(root);
+
+function update(source) {
+  var duration = d3.event && d3.event.altKey ? 5000 : 500;
+
+  // Compute the new tree layout.
+  var nodes = tree.nodes(root).reverse();
+
+  // Normalize for fixed-depth.
+  nodes.forEach(function(d) { d.y = d.depth * 180; });
+
+  // Update the nodes…
+  var node = vis.selectAll("g.node")
+      .data(nodes, function(d) { return d.id || (d.id = ++i); });
+
+  // Enter any new nodes at the parent's previous position.
+  var nodeEnter = node.enter().append("svg:g")
+      .attr("class", "node")
+      .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
+      .on("click", function(d) { toggle(d); update(d); });
+
+  nodeEnter.append("svg:circle")
+      .attr("r", 1e-6)
+      .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+
+  nodeEnter.append("svg:text")
+      .attr("x", function(d) { return d.children || d._children ? -10 : 10; })
+      .attr("dy", ".35em")
+      .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
+      .text(function(d) { return d.name; })
+      .style("fill-opacity", 1e-6);
+
+  // Transition nodes to their new position.
+  var nodeUpdate = node.transition()
+      .duration(duration)
+      .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
+
+  nodeUpdate.select("circle")
+      .attr("r", 4.5)
+      .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+
+  nodeUpdate.select("text")
+      .style("fill-opacity", 1);
+
+  // Transition exiting nodes to the parent's new position.
+  var nodeExit = node.exit().transition()
+      .duration(duration)
+      .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
+      .remove();
+
+  nodeExit.select("circle")
+      .attr("r", 1e-6);
+
+  nodeExit.select("text")
+      .style("fill-opacity", 1e-6);
+
+  // Update the links…
+  var link = vis.selectAll("path.link")
+      .data(tree.links(nodes), function(d) { return d.target.id; });
+
+  // Enter any new links at the parent's previous position.
+  link.enter().insert("svg:path", "g")
+      .attr("class", "link")
+      .attr("d", function(d) {
+        var o = {x: source.x0, y: source.y0};
+        return diagonal({source: o, target: o});
+      })
+    .transition()
+      .duration(duration)
+      .attr("d", diagonal);
+
+  // Transition links to their new position.
+  link.transition()
+      .duration(duration)
+      .attr("d", diagonal);
+
+  // Transition exiting nodes to the parent's new position.
+  link.exit().transition()
+      .duration(duration)
+      .attr("d", function(d) {
+        var o = {x: source.x, y: source.y};
+        return diagonal({source: o, target: o});
+      })
+      .remove();
+
+  // Stash the old positions for transition.
+  nodes.forEach(function(d) {
+    d.x0 = d.x;
+    d.y0 = d.y;
+  });
+}
+
+// Toggle children.
+function toggle(d) {
+  if (d.children) {
+    d._children = d.children;
+    d.children = null;
+  } else {
+    d.children = d._children;
+    d._children = null;
+  }
+}
+
+// ---------------------------------------------
+// table
+
+data = d3.csv.parse(
+'Problem,Input+Conv Time,C API Time,C++ API Time,C/C++ Ratio,,\n\
+assign1,2.001,0.0156233,0.0154757,1.009537533,,\n\
+balassign1,2.106,0.086136,0.085996,1.0016279827,,\n\
+flowshp1,0.529,0.000594689,0.000598812,0.9931147004,,\n\
+flowshp2,0.784,0.000593329,0.00059615,0.9952679695,,\n\
+magic,0.558,0.00276411,0.0028042,0.9857035875,,\n\
+mapcoloring,0.557,8.6488E-007,8.6538E-007,0.9994222191,,\n\
+money,0.472,0.000241843,0.000238001,1.0161427893,,\n\
+nqueens,1.073,8.6449E-007,8.6593E-007,0.998337048,,\n\
+sched1,0.595,0.0172613,0.0174135,0.9912596549,,\n\
+sched2,0.684,0.0142709,0.0146368,0.9750013664,,\n\
+party1,33.688,3.88768,3.94516,0.9854302487,,\n\
+party2,126.194,1.20008,1.21847,0.9849073018,,\n\
+sudokuHard,0.661,8.6618E-007,8.6361E-007,1.0029758803,,\n\
+sudokuVeryEasy,0.726,8.6547E-007,8.6383E-007,1.0018985217,,\n\
+,,,,0.9957590574,,')
+
+console.log(data)
+
+    // the columns you'd like to display
+    var columns = ["Problem", "Input+Conv Time", "C API Time", "C++ API Time", "C/C++ Ratio"];
+
+    var table = d3.select("#apiperformance").append("table"),
+        thead = table.append("thead"),
+        tbody = table.append("tbody");
+
+    // append the header row
+    thead.append("tr")
+        .selectAll("th")
+        .data(columns)
+        .enter()
+        .append("th").append("b")
+            .text(function(column) { return column; });
+
+    // create a row for each object in the data
+    var rows = tbody.selectAll("tr")
+        .data(data)
+        .enter()
+        .append("tr");
+
+    // create a cell in each row for each column
+    var cells = rows.selectAll("td")
+        .data(function(row) {
+            return columns.map(function(column) {
+                return {column: column, value: row[column]};
+            });
+        })
+        .enter()
+        .append("td")
+            .text(function(d) { return d.value; });
+</script>
+</html>
