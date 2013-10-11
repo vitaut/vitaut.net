@@ -1,0 +1,927 @@
+<!doctype html>
+<html>
+<head>
+  <title>New features of the AMPL CP interfaces</title>
+
+  <meta name="author" content="Victor Zverovich">
+
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+  <link rel="stylesheet" href="../common/css/reveal.min.css">
+  <link rel="stylesheet" href="../common/css/theme/beige.css" id="theme">
+
+<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+<script>
+	document.write( '<link rel="stylesheet" href="../common/css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+</script>
+<style>
+
+.node circle {
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+.node {
+  font: 20px sans-serif;
+}
+
+.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 1.5px;
+}
+
+.reveal {
+  font-size: 32px;
+}
+
+.reveal .title {
+  text-align: center;
+}
+
+.reveal section {
+  text-align: left;
+}
+
+.reveal p,
+.reveal li {
+  margin-bottom: 1ex;
+}
+
+.reveal section img {
+  border: 0;
+  box-shadow: 0 0 0;
+}
+
+.reveal .shadow {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.dense li {
+  margin-bottom: 0;
+}
+
+.reveal h1,
+.reveal h2,
+.reveal h3,
+.reveal h4,
+.reveal h5,
+.reveal h6 {
+  font-size: 180%;
+  text-transform: none;
+  text-align: center;
+}
+</style>
+</head>
+
+<body>
+<img style="position: absolute; top: 40px; right: 20px; border: 0;" src="ampl-logo-text.png" width="100px"/>
+<div class="reveal">
+<div class="slides">
+
+<section data-markdown class="title">
+
+New features of the AMPL CP interfaces
+======================================
+
+Victor Zverovich
+
+<small>
+<a href="http://www.ampl.com/">AMPL Optimization</a><br/>
+<a href="mailto:viz@ampl.com">viz@ampl.com</a>
+</small>
+
+<div>
+<a href="http://meetings2.informs.org/minneapolis2013/">
+<small>
+<img src="minneapolis.png" style="border: 0; height: 100px; box-shadow: 0 0 20px #888888;" /><br/>
+2013 INFORMS Annual Meeting, Oct 6-9, 2013, Minneapolis, MN
+</small>
+</a>
+</div>
+
+</section>
+
+<section data-markdown>
+
+About AMPL
+----------
+
+* [AMPL](http://www.ampl.com/) is a popular modeling system
+  - used in businesses, government agencies, and academic institutions
+    (over 100 courses in 2012)
+  - large community: <br/>
+    > 1,400 members in [AMPL Google Group](https://groups.google.com/group/ampl) alone
+  - the most popular input format on the [NEOS cloud server](http://www.neos-server.org/neos/)
+    for optimization:<br/>
+    > 900,000 or 85% submissions in Jan-Sep 2013
+
+* AMPL is high-level, solver-independent and efficient.
+
+</section>
+
+<section data-markdown>
+Law of the Instrument
+---------------------
+
+<div style="text-align: center">
+<img src="ManWithHammer.png" width="70%" /><br/>
+And to a man with a MIP solver...
+</div>
+
+</section>
+
+<section data-markdown>
+Using the Right Tool
+--------------------
+
+* AMPL facilitates the use of suitable optimization tools and technologies by
+  supporting a wide variety of solvers and problem types:
+
+  - linear, mixed integer and <span style="color:#3366cc">constraint programming</span>
+  - quadratic, second-order cone, general nonlinear programming, complementarity
+    problems and more ...
+
+* Switching between solvers is easy.
+* Connecting new solvers is easy using the open-source [AMPL Solver Library](https://github.com/vitaut/ampl).
+* Solver-specific features are supported such as the whole set of solver options,
+  variable- and constraint-specific information via suffixes.
+
+</section>
+
+<section data-markdown>
+
+History of CP Support in AMPL
+-----------------------------
+
+* 1996: first experiments with adding logic programming features to AMPL.
+
+* Fourer (1998). *Extending a General-Purpose Algebraic Modeling Language to
+  Combinatorial Optimization: A Logic Programming Approach*
+  [[1](http://iems.northwestern.edu/~4er/WRITINGS/loglang.pdf)]
+
+* Fourer and Gay (2001). *Hooking a Constraint Programming Solver to an Algebraic Modeling Language*
+
+* Fourer and Gay (2002). *Extending an Algebraic Modeling Language to Support
+  Constraint Programming* [[2](http://users.iems.northwestern.edu/~4er/WRITINGS/extmodcp.pdf)]
+
+* Initially [IBM/ILOG CP Optimizer](http://www-01.ibm.com/software/integration/optimization/cplex-cp-optimizer/)
+  was connected.
+
+* [Gecode](http://www.gecode.org/) was connected in 2012,
+  [JaCoP](http://www.osolpro.com/jacop/index.php) - in early 2013.
+
+</section>
+
+<section data-markdown><script type="text/template">
+
+Connected CP Solvers
+--------------------
+
+* Solvers:
+  - ilogcp: [IBM/ILOG CP Optimizer](http://www-01.ibm.com/software/integration/optimization/cplex-cp-optimizer/)
+  - gecode: [Generic constraint development environment](http://www.gecode.org/).
+  - jacop: [Java constraint solver](http://jacop.osolpro.com/)
+
+* How to get:
+
+  - Ilogcp is available to all CPLEX-for-AMPL users
+
+  - AMPL Gecode and JaCoP downloads:
+    [https://code.google.com/p/ampl/](https://code.google.com/p/ampl/)
+
+  - Source code: [https://github.com/vitaut/ampl](https://github.com/vitaut/ampl)<br/>
+    [solvers/gecode](https://github.com/vitaut/ampl/tree/master/solvers/gecode) | 
+    [solvers/ilogcp](https://github.com/vitaut/ampl/tree/master/solvers/ilogcp) | 
+    [solvers/jacop](https://github.com/vitaut/ampl/tree/master/solvers/jacop)
+
+</script></section>
+
+<section data-markdown><script type="text/template">
+
+Supported CP Constructs
+-----------------------
+
+* Logical operators: `and`, `or`, `not`
+* Iterated logical operators: `exists`, `forall`
+* Conditional operators: <br/>
+  `if-then`, `if-then-else`, `==>`, `==> else`, `<==`, `<==>`
+* Counting operators: <br/>
+  `count`, `atmost`, `atleast`, `exactly`, `numberof`
+* Pairwise operator: `alldiff`
+* All kinds of arithmetic expressions and functions available in AMPL
+  (if can be handled by a solver or reformulated)
+
+See [http://www.ampl.com/NEW/LOGIC/](http://www.ampl.com/NEW/LOGIC/) for details.
+
+</script></section>
+
+<section data-markdown>
+
+AMPL Solver Library
+-------------------
+
+AMPL Solver Library (ASL) is an open-source library for connecting solvers
+to AMPL.
+
+* C interface:
+  - described in [Hooking Your Solver to AMPL](http://www.ampl.com/hooking.html)
+  - used by most non-CP solvers
+
+* [C++ interface](https://github.com/vitaut/ampl/tree/master/solvers/util):
+  - makes connecting new solvers super easy
+  - type-safe: no casts needed when working with expression trees
+  - efficient: no overhead compared to the C interface
+  - used by the gecode, ilogcp and jacop (via JNI) drivers
+
+</section>
+
+<section data-markdown>
+
+AMPL CP Solver Architecture
+------------------------
+
+<div style="text-align: center">
+<img src="cp-architecture.svg" style="border: 0; box-shadow: 0 0 0;"/>
+</div>
+
+* CP function library (cp.dll) provides functions mapped to global constraints
+  (element, in_relation, ...).
+* Driver library is optional but facilitates testing.
+* The test suite is solver independent and can be reused when connecting
+  a new solver.
+
+</section>
+
+<section data-markdown>
+
+New features
+------------
+
+* Counting solutions and getting multiple solutions
+
+* Better accuracy of time statistics using high-resolution timers
+
+* Fine-grained control over the search process using variable and
+  constraint suffixes.
+
+* Restart-based search in the Gecode driver
+
+* Element constraint
+
+* In_relation (table) constraint
+
+</section>
+
+<section data-markdown>
+
+Multiple solutions
+------------------
+
+<div style='text-align: center'>
+  <img src="8queens-multiple.png" height="100px"/>
+</div>
+
+* Options supported by all CP solvers connected to AMPL:
+  - `solutionlimit`: limit on the number of feasible solutions found before
+    terminating a search
+  - `countsolutions`: whether to return the number of solutions in the `nsol`
+    suffix of the current problem
+  - `solutionstub`: basename for returned solutions
+
+* Duplicate solutions are filtered out automatically (ilogcp)
+
+</section>
+
+<section data-markdown><script type="text/template">
+
+N Queens Example with Alldiff
+-----------------------------
+
+<div style='display:inline-block; vertical-align: middle'>
+  <img src="Eight-queens-animation.gif" width="250px"/>
+</div>
+
+<div style='display:inline-block; width: 70%; vertical-align: middle'>
+<pre>
+<code class="cs">
+  # Place n queens on an n by n board
+  # so that no two queens can attack
+  # each other (nqueens.ampl).
+
+  param n integer > 0;
+  var Row{1..n} integer >= 1 <= n;
+
+  s.t. c1: alldiff ({j in 1..n} Row[j]);
+  s.t. c2: alldiff ({j in 1..n} Row[j] + j);
+  s.t. c3: alldiff ({j in 1..n} Row[j] - j);
+</code>
+</pre>
+</div>
+
+More examples available at [http://www.ampl.com/NEW/LOGIC/examples.html](http://www.ampl.com/NEW/LOGIC/examples.html).
+
+</script></section>
+
+<section data-markdown>
+
+Counting Solutions
+------------------
+
+<div style='display:inline-block; width: 90%; vertical-align: middle'>
+nqueens-count.ampl:
+<pre>
+<code class="cs">
+  model nqueens.ampl;
+  let n := 8;
+  option solver gecode;
+  option gecode_options 'countsolutions=1';
+  solve;
+  print 'The number of solutions is', Current.nsol;
+</code>
+</pre>
+running the script:
+<pre style="color:white; background-color:#300a24">
+<code>
+  $ ampl nqueens-count.ampl
+  gecode 4.2.0: countsolutions=1
+  feasible solution
+  787 nodes, 302 fails
+  suffix nsol OUT;
+  The number of solutions is 92
+</code>
+</pre>
+</div>
+
+</section>
+
+<section data-markdown>
+
+Getting Multiple Solutions
+--------------------------
+
+<div style='display:inline-block; width: 90%; vertical-align: middle'>
+<pre>
+<code class="cs">
+  model nqueens.ampl;
+  let n := 8;
+  option solver ilogcp;
+  option ilogcp_options 'solutionlimit=10 solutionstub=nqueens';
+  solve;
+  for {i in 1..Current.nsol} {
+    solution ('nqueens' & i & '.sol');
+    display Row;
+  }
+</code>
+</pre>
+<pre style="color:white; background-color:#300a24">
+<code>
+  $ ampl nqueens-multi.ampl
+  ...
+  ilogcp 12.4.0: feasible solution
+  Row [*] :=
+  1  5
+  2  7
+  ...
+  ilogcp 12.4.0: feasible solution
+  Row [*] :=
+  1  3
+  2  1
+  ...
+</code>
+</pre>
+</div>
+
+</section>
+
+<section data-markdown>
+Photo Problem
+-------------
+
+<div style='display:inline-block; vertical-align: middle'>
+  <img src="pyramid.jpg" width="300px"/>
+</div>
+
+<div style='display:inline-block; width: 60%; vertical-align: middle'>
+<ul>
+<li>A group of people wants to take a group photo.
+<li>Each person can give preferences next to whom he or she wants
+    to be placed on the photo.
+<li>The objective is to find a placement that satisfies
+    as many preferences as possible.
+</ul>
+</div>
+</section>
+
+<section data-markdown>
+Choosing Propagators in Gecode
+------------------------------
+
+<div style="text-align: center">
+<div style='display:inline-block; width: 90%; vertical-align: middle'>
+<pre>
+<code class="cs">
+  <span style="color:#3366cc">include gecode.ampl;</span>
+
+  param nPeople integer > 0;
+  set PREFS within {i in 1..nPeople, j in 1..nPeople: i != j};
+
+  var Sat{PREFS} binary;
+  var Pos{1..nPeople} integer >= 1, <= nPeople;
+
+  maximize NumSat: sum{(i,j) in PREFS} Sat[i,j];
+
+  <span style="color:#3366cc"># Choose the bound consistent variant of alldiff/distinct.</span>
+  s.t. OnePersonPerPosition:
+    alldiff{i in 1..nPeople} Pos[i] <span style="color:#3366cc">suffix icl icl_bnd</span>;
+
+  s.t. SatDefn {(i,j) in PREFS}:
+    Sat[i,j] = 1 ==> abs(Pos[i] - Pos[j]) = 1;
+
+  s.t. SymmetryBreaking: Pos[1] < Pos[2];
+</code>
+</pre>
+</div>
+</div>
+
+</section>
+
+<section data-markdown>
+Truck "Fleet" Problem
+---------------------
+
+<ul>
+<li>Deliver orders to clients with a single truck.
+<li>Each order consists of a given quantity of a product of a certain type.
+<li>The truck must be configured in order to handle one or several types of products.
+<li>The truck (re)configuration cost depends both on original and new configuration.
+<li>Multiobjective: both the cost (for configuring and loading the truck) and the number of travels
+    needed to deliver all the orders must be minimized, the cost being the most important criterion.
+<li>. . .
+</ul>
+From IBM/ILOG CP examples
+</section>
+
+<section data-markdown>
+Element Constraint
+------------------
+
+Example:
+
+<div style='display:inline-block; width: 90%; vertical-align: middle'>
+<pre>
+<code class="cs">
+  param NumTruckConfigs integer > 0;
+  set TruckConfigs = 0..NumTruckConfigs - 1;
+
+  param NumTrips integer > 0;
+  set Trips = 0..NumTrips - 1;
+
+  var truckConfigs{Trips} integer >= 0 <= NumTruckConfigs - 1;
+
+  # Truck load cannot exceed max. load for truck's configuration.
+  s.t. satisfyMaxLoad{t in Trips}:
+    load[t] <= <span style="color:#3366cc">element({c in TruckConfigs} MaxTruckConfigLoad[c],
+                       truckConfigs[t])</span>;
+</code>
+</pre>
+</div>
+
+Future syntax:
+
+<div style='display:inline-block; width: 90%; vertical-align: middle'>
+<pre>
+<code class="cs">
+  s.t. satisfyMaxLoad{t in Trips}:
+    load[t] <= <span style="color:#3366cc">MaxTruckConfigLoad[truckConfigs[t]]</span>;
+</code>
+</pre>
+</div>
+
+</section>
+
+<section data-markdown>
+In_relation Constraint
+----------------------
+
+Also known as the table constraint, <code>IloAllowedAssignments</code> in ilogcp,
+<code>extensional</code> in Gecode.
+
+Example:
+
+<div style='display:inline-block; width: 90%; vertical-align: middle'>
+<pre>
+<code class="cs">
+  param NumOrders integer > 0;
+  set Orders = 0..NumOrders - 1;
+  var configOfContainer{Orders} integer >= 0 <= NumTruckConfigs - 1;
+  
+  param NumProductTypes integer > 0;
+  set AllowedContainerConfigs{0..NumProductTypes - 1};
+
+  s.t. restrictConfigOfContainer{o in Orders}:
+    <span style="color:#3366cc">in_relation(configOfContainer[o],
+      {c in AllowedContainerConfigs[ProductTypes[o]]} c)</span>;
+</code>
+</pre>
+</div>
+
+Future syntax:
+
+<div style='display:inline-block; width: 90%; vertical-align: middle'>
+<pre>
+<code class="cs">
+  s.t. restrictConfigOfContainer{o in Orders}:
+    <span style="color:#3366cc">configOfContainer[o] in
+      AllowedContainerConfigs[ProductTypes[o]]</span>;
+</code>
+</pre>
+</div>
+
+</section>
+
+<section data-markdown>
+Multiobjective optimization
+---------------------------
+
+Example:
+
+<div style='display:inline-block; width: 90%; vertical-align: middle'>
+<pre>
+<code class="cs">
+  <span style="color:#3366cc">minimize totalCost</span>:
+    sum{t in Trips}
+      (if load[t] > 0 then
+        element({c in TruckConfigs} TruckCost[c],
+                truckConfigs[t])) +
+    sum{t in 0..NumTrips - 2} reconfigCost[t];
+
+  <span style="color:#3366cc">minimize tripCount</span>: count{t in 0..NumTrips - 1} (load[t] > 0);
+</code>
+</pre>
+</div>
+
+Mapped to <code>IloStaticLex</code> with i-th objective treated as more important
+than (i+1)-th.
+
+</section>
+
+<section data-markdown>
+
+Future Work
+-----------
+
+* Better syntax for some constructs:
+  - <code>(x1, ..., xn) in S</code> for the in_relation constraint
+  - <code>e[x]</code> for the element constraint
+
+* Support for more types of global constraints
+
+* Connecting other CP solvers (maybe using libmzn?)
+
+</section>
+
+<section data-markdown>
+
+Summary
+-------
+
+* AMPL provides a uniform and intuitive interface to multiple
+  constraint programming solvers.
+
+* Connecting new solvers is easy.
+
+* New features include element and in_relation constraints,
+  multiobjective optimization, variable and constraint suffixes
+  to choose propagators and better control search process.
+
+* This enables formulation of new and more efficient CP models
+  using AMPL.
+  
+* AMPL CP functionality is extensible: new global constraints and
+  suffixes can be added without any changes to AMPL itself.
+
+</section>
+
+<section data-markdown>
+
+Links
+-----
+
+* AMPL Logic and Constraint Programming Extensions:
+  [http://www.ampl.com/NEW/LOGIC/](http://www.ampl.com/NEW/LOGIC/)
+
+* Trial version of AMPL with IBM/ILOG CP:
+  [http://www.ampl.com/trial.html](http://www.ampl.com/trial.html)
+  
+* Downloads for open-source AMPL solvers and libraries including Gecode:
+  [https://code.google.com/p/ampl/](https://code.google.com/p/ampl/)
+
+* AMPL models by Hakan Kjellerstrand including 100 CP models:
+  [http://www.hakank.org/ampl/](http://www.hakank.org/ampl/)
+
+* Source code for ilogcp, gecode and jacop interfaces on GitHub:
+  [https://github.com/vitaut/ampl](https://github.com/vitaut/ampl)
+
+
+</section>
+
+	<!--section>
+		<h2>Pretty Code</h2>
+		<pre><code contenteditable>
+function linkify( selector ) {
+if( supports3DTransforms ) {
+
+var nodes = document.querySelectorAll( selector );
+
+for( var i = 0, len = nodes.length; i &lt; len; i++ ) {
+var node = nodes[i];
+
+if( !node.className ) ) {
+node.className += ' roll';
+}
+};
+}
+}
+		</code></pre>
+		<p>Courtesy of <a href="http://softwaremaniacs.org/soft/highlight/en/description/">highlight.js</a>.</p>
+	</section>
+
+	<section>
+		<h2>Export to PDF</h2>
+		<p>Presentations can be <a href="https://github.com/hakimel/reveal.js#pdf-export">exported to PDF</a>, below is an example that's been uploaded to SlideShare.</p>
+		<iframe id="slideshare" src="http://www.slideshare.net/slideshow/embed_code/13872948" width="455" height="356" style="margin:0;overflow:hidden;border:1px solid #CCC;border-width:1px 1px 0;margin-bottom:5px" allowfullscreen> </iframe>
+		<script>
+			document.getElementById('slideshare').attributeName = 'allowfullscreen';
+		</script>
+	</section-->
+
+</div>
+
+</div>
+
+<script src="../common/lib/js/head.min.js"></script>
+<script src="../common/js/reveal.min.js"></script>
+
+<script>
+
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+	controls: true,
+	progress: true,
+	history: true,
+	center: true,
+  rollingLinks: false,
+
+	theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+	transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/none
+
+	// Optional libraries used to extend on reveal.js
+	dependencies: [
+		{ src: '../common/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+		{ src: '../common/plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+		{ src: '../common/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+		{ src: '../common/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+		{ src: '../common/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+		{ src: '../common/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+		// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+	]
+});
+
+</script>
+
+</body>
+
+<script src="../common/d3/d3.v3.min.js"></script>
+<script>
+
+var m = [0, 120, 20, 120],
+    w = 1280 - m[1] - m[3],
+    h = 600 - m[0] - m[2],
+    i = 0;
+
+var tree = d3.layout.tree()
+    .size([h, w]);
+
+var diagonal = d3.svg.diagonal()
+    .projection(function(d) { return [d.y, d.x]; });
+
+var vis = d3.select("#trees").append("svg:svg")
+    .attr("width", w + m[1] + m[3])
+    .attr("height", h + m[0] + m[2])
+  .append("svg:g")
+    .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
+
+var root = {
+ "name": "Expr",
+ "children": [
+  {
+   "name": "NumericExpr",
+   "children": [
+    {"name": "UnaryExpr (unary -, abs, tan, ...)"},
+    {"name": "BinaryExpr (+, -, *, /, div, less, ...)"},
+    {"name": "VarArgExpr (min, max)"},
+    {"name": "SumExpr"},
+    {"name": "CountExpr"},
+    {"name": "IfExpr"},
+    {"name": "PiecewiseLinearTerm"},
+    {"name": "NumericConstant"},
+    {"name": "Variable"},
+    {"name": "NumberOfExpr"}
+   ]
+  },
+  {
+   "name": "LogicalExpr",
+   "children": [
+    {"name": "LogicalConstant (0 or 1)"},
+    {"name": "RelationalExpr (<, <=, =, !=, >=, >)"},
+    {"name": "NotExpr (!)"},
+    {"name": "LogicalCountExpr (atleast, atmost, exactly)"},
+    {"name": "BinaryLogicalExpr (||, &&, <==>)"},
+    {"name": "ImplicationExpr (==> else)"},
+    {"name": "IteratedLogicalExpr (exists, forall)"},
+    {"name": "AllDiffExpr"}
+   ]
+  }
+ ]
+};
+
+root.x0 = h / 2;
+root.y0 = 0;
+
+function toggleAll(d) {
+  if (d.children) {
+    d.children.forEach(toggleAll);
+    toggle(d);
+  }
+}
+
+// Initialize the display to show a few nodes.
+//root.children.forEach(toggleAll);
+//toggle(root.children[1]);
+//toggle(root.children[1].children[2]);
+//toggle(root.children[9]);
+//toggle(root.children[9].children[0]);
+
+update(root);
+
+function update(source) {
+  var duration = d3.event && d3.event.altKey ? 5000 : 500;
+
+  // Compute the new tree layout.
+  var nodes = tree.nodes(root).reverse();
+
+  // Normalize for fixed-depth.
+  nodes.forEach(function(d) { d.y = d.depth * 180; });
+
+  // Update the nodes…
+  var node = vis.selectAll("g.node")
+      .data(nodes, function(d) { return d.id || (d.id = ++i); });
+
+  // Enter any new nodes at the parent's previous position.
+  var nodeEnter = node.enter().append("svg:g")
+      .attr("class", "node")
+      .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
+      .on("click", function(d) { toggle(d); update(d); });
+
+  nodeEnter.append("svg:circle")
+      .attr("r", 1e-6)
+      .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+
+  nodeEnter.append("svg:text")
+      .attr("x", function(d) { return d.children || d._children ? -10 : 10; })
+      .attr("dy", ".35em")
+      .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
+      .text(function(d) { return d.name; })
+      .style("fill-opacity", 1e-6);
+
+  // Transition nodes to their new position.
+  var nodeUpdate = node.transition()
+      .duration(duration)
+      .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
+
+  nodeUpdate.select("circle")
+      .attr("r", 4.5)
+      .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+
+  nodeUpdate.select("text")
+      .style("fill-opacity", 1);
+
+  // Transition exiting nodes to the parent's new position.
+  var nodeExit = node.exit().transition()
+      .duration(duration)
+      .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
+      .remove();
+
+  nodeExit.select("circle")
+      .attr("r", 1e-6);
+
+  nodeExit.select("text")
+      .style("fill-opacity", 1e-6);
+
+  // Update the links…
+  var link = vis.selectAll("path.link")
+      .data(tree.links(nodes), function(d) { return d.target.id; });
+
+  // Enter any new links at the parent's previous position.
+  link.enter().insert("svg:path", "g")
+      .attr("class", "link")
+      .attr("d", function(d) {
+        var o = {x: source.x0, y: source.y0};
+        return diagonal({source: o, target: o});
+      })
+    .transition()
+      .duration(duration)
+      .attr("d", diagonal);
+
+  // Transition links to their new position.
+  link.transition()
+      .duration(duration)
+      .attr("d", diagonal);
+
+  // Transition exiting nodes to the parent's new position.
+  link.exit().transition()
+      .duration(duration)
+      .attr("d", function(d) {
+        var o = {x: source.x, y: source.y};
+        return diagonal({source: o, target: o});
+      })
+      .remove();
+
+  // Stash the old positions for transition.
+  nodes.forEach(function(d) {
+    d.x0 = d.x;
+    d.y0 = d.y;
+  });
+}
+
+// Toggle children.
+function toggle(d) {
+  if (d.children) {
+    d._children = d.children;
+    d.children = null;
+  } else {
+    d.children = d._children;
+    d._children = null;
+  }
+}
+
+// ---------------------------------------------
+// table
+
+data = d3.csv.parse(
+'Problem,Input+Conv Time,C API Time,C++ API Time,C/C++ Ratio,,\n\
+assign1,2.001,0.0156233,0.0154757,1.009537533,,\n\
+balassign1,2.106,0.086136,0.085996,1.0016279827,,\n\
+flowshp1,0.529,0.000594689,0.000598812,0.9931147004,,\n\
+flowshp2,0.784,0.000593329,0.00059615,0.9952679695,,\n\
+magic,0.558,0.00276411,0.0028042,0.9857035875,,\n\
+mapcoloring,0.557,8.6488E-007,8.6538E-007,0.9994222191,,\n\
+money,0.472,0.000241843,0.000238001,1.0161427893,,\n\
+nqueens,1.073,8.6449E-007,8.6593E-007,0.998337048,,\n\
+sched1,0.595,0.0172613,0.0174135,0.9912596549,,\n\
+sched2,0.684,0.0142709,0.0146368,0.9750013664,,\n\
+party1,33.688,3.88768,3.94516,0.9854302487,,\n\
+party2,126.194,1.20008,1.21847,0.9849073018,,\n\
+sudokuHard,0.661,8.6618E-007,8.6361E-007,1.0029758803,,\n\
+sudokuVeryEasy,0.726,8.6547E-007,8.6383E-007,1.0018985217,,\n\
+,,,,0.9957590574,,')
+
+console.log(data)
+
+    // the columns you'd like to display
+    var columns = ["Problem", "Input+Conv Time", "C API Time", "C++ API Time", "C/C++ Ratio"];
+
+    var table = d3.select("#apiperformance").append("table"),
+        thead = table.append("thead"),
+        tbody = table.append("tbody");
+
+    // append the header row
+    thead.append("tr")
+        .selectAll("th")
+        .data(columns)
+        .enter()
+        .append("th").append("b")
+            .text(function(column) { return column; });
+
+    // create a row for each object in the data
+    var rows = tbody.selectAll("tr")
+        .data(data)
+        .enter()
+        .append("tr");
+
+    // create a cell in each row for each column
+    var cells = rows.selectAll("td")
+        .data(function(row) {
+            return columns.map(function(column) {
+                return {column: column, value: row[column]};
+            });
+        })
+        .enter()
+        .append("td")
+            .text(function(d) { return d.value; });
+</script>
+</html>
