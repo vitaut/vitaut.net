@@ -59,21 +59,22 @@ google.setOnLoadCallback(drawChart);
 function drawChart() {
 var data = google.visualization.arrayToDataTable([
 ['Method'                      , 'Time, s' , 'Time ratio' ],
-['fmt::FormatInt'              ,   0.102263,           1.0],
-['fmt::Writer'                 ,   0.132242, 1.29315588238],
-['cppx::decimal_from'          ,   0.132803, 1.29864173748],
-['karma::generate'             ,   0.180376, 1.76384420563],
-['fmt::Writer+std::string'     ,    0.37101, 3.62799839629],
-['fmt::Format'                 ,   0.381366,  3.7292666947],
-['karma::generate+std::string' ,   0.400726, 3.91858247851],
-['ltoa'                        ,   0.507336,  4.9610905215],
-['fmt::Format+std::string'     ,   0.631735, 6.17755199828],
-['std::stringstream'           ,   0.825538, 8.07269491409],
-['sprintf'                     ,   0.836687, 8.18171772782],
-['boost::lexical_cast'         ,   0.982763, 9.61015225448],
-['sprintf+std::string'         ,    1.13878, 11.1357969158],
-['std::to_string'              ,    1.42617, 13.9460997624],
-['boost::format'               ,    4.21271, 41.1948603112]
+['fmt::FormatInt'              ,   0.104118,           1.0],
+['cppx::decimal_from'          ,    0.13055,  1.2538658061],
+['fmt::Writer'                 ,   0.130775, 1.25602681573],
+['karma::generate'             ,   0.178388, 1.71332526556],
+['strtk::type_to_string'       ,   0.347914, 3.34153556542],
+['fmt::Writer+std::string'     ,   0.377554, 3.62621256651],
+['fmt::Format'                 ,   0.389099, 3.73709637142],
+['karma::generate+std::string' ,    0.39802, 3.82277800188],
+['ltoa'                        ,   0.510312, 4.90128508039],
+['fmt::Format+std::string'     ,   0.624981, 6.00262202501],
+['std::stringstream'           ,   0.820035, 7.87601567452],
+['sprintf'                     ,   0.891445, 8.56187210665],
+['boost::lexical_cast'         ,   0.985247, 9.46279221652],
+['sprintf+std::string'         ,    1.15456, 11.0889567606],
+['std::to_string'              ,    1.42803, 13.7154958797],
+['boost::format'               ,    4.30216,  41.320040723],
 ]);
 
 var table = new google.visualization.Table(document.getElementById('table_div'));
@@ -172,3 +173,7 @@ fmt::FormatInt(42).c_str(); // convert and get as a C string
 
 I've updated the test results and as you can see it is about 30% faster than the
 previous winner, `fmt::Writer`.
+
+**Update 4:**
+
+Added `strtk::type_to_string` as suggested in the comments.
