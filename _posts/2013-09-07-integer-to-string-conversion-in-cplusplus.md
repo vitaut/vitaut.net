@@ -30,6 +30,7 @@ of integer to string conversion in C++:
 8. [Public-domain ltoa](http://www8.cs.umu.se/~isak/snippets/ltoa.c) implementation
 9. [decimal_from](http://ideone.com/nrQfA8) function suggested by Alf P. Steinbach
 10. `fmt::FormatInt` from the [format library](https://github.com/vitaut/format)
+11. `strtk::type_to_string` from the [strtk library](https://code.google.com/p/strtk/)
 
 To measure the performance I used a
 [benchmark from Boost Karma](http://www.boost.org/doc/libs/1_52_0/libs/spirit/doc/html/spirit/karma/performance_measurements/numeric_performance/int_performance.html).
@@ -92,8 +93,9 @@ chart.draw(data, options);
 </script>
 
 I consider these results pretty exciting. First they show that `fmt::Writer` is the
-fastest of the tested methods, almost 40% faster than `karma::generate`, the next
-contender. Here's the code used to convert an integer `n` to a string using `fmt::Writer`:
+fastest (was the fastest, see the updates at the bottom of the post) of the tested
+methods, almost 40% faster than `karma::generate`, the next contender. Here's the
+code used to convert an integer `n` to a string using `fmt::Writer`:
 
 {% highlight c++ %}
 fmt::Writer w;
@@ -142,8 +144,8 @@ comment section if there is a better version available somewhere.
 **Update 2:**
 Added [decimal_from](http://ideone.com/nrQfA8) function suggested by Alf P. Steinbach.
 It has approximately the same performance as `fmt::Writer`, the difference of 0.5% is
-probably less than the measurement error. As `sprintf` and `ltoa` and unlike
-`fmt::Writer` it requires preallocated buffer.
+probably less than the measurement error. In some runs it is even marginally faster.
+As `sprintf` and `ltoa` and unlike `fmt::Writer` it requires preallocated buffer.
 
 **Update 3:**
 Inspired by a lesson learned from Alexandrescu's talk that "no work is less work than
