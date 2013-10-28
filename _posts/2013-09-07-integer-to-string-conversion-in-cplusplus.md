@@ -111,8 +111,8 @@ is likely to be lower.
 
 Another remarkable and surprising (to me) thing about the results is that `sprintf` is
 not particularly fast for integer formatting. It has about the same performance as
-`std::stringstream`, about 6 times slower than `fmt::Writer`. One reason for this
-can be is that it parses the format string, but so does `fmt::Format` which is two
+`std::stringstream`, about 6 times slower than `fmt::Writer`. One possible reason for
+this is that `sprintf` parses the format string, but so does `fmt::Format` which is two
 times faster than `sprintf`. Anyway, the good thing is that you don't have to
 use `sprintf` even for performance reasons. There are much faster or at least equally
 slow but safer methods even in the standard library.
