@@ -185,7 +185,7 @@ Added `strtk::type_to_string` as suggested in the comments.
 Added side effects to make sure that the code being testing is not optimized
 away by a super clever compiler (I wish there existed one). This is implemented
 by computing a sum of lengths of all formatted strings using strlen. 
-The strlen function is used even in cases where std::string::size could be use
+The strlen function is used even in cases where std::string::size could be used
 to make sure the same extra computation is done for all methods. Note that since
 this adds a more or less constant factor to all the methods, high performers are
 penalized more.
