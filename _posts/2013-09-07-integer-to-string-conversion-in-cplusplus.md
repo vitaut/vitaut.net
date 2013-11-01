@@ -60,22 +60,22 @@ google.setOnLoadCallback(drawChart);
 function drawChart() {
 var data = google.visualization.arrayToDataTable([
 ['Method'                      , 'Time, s' , 'Time ratio' ],
-['fmt::FormatInt'              ,   0.104118,           1.0],
-['cppx::decimal_from'          ,    0.13055,  1.2538658061],
-['fmt::Writer'                 ,   0.130775, 1.25602681573],
-['karma::generate'             ,   0.178388, 1.71332526556],
-['strtk::type_to_string'       ,   0.347914, 3.34153556542],
-['fmt::Writer+std::string'     ,   0.377554, 3.62621256651],
-['fmt::Format'                 ,   0.389099, 3.73709637142],
-['karma::generate+std::string' ,    0.39802, 3.82277800188],
-['ltoa'                        ,   0.510312, 4.90128508039],
-['fmt::Format+std::string'     ,   0.624981, 6.00262202501],
-['std::stringstream'           ,   0.820035, 7.87601567452],
-['sprintf'                     ,   0.891445, 8.56187210665],
-['boost::lexical_cast'         ,   0.985247, 9.46279221652],
-['sprintf+std::string'         ,    1.15456, 11.0889567606],
-['std::to_string'              ,    1.42803, 13.7154958797],
-['boost::format'               ,    4.30216,  41.320040723],
+['fmt::FormatInt'              ,   0.140499,           1.0],
+['cppx::decimal_from'          ,   0.160447, 1.14197965822],
+['fmt::Writer'                 ,   0.170481, 1.21339653663],
+['karma::generate'             ,   0.217157, 1.54561242429],
+['strtk::type_to_string'       ,   0.381777, 2.71729336152],
+['karma::generate+std::string' ,   0.405444, 2.88574295902],
+['fmt::Writer+std::string'     ,   0.414739, 2.95190001352],
+['fmt::Format'                 ,   0.443754, 3.15841393889],
+['ltoa'                        ,   0.538002, 3.82922298379],
+['fmt::Format+std::string'     ,   0.686678, 4.88742268628],
+['sprintf'                     ,   0.948262, 6.74924376686],
+['boost::lexical_cast'         ,    1.08146, 7.69727898419],
+['sprintf+std::string'         ,    1.20853, 8.60169823273],
+['std::stringstream'           ,    1.42531, 10.1446273639],
+['std::to_string'              ,     1.5242, 10.8484757899],
+['boost::format'               ,    4.43679, 31.5788012726]
 ]);
 
 var table = new google.visualization.Table(document.getElementById('table_div'));
@@ -179,3 +179,13 @@ previous winner, `fmt::Writer`.
 **Update 4:**
 
 Added `strtk::type_to_string` as suggested in the comments.
+
+**Update 5:**
+
+Added side effects to make sure that the code being testing is not optimized
+away by a super clever compiler (I wish there existed one). This is implemented
+by computing a sum of lengths of all formatted strings using strlen. 
+The strlen function is used even in cases where std::string::size could be use
+to make sure the same extra computation is done for all methods. Note that since
+this adds a more or less constant factor to all the methods, high performers are
+penalized more.
