@@ -7,8 +7,8 @@ date: 2014-01-02
 {{ page.title }}
 ================
 
-2013 is over so it's time to report [NEOS Server](http://www.neos-server.org/neos/)
-statistics.
+2013 is over so it's time to report the annual [NEOS Server](http://www.neos-server.org/neos/)
+statistics again.
 
 <div style="width: 500px; height: 300px" id="input_chart">
 </div>
