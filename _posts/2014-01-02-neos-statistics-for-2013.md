@@ -31,6 +31,9 @@ MINOS, MINLP and KNITRO.
 <div style="width: 500px; height: 300px" id="interface_chart">
 </div>
 
+The input methods have changed dramatically as well. While in 2012 most submissions
+where done via web, in 2013 submissions via APIs have taken the lead.
+
 The IPython notebook which I used to extract statistics from NEOS
 is available [here](https://github.com/vitaut/neos-stats).
 I have updated it to make the start and end date configurable.
