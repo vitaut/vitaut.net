@@ -36,6 +36,7 @@ is available [here](https://github.com/vitaut/neos-stats).
 I have updated it to make the start and end date configurable.
 
 <script type="text/javascript">
+/*<![CDATA[*/
 google.load("visualization", "1", {packages:["corechart"]});
 google.setOnLoadCallback(drawChart);
 function drawChart() {
@@ -107,4 +108,5 @@ data.addRows([
 chart = new google.visualization.ColumnChart(document.getElementById('interface_chart'));
 chart.draw(data, {title: 'Interfaces'});
 }
+/*]]>*/
 </script>
