@@ -54,7 +54,7 @@ conversion time to the best time:
 </div>
 <div style="height: 400px" id="chart_div">
 </div>
-<script type="text/javascript" src="/files/2009-09-stats.js"></script>
+<script type="text/javascript" src="/files/2013-09-stats.js"></script>
 
 I consider these results pretty exciting. First they show that `fmt::Writer` is the
 fastest (was the fastest, see the updates at the bottom of the post) of the tested

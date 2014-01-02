@@ -99,28 +99,7 @@ So here are the results:
 
 <div style="width: 500px; height: 300px" id="chart_div">
 </div>
-<script type="text/javascript">
-google.load("visualization", "1", {packages:["corechart"]});
-google.setOnLoadCallback(drawChart);
-function drawChart() {
-var data = google.visualization.arrayToDataTable([
-  ['Name',        'Time, s'],
-  ['sprintf',      1.12134 ],
-  ['iostreams',    0.839434],
-  ['Boost.Format', 5.61053 ],
-  ['int_',         0.393489],
-  ['format',       0.42093 ]
-]);
-
-var options = {
-  title: 'Performance',
-  hAxis: {title: 'Library', titleTextStyle: {color: 'red'}}
-};
-
-var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
-chart.draw(data, options);
-}
-</script>
+<script type="text/javascript" src="/files/2012-12-stats.js"></script>
 
 As you can see Karma is indeed the fastest among the tested methods.
 However, the difference between format and Karma is only about 7% which
