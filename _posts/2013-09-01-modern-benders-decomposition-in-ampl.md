@@ -29,7 +29,7 @@ With this in mind, we can think of deterministic
 [mixed-integer programming](http://en.wikipedia.org/wiki/Integer_programming)
 as a special case of stochastic mixed-integer programming. Not sure if it is of
 much use because stochastic programming problems are generally more difficult to
-solved. However it allows to see that the modern Benders decomposition is in fact
+solve. However it allows to see that the modern Benders decomposition is in fact
 a variant of the [integer L-shaped method](http://www.sciencedirect.com/science/article/pii/016763779390002X).
 
 So with the help of smpswriter, one can use any SP solver implementing the integer
