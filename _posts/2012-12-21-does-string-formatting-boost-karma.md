@@ -90,7 +90,7 @@ Unfortunately I haven't found an equivalent to printf's `0` format specifier.
 One of the claimed advantages of Karma is performance so I decided to do a
 small comparison of integer to string conversion with my formatting library.
 I took the [int_generator](http://www.boost.org/doc/libs/1_43_0/libs/spirit/optimization/karma/int_generator.cpp)
-test and modified it to include the format library. I've exposed an integer
+test and modified it to include the C++ Format library. I've exposed an integer
 formatting method through `Formatter::operator<<(int)` and used it to avoid
 unnecessary parsing of a format string and make the comparison to Karma more
 fair. I plan to add similar methods for other types as well.
@@ -102,8 +102,8 @@ So here are the results:
 <script type="text/javascript" src="/files/2012-12-stats.js"></script>
 
 As you can see Karma is indeed the fastest among the tested methods.
-However, the difference between format and Karma is only about 7% which
-is not too bad considering that format does runtime handling of format
+However, the difference between C++ Format and Karma is only about 7% which
+is not too bad considering that C++ Format does runtime handling of format
 specifications and automatically allocates enough space for the output
 while Karma uses a predefined format and a fixed size buffer. What is
 surprising to me is that both sprintf and iostreams are much slower.
@@ -111,9 +111,12 @@ I would love to know why, so if you have any ideas let me know in the
 comment section below.
 
 The performance test is called `int_generator` and it is available in the
-[format repository](https://github.com/vitaut/format) at GitHub so you
+[format repository](https://github.com/cppformat/cppformat) at GitHub so you
 can verify the results.
 
 The conclusion is that Karma is most useful if you need fast output in
 some predefined format known at compile time, but not for any user messages.
 
+*Update*: Karma is no longer the fastest method, see the
+[follow up post](http://zverovich.net/2013/09/07/integer-to-string-conversion-in-cplusplus.html)
+for new results.

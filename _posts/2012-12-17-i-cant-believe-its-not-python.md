@@ -17,7 +17,7 @@ date: 2012-12-17
   </div>
 
 I've been recently experimenting with a [new string formatting
-library for C++](https://github.com/vitaut/format) and realized
+library for C++](https://github.com/cppformat/cppformat) and realized
 that it can be used for converting objects to strings à la Python's
 [str](http://docs.python.org/2/library/functions.html#str) function.
 In fact the implementation of such function is almost trivial:

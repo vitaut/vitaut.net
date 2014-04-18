@@ -8,7 +8,7 @@ date: 2012-12-15
 ================
 
 In [one of the previous posts](http://zverovich.net/2012/12/12/a-better-string-formatting-library-for-cplusplus.html)
-I've introduced [format](https://github.com/vitaut/format), a new formatting
+I've introduced [C++ Format](https://github.com/cppformat/cppformat), a new formatting
 library for C++ and briefly described its API on a few examples.
 In this post I'll compare its performance with other libraries
 and discuss some design aspects that make it fast.
@@ -24,24 +24,24 @@ test name      run time
 ============== ========
 libc printf     1.28s
 std::ostream    2.09s
-format          1.32s
+cppformat       1.32s
 tinyformat      2.55s
 boost::format  10.42s
 ============== ========
 {% endhighlight %}
 
 The instructions on running the tests are available
-[here](https://github.com/vitaut/format#running-the-tests) so you can easily
+[here](https://github.com/cppformat/cppformat#running-the-tests) so you can easily
 reproduce the results.
 
-As you can see, the format library is only slightly slower then `printf` and
+As you can see, the C++ Format library is only slightly slower then `printf` and
 both methods are considerably faster than the alternatives. Boost Format
-is exceptionally slow, almost 8 times slower than the format library.
+is exceptionally slow, almost 8 times slower than the C++ Format library.
 Poor performance of Boost Format is also confirmed
 [here](http://accu.org/index.php/journals/1539), see section
 Efficiency.
 
-Now that we see that the format library is almost as fast as plain old
+Now that we see that the C++ Format library is almost as fast as plain old
 `printf`, let's see how it is achieved without compromising safety
 and extensibility.
 
@@ -49,7 +49,7 @@ One of the main things that affects performance is dynamic memory allocation.
 As shown in [this article](http://accu.org/index.php/journals/1539) Boost
 Format makes lots of allocations (from 16 to 41 depending on a compiler) for
 a simple formatting operation. FastFormat library does from 1 to 3
-allocations for the same example. The format library can avoid any
+allocations for the same example. The C++ Format library can avoid any
 allocation if the number of format arguments is less or equal to 10
 and the output fits into a 500 character buffer. These limits are tentative
 and can be easily adjusted if necessary.
@@ -95,7 +95,7 @@ The main idea is that a formatting function returns a temporary object that
 accepts arguments through overloaded operator `<<` and the formatting is
 performed in the destructor of this temporary object.
 
-Here is an annotated example that uses the format library:
+Here is an annotated example that uses the C++ Format library:
 
 {% highlight c++ %}
    fmt::Format("{0}-{1}") << std::string("X") << 37;
@@ -109,7 +109,7 @@ different post.) So there is no need to copy arguments, it is enough to store
 references or pointers to them and use when necessary avoiding dynamic memory
 allocations. This is the main thing that makes format so fast.
 
-Another thing that allows format to avoid dynamic allocations in many cases is
+Another thing that allows C++ Format to avoid dynamic allocations in many cases is
 a special array data structure optimized for small size. If the number of
 elements is smaller than some number defined at compile time this data
 structure stores them in a fixed sized array in the object itself.

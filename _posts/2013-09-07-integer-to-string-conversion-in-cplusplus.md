@@ -25,11 +25,11 @@ of integer to string conversion in C++:
 4. boost::format from the [Boost Format library](http://www.boost.org/doc/libs/1_54_0/libs/format/)
 4. [boost::lexical_cast](http://www.boost.org/doc/libs/1_54_0/doc/html/boost_lexical_cast.html)
 5. karma::generate from the [Boost Spirit Parser framework](http://www.boost.org/doc/libs/1_54_0/libs/spirit/doc/html/index.html)
-6. [fmt::Writer](http://zverovich.net/format/#project0classfmt_1_1_basic_writer) from the [format library](https://github.com/vitaut/format)
-7. [fmt::Format](http://zverovich.net/format/#fmt::Format__StringRef) from the [format library](https://github.com/vitaut/format)
+6. [fmt::Writer](http://zverovich.net/format/#project0classfmt_1_1_basic_writer) from the [C++ Format library](https://github.com/cppformat/cppformat)
+7. [fmt::Format](http://zverovich.net/format/#fmt::Format__StringRef) from the [C++ Format library](https://github.com/cppformat/cppformat)
 8. [Public-domain ltoa](http://www8.cs.umu.se/~isak/snippets/ltoa.c) implementation
 9. [decimal_from](http://ideone.com/nrQfA8) function suggested by Alf P. Steinbach
-10. `fmt::FormatInt` from the [format library](https://github.com/vitaut/format)
+10. `fmt::FormatInt` from the [C++ Format library](https://github.com/cppformat/cppformat)
 11. `strtk::type_to_string` from the [strtk library](https://code.google.com/p/strtk/)
 
 To measure the performance I used a
@@ -95,9 +95,9 @@ $ cd format-benchmark
 $ ./int-generator-test.py
 {% endhighlight %}
 
-You can find out more about `fmt::Writer` and `fmt::Format` in the [format
-library repository](https://github.com/vitaut/format) on GitHub and in the
-[documentation](http://zverovich.net/format/).
+You can find out more about `fmt::Writer` and `fmt::Format` in the [C++ Format
+library repository](https://github.com/cppformat/cppformat) on GitHub and in the
+[documentation](http://cppformat.github.io/doc/latest).
 
 **Update:**
 Since I don't have `ltoa` on my platform, I've added a basic
