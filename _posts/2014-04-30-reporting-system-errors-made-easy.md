@@ -37,7 +37,7 @@ the error message corresponding to the error code and throw
 <code>SystemError</code> exception with the description of the form:
 
 {% highlight text %}
-&lt;your-message&gt;: &lt;system-error-message&gt;
+<your-message>: <system-error-message>
 {% endhighlight text %}
 
 where <code>&lt;your-message&gt;</code> is your formatted message and
