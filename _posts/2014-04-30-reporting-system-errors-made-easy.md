@@ -64,5 +64,5 @@ error codes as given by <code>GetLastError</code> on Windows. Obviously
 this function is only available on Windows.
 
 This new functionality is implemented in the [C++ Format repository](https://github.com/cppformat/cppformat)
-and will be available in the next release. Also, ulike <code>std::system_error</code>
+and will be available in the next release. Also, unlike <code>std::system_error</code>
 and friends, it works with legacy compilers that don't (fully) support C++11.
