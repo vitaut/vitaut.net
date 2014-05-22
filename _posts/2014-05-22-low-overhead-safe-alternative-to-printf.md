@@ -53,7 +53,7 @@ no linkage options for them.
 As you can see C++ Format has 80% less overhead in terms of resulting code
 size compared to IOStreams and comes pretty close to `printf`. In real code
 the effect of replacing `printf` with C++ Format methods will be even more
-negligible as the benchmark code consist almost entirely of print methods.
+negligible as the benchmark code consists almost entirely of print methods.
 
 So the conclusion is that safe print methods can easily compete with `printf`
 both in terms of resulting code size and runtime speed. However, this requires
