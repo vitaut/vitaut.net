@@ -18,7 +18,7 @@ date: 2014-05-22
 
 In posts [Making string formatting fast](http://zverovich.net/2012/12/15/making-string-formatting-fast.html)
 and [Fast integer to string conversion in C++](http://zverovich.net/2013/09/07/integer-to-string-conversion-in-cplusplus.html)
-I have shown that safe alternatives to `printf` and `sprintf` and in particular
+I have shown that safe alternatives to `printf` and `sprintf` such as
 the [C++ Format library](http://cppformat.github.io/) can perform on par and
 even outperform their unsafe C counterparts.
 
