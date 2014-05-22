@@ -19,6 +19,5 @@ var options = {
 };
 
 var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
-data.removeColumn(1);
 chart.draw(data, options);
 }
