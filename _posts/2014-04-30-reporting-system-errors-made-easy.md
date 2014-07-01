@@ -28,13 +28,12 @@ you have to call a Windows API function and the error code returned by
 with 7 arguments with meaning of some of them depending on values of the other.
 
 To cope with this, the [C++ Format library](http://cppformat.github.io) now
-provides <code>SystemError</code> exception class and two simple functions,
-<code>ThrowSystemError</code> and <code>ThrowWinError</code>. Both functions
-take an error code and a format string and accept variable number of
-arguments feeded via <code>operator&lt;&lt;</code> like the <code>Format</code>
-function. They format the arguments according to the format string, get
-the error message corresponding to the error code and throw
-<code>SystemError</code> exception with the description of the form:
+provides two exception classes, <code>SystemError</code> and
+<code>WindowsError</code>. The constructors of both classes take an error code,
+a format string and arbitrary formatting arguments like the <code>format</code>
+function. Each function formats the arguments according to the format string,
+gets the error message corresponding to the error code and constructs an
+exception object with the description of the form:
 
 {% highlight text %}
 <your-message>: <system-error-message>
@@ -46,12 +45,12 @@ where <code>&lt;your-message&gt;</code> is your formatted message and
 It is best illustrated with an example. Let's say we need to open
 a file and pass the <code>FILE</code> object into some legacy C API.
 That's how you can do this with proper error handling using
-<code>ThrowSystemError</code>:
+<code>SystemError</code>:
 
 {% highlight c++ %}
 FILE *f = fopen(filename, "r");
 if (!f)
-  fmt::ThrowSystemError(errno, "Cannot open file '{}'") << filename;
+  throw fmt::SystemError(errno, "Cannot open file '{}'", filename);
 {% endhighlight c++ %}
 
 If the file doens't exist, this will throw <code>SystemError</code> exception
@@ -59,10 +58,12 @@ with a description such as "Cannot open file 'test.log': No such file or directo
 And of course you can wrap this in a nice reusable RAII class that makes
 sure the file is closed when the object is destroyed.
 
-The second function, <code>ThrowWinError</code> is similar, but it accept
+The second class, <code>WindowsError</code> is similar, but it accept
 error codes as given by <code>GetLastError</code> on Windows. Obviously
-this function is only available on Windows.
+this class is only available on Windows.
 
-This new functionality is implemented in the [C++ Format repository](https://github.com/cppformat/cppformat)
-and will be available in the next release. Also, unlike <code>std::system_error</code>
-and friends, it works with legacy compilers that don't (fully) support C++11.
+This new functionality is implemented in the [C++ Format repository](https://github.com/cppformat/cppformat).
+Unlike <code>std::system_error</code> and friends, it works with legacy
+compilers that don't (fully) support C++11.
+
+**Update**: brought the post up to date with the latest C++ Format API.
