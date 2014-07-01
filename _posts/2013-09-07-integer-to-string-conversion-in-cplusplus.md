@@ -26,7 +26,7 @@ of integer to string conversion in C++:
 4. [boost::lexical_cast](http://www.boost.org/doc/libs/1_54_0/doc/html/boost_lexical_cast.html)
 5. karma::generate from the [Boost Spirit Parser framework](http://www.boost.org/doc/libs/1_54_0/libs/spirit/doc/html/index.html)
 6. [fmt::Writer](http://zverovich.net/format/#project0classfmt_1_1_basic_writer) from the [C++ Format library](https://github.com/cppformat/cppformat)
-7. [fmt::Format](http://zverovich.net/format/#fmt::Format__StringRef) from the [C++ Format library](https://github.com/cppformat/cppformat)
+7. [fmt::format](http://zverovich.net/format/#fmt::Format__StringRef) from the [C++ Format library](https://github.com/cppformat/cppformat)
 8. [Public-domain ltoa](http://www8.cs.umu.se/~isak/snippets/ltoa.c) implementation
 9. [decimal_from](http://ideone.com/nrQfA8) function suggested by Alf P. Steinbach
 10. `fmt::FormatInt` from the [C++ Format library](https://github.com/cppformat/cppformat)
@@ -36,7 +36,7 @@ To measure the performance I used a
 [benchmark from Boost Karma](http://www.boost.org/doc/libs/1_52_0/libs/spirit/doc/html/spirit/karma/performance_measurements/numeric_performance/int_performance.html).
 This benchmark generates 10,000,000 random integers and converts them to strings using
 different methods measuring conversion time. I've replaced nonportable `itoa` with
-`sprintf` and added `std::to_string`, `boost::lexical_cast`, `fmt::Writer` and `fmt::Format`
+`sprintf` and added `std::to_string`, `boost::lexical_cast`, `fmt::Writer` and `fmt::format`
 methods.
 
 Apart from adding new conversion methods, I've also noticed that the benchmark
@@ -76,7 +76,7 @@ is likely to be lower.
 Another remarkable and surprising (to me) thing about the results is that `sprintf` is
 not particularly fast for integer formatting. It has about the same performance as
 `std::stringstream`, about 6 times slower than `fmt::Writer`. One possible reason for
-this is that `sprintf` parses the format string, but so does `fmt::Format` which is two
+this is that `sprintf` parses the format string, but so does `fmt::format` which is two
 times faster than `sprintf`. Anyway, the good thing is that you don't have to
 use `sprintf` even for performance reasons. There are much faster or at least equally
 slow but safer methods even in the standard library.
@@ -95,7 +95,7 @@ $ cd format-benchmark
 $ ./int-generator-test.py
 {% endhighlight %}
 
-You can find out more about `fmt::Writer` and `fmt::Format` in the [C++ Format
+You can find out more about `fmt::Writer` and `fmt::format` in the [C++ Format
 library repository](https://github.com/cppformat/cppformat) on GitHub and in the
 [documentation](http://cppformat.github.io/doc/latest).
 
