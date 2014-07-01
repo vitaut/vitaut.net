@@ -62,7 +62,7 @@ The second class, <code>WindowsError</code> is similar, but it accept
 error codes as given by <code>GetLastError</code> on Windows. Obviously
 this class is only available on Windows.
 
-This functionality is available in [C++ Format repository](https://github.com/cppformat/cppformat)
+This functionality is available in [C++ Format](https://github.com/cppformat/cppformat)
 version 0.10.0 and later. Unlike <code>std::system_error</code> and friends,
 it works with legacy compilers that don't (fully) support C++11.
 
