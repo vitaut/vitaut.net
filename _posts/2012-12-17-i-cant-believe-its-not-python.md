@@ -25,12 +25,12 @@ In fact the implementation of such function is almost trivial:
 {% highlight c++ %}
 template <typename T>
 std::string str(const T &value) {
-  return fmt::str(fmt::Format("{0}") << value);
+  return fmt::format("{}", value);
 }
 {% endhighlight %}
 
 See [this post](/2012/12/12/a-better-string-formatting-library-for-cplusplus.html)
-to learn more about `fmt::Format`.
+to learn more about `fmt::format`.
 
 The `str` function, unlike `sprintf`, can work with any type that has
 appropriate `std::ostream` inserter operator `<<`. For example:
@@ -53,9 +53,9 @@ auto s = str(Date(2012, 12, 9));
 {% endhighlight %}
 
 The `str` function applies the default formatting for the type, so
-if you want to have control over formatting you should use `Format` instead.
+if you want to have control over formatting you should use `format` instead.
 
-Being based on `Format`, `str` uses IOStreams only for user-defined types,
+Being based on `format`, `str` uses IOStreams only for user-defined types,
 but not for built-in types which it handles
 [much more efficiently](/2012/12/15/making-string-formatting-fast.html).
 Additional performance improvement in `str` can be achieved by getting rid
