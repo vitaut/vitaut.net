@@ -31,7 +31,7 @@ To cope with this, the [C++ Format library](http://cppformat.github.io) now
 provides two exception classes, <code>SystemError</code> and
 <code>WindowsError</code>. The constructors of both classes take an error code,
 a format string and arbitrary formatting arguments like the <code>format</code>
-function. Each function formats the arguments according to the format string,
+function. Each constructor formats the arguments according to the format string,
 gets the error message corresponding to the error code and constructs an
 exception object with the description of the form:
 
