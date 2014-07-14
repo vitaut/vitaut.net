@@ -392,6 +392,17 @@ ampl: model toy.ampl
 ampl: option solver localsolver;
 ampl: option localsolver_options 'timelimit=1';
 ampl: solve;
+localsolver 4.0: timelimit=1
+Preprocess model 100% ...
+Close model 100% ...
+Initialize threads 100% ...
+Push initial solutions 100% ...
+...
+feasible solution
+running time = 1 sec, nb iterations = 508216, nb moves = 1015123
+accepted = 1677 (0.165202%), improving = 856 (0.0843248%)
+rejected = 1013446 (99.8348%), infeasible = 721134 (71.0391%)
+objective 280
 {% endhighlight %}
 
 Here I solve a [toy knapsack problem](https://github.com/ampl/ampl/blob/master/models/toy.ampl)
