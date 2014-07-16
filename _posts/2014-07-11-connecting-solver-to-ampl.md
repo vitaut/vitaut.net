@@ -359,23 +359,7 @@ system. All we need for a new driver is to add the following line to
 `solvers/CMakeLists.txt`:
 
 {% highlight bash %}
-add_subdirectory(localsolver)
-{% endhighlight %}
-
-and write a CMake config:
-
-{% highlight bash %}
-include_directories(/opt/localsolver_4_0/include)
-
-add_library(ampllocalsolver-static localsolver.cc)
-target_link_libraries(ampllocalsolver-static util /opt/localsolver_4_0/bin/liblocalsolver.so)
-add_dependencies(ampllocalsolver-static arith_h)
-
-add_library(ampllocalsolver SHARED ../util/solver-c.cc)
-target_link_libraries(ampllocalsolver ampllocalsolver-static)
-
-add_executable(localsolver main.cc)
-target_link_libraries(localsolver ampllocalsolver-static)
+add_ampl_solver(localsolver)
 {% endhighlight %}
 
 Now we can go to the top level `ampl` directory and build the code:
@@ -416,3 +400,7 @@ range and equality constraints), the time limit option and statistics reporting.
 The source code for the AMPL/LocalSolver interface is available in the
 [solvers/localsolver](https://github.com/ampl/ampl/tree/master/solvers/localsolver) directory
 [AMPL GitHub repository](https://github.com/ampl/ampl).
+
+
+*Update*: Simplified CMake configuration. Now only a single call to <code>add_ampl_solver</code>
+is required.
