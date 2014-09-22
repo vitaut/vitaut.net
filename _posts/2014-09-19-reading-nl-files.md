@@ -156,7 +156,7 @@ $ cd mp
 $ cmake .
 $ make
 $ wget -O nlreader-example.cc http://bit.ly/1paZ3yT
-$ g++ -onlreader-example nlreader-example.cc -Iinclude -Llib -lmp
+$ g++ -O3 -onlreader-example nlreader-example.cc -Iinclude -Llib -lmp
 {% endhighlight %}
 
 Now let's get a bunch of nonlinear problems from
@@ -175,13 +175,13 @@ cute/brkmcc.mod.nl: 1 divisions
 cute/cantilvr.mod.nl: 5 divisions
 cute/chemrcta.mod.nl: 4996 divisions
 ...
-real	0m3.623s
-user	0m3.559s
-sys	0m0.052s
+real	0m1.663s
+user	0m1.643s
+sys	0m0.020s
 {% endhighlight %}
 
 The `nlreader-example` program processes 712 .nl files, totaling 205 MiB,
-in just 3.6 seconds. I plan to compare its performance to the reference ASL
+in just 1.6 seconds. I plan to compare its performance to the reference ASL
 reader in a follow-up post.
 
 This functionality enables building new powerful tools for processing optimization
