@@ -389,7 +389,7 @@ rejected = 1013446 (99.8348%), infeasible = 721134 (71.0391%)
 objective 280
 {% endhighlight %}
 
-Here I solve a [toy knapsack problem](https://github.com/ampl/ampl/blob/master/models/toy.ampl)
+Here I solve a [toy knapsack problem](https://github.com/ampl/ampl.github.io/blob/master/models/toy.ampl)
 from LocalSolver docs converted into AMPL.
 
 As you can see connecting a solver to AMPL is not difficult. It took little time and only
