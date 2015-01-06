@@ -1,0 +1,16 @@
+The AMPL Interface to Constraint Programming Solvers
+
+Algebraic modeling languages in general and AMPL in particular are widely used in combinatorial
+or discrete optimization, but their application has often been limited to modeling mixed­integer
+programming problems. At the same time AMPL has a long history of supporting more general
+types of problems and optimization constructs.
+
+Constraint programming (CP) allows a more natural representation of many combinatorial
+constructs. The constraint programming extensions of AMPL have been available since mid 90s
+and a number of extensions to other modeling languages has been proposed due to increasing
+popularity of this methodology.
+
+In this talk we describe the AMPL interface to constraint programming solvers. Since a general-
+purpose modeling language normally supports different solvers, we address the challenges of
+accommodating a variety of solver needs. We also describe recent developments in CP solver
+support in AMPL.
