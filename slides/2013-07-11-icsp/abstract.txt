@@ -1,0 +1,24 @@
+Speaker: Victor Zverovich
+Co-authors (if any): Gautam Mitra, Csaba Fabian
+Title: A solver for problems with second-order stochastic dominance constraints
+Keywords: second-order stochastic dominance, solver, asset allocation, ampl
+
+Stochastic dominance provides an important framework of making choice; it is
+applied increasingly in asset allocation decisions which take into account risk.
+In particular, second-order stochastic dominance (SSD) captures risk-averse
+preferences; this is a fundamental assumption underlying investment behaviour.
+It is established as a theoretically sound choice criterion in portfolio
+selection models.
+
+We describe the architecture and implementation of a solver for problems with
+second-order stochastic dominance constraints. The solver provides an efficient
+implementation of cutting-plane methods proposed in Fábián, Mitra, and Roman
+(2009) and Fábián, Mitra, Roman, and Zverovich (2010). These methods have been
+shown to process problems with a large number of scenarios efficiently and allow
+regularization by the level method of Lemarechal et al. (1995). The SSD solver
+described by us can be called from AMPL and other modeling systems that support
+AMPL solver interface.
+
+We illustrate the use of the solver for an exemplar portfolio selection model
+and report computational results showing that it can solve efficiently very
+large problems.
