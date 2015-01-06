@@ -1,0 +1,897 @@
+<!doctype html>
+<html>
+<head>
+  <title>A Solver for Problems with Second-Order Stochastic Dominance Constraints</title>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+  <meta name="author" content="Victor Zverovich">
+
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+  <link rel="stylesheet" href="../common/css/reveal.min.css">
+  <link rel="stylesheet" href="../common/css/theme/beige.css" id="theme">
+
+  <!-- If the query includes 'print-pdf', use the PDF print sheet -->
+  <script>
+    document.write( '<link rel="stylesheet" href="../common/css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+  </script>
+<style>
+
+.node circle {
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+.node {
+  font: 20px sans-serif;
+}
+
+.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 1.5px;
+}
+
+.reveal {
+  font-size: 32px;
+}
+
+.reveal .title {
+  text-align: center;
+}
+
+.reveal section {
+  text-align: left;
+}
+
+.reveal p,
+.reveal li {
+  margin-bottom: 1ex;
+}
+
+.reveal section img {
+  border: 0;
+  box-shadow: 0 0 0;
+}
+
+.reveal .shadow {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.dense li {
+  margin-bottom: 0;
+}
+
+.reveal h1,
+.reveal h2,
+.reveal h3,
+.reveal h4,
+.reveal h5,
+.reveal h6 {
+  font-size: 180%;
+  text-transform: none;
+  text-align: center;
+}
+</style>
+</head>
+
+<body>
+<div class="reveal">
+<div class="slides">
+
+<section data-markdown class="title">
+
+A Solver for Problems with Second-Order Stochastic Dominance Constraints
+========================================================================
+
+Victor Zverovich, Gautam Mitra, Csaba Fábián
+
+<div>
+<a href="http://www.ampl.com/"><img src="ampl-logo.png" width="100px" style="vertical-align:middle"/>
+<span style="padding-right: 20px">AMPL Optimization</span></a>
+<a href="http://www.optirisk-systems.com/"><img src="optirisk-logo.png" width="200px" style="vertical-align:middle;"/></a>
+</div>
+
+<div>
+<a href="http://dinamico2.unibg.it/icsp2013/">
+ICSP2013, Bergamo, Italy. July 8-12, 2013<br/>
+<!--img src="Bergamo.png" width="300px" style="border:0;" /-->
+</a>
+</div>
+
+</section>
+
+<section data-markdown>
+Second-Order Stochastic Dominance
+---------------------------------
+
+<p>
+Let \(R\) and \(R'\) be random variables defined on the probability
+space \((\Omega, \mathcal{F}, P)\).
+<p>
+\(R\) dominates \(R'\) with respect to SSD if and only if
+\(\textrm{E}[U(R)] \ge \textrm{E}[U(R')]\)
+for any nondecreasing and concave utility function \(U\). 
+<p>
+This sets out the use of SSD relation to determine preferences of
+a risk-averse decision maker.
+<p>
+Denoted as \(R \succeq_{_{SSD}} R'\).
+<p>
+Strict relation:
+\(R \succ_{_{SSD}} R' \Leftrightarrow R \succeq_{_{SSD}} R' \mbox{ and } R' \not{\succeq_{_{SSD}}} R.\)
+
+</section>
+
+<section data-markdown>
+Alternative Definitions of SSD
+------------------------------
+
+<ul>
+<li> Definition using the performance function (Fishburn and Vickson, 1978):
+  \[
+      F^{(2)}_R(t) \leq F^{(2)}_{R'}(t) \mbox{ for all $t \in \mathbb{R}$,} 
+  \]
+  where the performance function \(F^{(2)}_R(t) = \int_{-\infty}^{t} F_R(u) \mathrm{d}u\)
+  represents the area under the graph of the cumulative
+  distribution function \(F_R(t) = P(R \leq t)\) of a real-valued random
+  variable \(R\).
+<li> Definition using the \(\textrm{Tail}\) function (Ogryczak and Ruszczyński, 2002): 
+  \[
+    \textrm{Tail}_{\alpha}(R) \geq \textrm{Tail}_{\alpha}(R') \mbox{ for all $0 \lt \alpha \leq 1$,}
+  \]
+  where \(\textrm{Tail}_{\alpha}(R)\) denotes the unconditional expectation of the
+  smallest \(\alpha \cdot 100\%\) of the outcomes of \(R\).
+</ul>
+</section>
+
+<section data-markdown>
+Illustration of Second-Order Stochastic Dominance
+-------------------------------------------------
+
+<div style="text-align: center">
+<div style="float: left">
+<img src="cdf.svg"/><br/>
+CDF
+</div>
+<div>
+<img src="perf-func.svg"/><br/>
+Performance Functions
+</div>
+</div>
+</section>
+
+<section data-markdown>
+Portfolio Problem/Constraints
+-----------------------------
+
+<div>
+There are \(n\) assets and at the beginning of a time period an investor has to
+decide what proportion \(x_i\) of the initial wealth to invest in asset \(i\).
+So a portfolio is represented by a vector \(\textbf{x} = (x_1, x_2, \dots, x_n) \in
+X \subset \mathbb{R}^n\), where \(X\) is a bounded convex polytope representing the set
+of feasible portfolios; in particular it can be defined as
+\[ X = \{\textbf{x} \in \mathbb{R}_+^n: \sum_{i=1}^n{x_i} = 1\}, \]
+if short positions are not allowed and there are no other modelling
+restrictions.
+
+Let \(\textbf{R}\) denote the \(n\)-dimensional random vector of asset returns at the
+end of the time period. Then the real-valued random variable \(R_{\textbf{x}} =
+\textbf{R}^T \textbf{x}\) is the random return of portfolio \(\textbf{x}\).
+</div>
+</section>
+
+<section data-markdown>
+Model of Dentcheva and Ruszczynski
+----------------------------------
+
+<div>
+<p>
+Dentcheva and Ruszczyński (2006) proposed the following model with an SSD
+constraint:
+<p>
+\[
+\begin{array}{ll}
+\mathrm{maximize} & f(x) \\
+\mathrm{s.t.}     & x \in X, \\
+                  & R_{\textbf{x}} \succeq_{_{SSD}} \widehat{R}, \\
+\end{array} 
+\]
+<p>
+where \(f\) is a concave continuous function, \(\widehat{R}\) is a reference random
+return such as the return of a stock market index.
+<p>
+Special case: \(f(x) = \textrm{E}[{R_{\textbf{x}}}]\)
+</div>
+</section>
+
+<section data-markdown>
+Model of Roman, Darby-Dowman, and Mitra
+---------------------------------------
+
+<div style="font-size: 90%">
+<p>
+Roman et al. (2006) formulated a multiobjective LP model, the Pareto efficient
+solutions of which are SSD efficient portfolios.
+<p>
+Assuming finite discrete distributions of returns with equiprobable outcomes,
+<b>Fábián</b> et al. (2009) converted it into a more efficient computational model
+with single objective and a finite system of inequalities representing an SSD
+constraint:
+<p>
+\[
+\begin{array}{ll}
+\mathrm{maximize} & \vartheta \\
+\mathrm{s.t.}     & \vartheta \in \mathbb{R}, \textbf{x} \in X \\
+                  & \mathrm{Tail}_{\frac{i}{S}}(R_{\textbf{x}}) \geq
+                    \mathrm{Tail}_{\frac{i}{S}}(\widehat{R}) + \vartheta,
+                    \quad i = 1, 2, \ldots, S. \\
+\end{array}
+\]
+<p>
+Here one seeks a portfolio with a distribution which dominates
+the reference one or comes close to it uniformly (the smallest tail difference
+\(\vartheta\) is maximized).
+</div>
+</section>
+
+<section data-markdown>
+Model with SSD Constraints
+--------------------------
+
+<div>
+<p>
+Fábián et al. (2010) proposed an enhanced version of the model
+of Roman et al. which is expressed in the following SSD constrained form:
+<p>
+\[
+\begin{array}{ll}
+\textrm{maximize} & \vartheta \\
+\textrm{s.t.}     & \vartheta \in \mathbb{R}, \textbf{x} \in X, \\
+                  & R_{\textbf{x}} \succeq_{_{SSD}} \widehat{R} + \vartheta. \\
+\end{array} 
+\]
+<p>
+In this model one computes a portfolio that dominates a sum of the reference
+return and a riskless return \(\vartheta\).
+</div>
+</section>
+
+<section>
+<h2>Formulation Using Tails</h2>
+
+<p>
+Let \(S\) denote the number of equiprobable outcomes,
+<p>
+\(\textbf{r}^{(1)},
+\textbf{r}^{(2)}, \ldots, \textbf{r}^{(S)}\) - the realisations of \(\textbf{R}\),
+<p>
+\(\widehat{r}^{(1)}, \widehat{r}^{(2)}, \ldots, \widehat{r}^{(S)}\) - the
+realisations of \(\widehat{R}\).
+<p>
+The enhanced model can be formulated as follows:
+<p>
+\[
+\begin{array}{ll}
+\mathrm{maximize} & \vartheta \\
+\mathrm{s.t.}     & \vartheta \in \mathbb{R}, \textbf{x} \in X, \\
+                  & \mathrm{Tail}_{\frac{i}{S}}(R_{\textbf{x}}) \geq
+                    \mathrm{Tail}_{\frac{i}{S}}(\widehat{R}) + \frac{i}{S} \vartheta, \\
+                  & \quad i = 1, 2, \ldots, S. \\
+\end{array} 
+\]
+</section>
+
+<section>
+<h2>Cutting-Plane Formulation Using Tails</h2>
+
+<div style="font-size: 90%">
+<p>
+Fábián et al. (2009) obtained the cutting-plane representation of the
+\(\textrm{Tail}\) function:
+\[
+\begin{array}{ll}
+\textrm{Tail}_{\frac{i}{S}}(R_{\textbf{x}}) =
+      & \displaystyle
+        \min \frac{1}{S} \sum_{j \in J_i} \textbf{r}^{(j) T} \textbf{x} \\
+      & \mbox{such that } J_i \subset \{1, 2, \ldots, S\}, \quad |J_i| = i. \\
+\end{array}
+\]
+<p>
+Cutting-plane representation of the enhanced model:
+\[
+\begin{array}{lll}
+\textrm{maximize} & \vartheta & \\
+\textrm{s.t.}     & \vartheta \in \mathbb{R}, \textbf{x} \in X, & \\
+                  & \displaystyle
+                    \frac{1}{S} \sum_{j \in J_i} \textbf{r}^{(j) T} \textbf{x} \geq
+                    \widehat{\tau_i} + \frac{i}{S} \vartheta,
+                    & \forall J_i \subset \{1, 2, \ldots, S\}, \\
+                  & & |J_i| = i, \; i = 1, 2, \ldots, S, \\
+\end{array} 
+\]
+where \(\widehat{\tau_i} = \textrm{Tail}_{\frac{i}{S}}(\widehat{R})\).
+</div>
+</section>
+
+<section>
+<h2>Cutting-Plane Method</h2>
+<p>
+By changing the scope of optimisation we get a
+problem of minimising a piecewise-linear convex function:
+<p>
+\[
+\begin{array}{ll}
+\mathrm{minimize} & \varphi(\textbf{x})  \\
+\mathrm{s.t.}     & \textbf{x} \in X, \\
+\end{array} 
+\]
+
+where
+
+\[
+\begin{array}{ll}
+\varphi(\textbf{x}) =& \displaystyle \max \left(
+                     -\frac{1}{i} \sum_{j \in J_i} \textbf{r}^{(j) T} \textbf{x}
+                         + \frac{S}{i} \widehat{\tau_i} \right), \\
+                  & \mbox{such that } J_i \subset \{1, 2, \ldots, S\}, |J_i| = i, \\
+                  & i = 1, 2, \ldots, S. \\
+\end{array}
+\]
+<p>
+It can be regularised by the level method.
+</section>
+
+<section>
+<h2>Cut Generation</h2>
+<p>
+The cut \(l(x)\) at the iteration \(k\) is constructed as follows:
+<p>
+Let \(\textbf{x}^* \in X\) denote the solution of the approximation function at
+iteration \(k\) and \(\textbf{r}^{(j_1^*)} \leq \textbf{r}^{(j_2^*)} \leq \ldots \leq
+\textbf{r}^{(j_S^*)}\) denote the ordered realisations of \(R_{\textbf{x}^*}\).
+<p>
+Select
+\( \displaystyle i^* \in \textrm{argmax}_{1 \leq i \leq S} \left(
+    -\frac{1}{i} \sum_{j \in J_i^*} \textbf{r}^{(j)T} \textbf{x}^* +
+     \frac{S}{i} \widehat{\tau}_i \right).\)
+Then
+\( \displaystyle l(\textbf{x}) =  
+    -\frac{1}{i^*} \sum_{j \in J_{i^*}^*} \textbf{r}^{(j)T} \textbf{x} +
+     \frac{S}{i^*} \widehat{\tau}_{i^*}.\)
+<p>
+Sets \(J_i^* = (j^*_1, \ldots, j^*_i)\) correspond to ordered realisations.
+</section>
+
+<section data-markdown>
+
+Why a New Solver?
+-----------------
+
+* Old implementation:
+
+  * Cuts are a part of the model
+  * Difficult to reuse
+
+* New implementation:
+
+  * Cuts are added automatically by the solver
+  * Easy to use
+  * "Clean" model
+  * Faster
+
+</section>
+
+<section data-markdown class="dense">
+
+AMPL Solver Library
+-------------------
+
+AMPL Solver Library (ASL) is an open-source library for connecting solvers
+to AMPL.
+
+* C interface:
+  - described in [Hooking Your Solver to AMPL](http://www.ampl.com/hooking.html)
+  - used by most solvers
+
+* [C++ interface](https://github.com/vitaut/ampl/tree/master/solvers/util):
+  - makes connecting new solvers super easy
+  - type-safe: no casts needed when working with expression trees
+  - efficient: no overhead compared to the C interface
+  - used by several CP solvers and the SSD solver
+
+</section>
+
+<section data-markdown>
+
+SSD Solver Architecture
+-----------------------
+
+<div style="text-align: center;">
+<img src="architecture.svg"/>
+</div>
+
+* ASL does all the heavy lifting such as interaction with AMPL and an external
+  solver which makes SSD solver implemenation very simple (~300 LOC!)
+* Function library provides the <code>ssd_uniform</code> function that is
+  translated into an SSD relation by the solver.
+* External solver is used for subproblems.
+* Solver library is optional but facilitates testing.
+
+</section>
+
+<section>
+<h2>Expression Trees</h2>
+
+<p>
+The solver extracts linear expressions from the expression trees representing
+arguments of <code>ssd_uniform</code>.
+
+<div style="" id="trees"/>
+
+</section>
+
+<!--section data-markdown>
+AMPL in Finance: Financial Panther
+----------------------------------
+
+<div style="text-align: center;">
+<img src="financial-panther.png" width="500px" class="shadow"/>
+<p>
+Banker: Mr. Simpson, you're a dollar overdrawn.
+<p>
+Homer: Get him, Sheba!
+</div>
+</section-->
+
+<section data-markdown>
+
+Portfolio Model in AMPL with Cuts
+---------------------------------
+
+<pre>
+<code>
+param nASSET integer >= 0;  # number of assets
+set ASSETS := 1..nASSET;    # set of assets
+
+param nSCEN > 0;
+param asset_returns{1..nASSET, 1..nSCEN};
+param index_returns{1..nSCEN};
+
+param nCUT integer >= 0 default 0; # number of cuts
+set CUTS := 1..nCUT;        # set of cuts
+
+param cut_const {CUTS};     # constant in cut
+param cut {CUTS,ASSETS};    # multipliers in cut
+param scaling_factor {CUTS} default 1;
+
+# portfolio: investments into different assets
+var Invest {ASSETS} >= 0 default 1 / nASSET;
+var Dom;                    # dominance measure
+
+maximize Uniform_Dominance: Dom;
+
+subject to Dom_constraint {c in CUTS}:
+  scaling_factor[c] * Dom + cut_const[c]
+    <= sum {a in ASSETS} cut[c,a] * Invest[a];
+
+subject to Budget: sum {a in ASSETS} Invest[a] = 1;
+</code>
+</pre>
+
+</section>
+
+<section data-markdown>
+
+Portfolio Model in AMPL using SSD Solver
+----------------------------------------
+
+<pre>
+<code>
+include ssd.ampl;
+
+param NumScenarios;
+param NumAssets;
+
+set Scenarios = 1..NumScenarios;
+set Assets = 1..NumAssets;
+
+# Return of asset a in senario s.
+param Returns{a in Assets, s in Scenarios};
+
+# Reference return in scenario s.
+param Reference{s in Scenarios};
+
+# Fraction of the budget to invest in asset a.
+var invest{a in Assets} >= 0 <= 1;
+
+subject to ssd_constraint{s in Scenarios}:
+  ssd_uniform(sum{a in Assets} Returns[a, s] * invest[a], Reference[s]);
+
+subject to budget: sum{a in Assets} invest[a] = 1;
+</code>
+</pre>
+
+</section>
+
+<section data-markdown>
+Reference Returns
+-----------------
+
+<div style="text-align: center;">
+<img src="stock-index.jpg" width="600px" class="shadow"/>
+</div>
+</section>
+
+<section data-markdown>
+
+Performance
+-----------
+
+<div style="text-align: center;">
+<img src="performance.svg" width="600px" class="shadow"/>
+</div>
+
+* 100 scenario problem with FTSE100 used as a reference.
+* The new implementation is 2-3 times faster.
+
+</section>
+
+<section data-markdown>
+
+Performance
+-----------
+
+<div style="text-align: center;">
+<img src="performance30k.svg" width="600px" class="shadow"/>
+</div>
+
+* 30000 scenario problem with FTSE100 used as a reference.
+* The new implementation is 2-6.5 times faster.
+
+</section>
+
+<section data-markdown>
+
+Summary
+-------
+
+* AMPL solver interface and ASL make implementation of high-level solvers/algorithms
+  that use other solvers easy. The same technique can be applied to
+  
+  - other-cutting plane methods
+  - decomposition methods, e.g. Bender's decomposition
+
+* New solver provides an efficient implementation of a cutting-plane algorithm
+  for solving problems with SSD constraints.
+
+* This is in line with our approach that different types of optimisation models
+  are matched with corresponding solvers.
+  
+</section>
+
+<section data-markdown class="dense">
+
+References
+----------
+
+<div style="font-size: 75%">
+<ul>
+<li> Dentcheva, D. and Ruszczyński, A. (2006). Portfolio optimization with stochastic
+  dominance constraints. Journal of Banking & Finance, 30 , 433–451.
+
+<li> Fábián, C. I., Mitra, G., and Roman, D. (2009). Processing second-order stochastic
+  dominance models using cutting-plane representations. Mathematical
+  Programming, Series A. DOI: 10.1007/s10107-009-0326-1.
+
+<li> Fábián, C. I., Mitra, G., Roman, D., and Zverovich, V. (2010). An enhanced model
+  for portfolio choice with ssd criteria: a constructive approach. Quantitative
+  Finance. First published on: 11 May 2010.
+
+<li> Fishburn, P. C. and Vickson, R. G. (1978). Theoretical foundations of stochastic
+  dominance. In Stochastic Dominance: An Approach to Decision-Making Under
+  Risk, (pp. 37–113). D.C. Heath and Company, Lexington, Massachusetts.
+  
+<li> Roman, D., Darby-Dowman, K., and Mitra, G. (2006). Portfolio construction based
+on stochastic dominance and target return distributions. Mathematical Programming, 
+eries B, 108, 541–569.
+</ul>
+</div>
+</section>
+
+<section data-markdown style="text-align: center; font-size: 200%">
+
+Thank you!
+----------
+
+<div>
+<a href="http://www.ampl.com/"><img src="ampl-logo.png" width="100px" style="vertical-align:middle"/>
+<span style="">AMPL Optimization</span></a>
+</div>
+<div>
+<a href="http://www.optirisk-systems.com/"><img src="optirisk-logo.png" width="200px" style="vertical-align:middle;"/></a>
+</div>
+</section>
+
+</div>
+
+
+</div>
+
+<script src="../common/lib/js/head.min.js"></script>
+<script src="../common/js/reveal.min.js"></script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  TeX: { equationNumbers: { autoNumber: "AMS" } }
+});
+</script>
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+	controls: true,
+	progress: true,
+	history: true,
+	center: true,
+  rollingLinks: false,
+
+	theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+	// The following transitions crashe Chrome when MathJax is used: default, concave
+	transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/none
+
+	// Optional libraries used to extend on reveal.js
+	dependencies: [
+		{ src: '../common/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+		{ src: '../common/plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+		{ src: '../common/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+		{ src: '../common/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+		{ src: '../common/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+		{ src: '../common/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+		{ src: '../MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML', async: true }
+		// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+	],
+
+    // Factor of the display size that should remain empty around the content
+    margin: 0.1
+});
+
+</script>
+
+</body>
+
+<script src="../common/d3/d3.v3.min.js"></script>
+<script>
+
+var m = [0, 120, 20, 120],
+    w = 1280 - m[1] - m[3],
+    h = 400 - m[0] - m[2],
+    i = 0;
+
+var tree = d3.layout.tree()
+    .size([h, w]);
+
+var diagonal = d3.svg.diagonal()
+    .projection(function(d) { return [d.y, d.x]; });
+
+var vis = d3.select("#trees").append("svg:svg")
+    .attr("width", w + m[1] + m[3])
+    .attr("height", h + m[0] + m[2])
+  .append("svg:g")
+    .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
+
+var root = {
+ "name": "Expr",
+ "children": [
+  {
+   "name": "NumericExpr",
+   "children": [
+    {"name": "UnaryExpr (unary -, abs, tan, ...)"},
+    {"name": "BinaryExpr (+, -, *, /, div, less, ...)", "highlight": true},
+    {"name": "VarArgExpr (min, max)"},
+    {"name": "SumExpr", "highlight": true},
+    {"name": "CountExpr"},
+    {"name": "IfExpr"},
+    {"name": "PiecewiseLinearTerm"},
+    {"name": "NumericConstant"},
+    {"name": "Variable"},
+    {"name": "NumberOfExpr"},
+    {"name": "CallExpr", "highlight": true},
+   ]
+  },
+  {
+   "name": "LogicalExpr",
+   "children": [
+    {"name": "LogicalConstant (0 or 1)"},
+    {"name": "RelationalExpr (<, <=, =, !=, >=, >)"},
+    {"name": "NotExpr (!)"},
+    {"name": "LogicalCountExpr (atleast, atmost, exactly)"},
+    {"name": "BinaryLogicalExpr (||, &&, <==>)"},
+    {"name": "ImplicationExpr (==> else)"},
+    {"name": "IteratedLogicalExpr (exists, forall)"},
+    {"name": "AllDiffExpr"}
+   ]
+  }
+ ]
+};
+
+root.x0 = h / 2;
+root.y0 = 0;
+
+function toggleAll(d) {
+  if (d.children) {
+    d.children.forEach(toggleAll);
+    toggle(d);
+  }
+}
+
+// Initialize the display to show a few nodes.
+//root.children.forEach(toggleAll);
+//toggle(root.children[1]);
+//toggle(root.children[1].children[2]);
+//toggle(root.children[9]);
+//toggle(root.children[9].children[0]);
+
+toggle(root.children[1]);
+update(root);
+
+function update(source) {
+  var duration = d3.event && d3.event.altKey ? 5000 : 500;
+
+  // Compute the new tree layout.
+  var nodes = tree.nodes(root).reverse();
+
+  // Normalize for fixed-depth.
+  nodes.forEach(function(d) { d.y = d.depth * 180; });
+
+  // Update the nodes…
+  var node = vis.selectAll("g.node")
+      .data(nodes, function(d) { return d.id || (d.id = ++i); });
+
+  // Enter any new nodes at the parent's previous position.
+  var nodeEnter = node.enter().append("svg:g")
+      .attr("class", "node")
+      .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
+      .on("click", function(d) { toggle(d); update(d); });
+
+  nodeEnter.append("svg:circle")
+      .attr("r", 1e-6)
+      .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+
+  nodeEnter.append("svg:text")
+      .attr("x", function(d) { return d.children || d._children ? -10 : 10; })
+      .attr("dy", ".35em")
+      .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
+      .text(function(d) { return d.name; })
+      .style("fill-opacity", 1e-6)
+      .style("fill", function(d) { return d.highlight ? "steelblue" : "black"; } );
+
+  // Transition nodes to their new position.
+  var nodeUpdate = node.transition()
+      .duration(duration)
+      .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
+
+  nodeUpdate.select("circle")
+      .attr("r", 4.5)
+      .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+
+  nodeUpdate.select("text")
+      .style("fill-opacity", 1);
+
+  // Transition exiting nodes to the parent's new position.
+  var nodeExit = node.exit().transition()
+      .duration(duration)
+      .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
+      .remove();
+
+  nodeExit.select("circle")
+      .attr("r", 1e-6);
+
+  nodeExit.select("text")
+      .style("fill-opacity", 1e-6);
+
+  // Update the links…
+  var link = vis.selectAll("path.link")
+      .data(tree.links(nodes), function(d) { return d.target.id; });
+
+  // Enter any new links at the parent's previous position.
+  link.enter().insert("svg:path", "g")
+      .attr("class", "link")
+      .attr("d", function(d) {
+        var o = {x: source.x0, y: source.y0};
+        return diagonal({source: o, target: o});
+      })
+    .transition()
+      .duration(duration)
+      .attr("d", diagonal);
+
+  // Transition links to their new position.
+  link.transition()
+      .duration(duration)
+      .attr("d", diagonal);
+
+  // Transition exiting nodes to the parent's new position.
+  link.exit().transition()
+      .duration(duration)
+      .attr("d", function(d) {
+        var o = {x: source.x, y: source.y};
+        return diagonal({source: o, target: o});
+      })
+      .remove();
+
+  // Stash the old positions for transition.
+  nodes.forEach(function(d) {
+    d.x0 = d.x;
+    d.y0 = d.y;
+  });
+}
+
+// Toggle children.
+function toggle(d) {
+  if (d.children) {
+    d._children = d.children;
+    d.children = null;
+  } else {
+    d.children = d._children;
+    d._children = null;
+  }
+}
+
+// ---------------------------------------------
+// table
+
+data = d3.csv.parse(
+'Problem,Input+Conv Time,C API Time,C++ API Time,C/C++ Ratio,,\n\
+assign1,2.001,0.0156233,0.0154757,1.009537533,,\n\
+balassign1,2.106,0.086136,0.085996,1.0016279827,,\n\
+flowshp1,0.529,0.000594689,0.000598812,0.9931147004,,\n\
+flowshp2,0.784,0.000593329,0.00059615,0.9952679695,,\n\
+magic,0.558,0.00276411,0.0028042,0.9857035875,,\n\
+mapcoloring,0.557,8.6488E-007,8.6538E-007,0.9994222191,,\n\
+money,0.472,0.000241843,0.000238001,1.0161427893,,\n\
+nqueens,1.073,8.6449E-007,8.6593E-007,0.998337048,,\n\
+sched1,0.595,0.0172613,0.0174135,0.9912596549,,\n\
+sched2,0.684,0.0142709,0.0146368,0.9750013664,,\n\
+party1,33.688,3.88768,3.94516,0.9854302487,,\n\
+party2,126.194,1.20008,1.21847,0.9849073018,,\n\
+sudokuHard,0.661,8.6618E-007,8.6361E-007,1.0029758803,,\n\
+sudokuVeryEasy,0.726,8.6547E-007,8.6383E-007,1.0018985217,,\n\
+,,,,0.9957590574,,')
+
+console.log(data)
+
+    // the columns you'd like to display
+    var columns = ["Problem", "Input+Conv Time", "C API Time", "C++ API Time", "C/C++ Ratio"];
+
+    var table = d3.select("#apiperformance").append("table"),
+        thead = table.append("thead"),
+        tbody = table.append("tbody");
+
+    // append the header row
+    thead.append("tr")
+        .selectAll("th")
+        .data(columns)
+        .enter()
+        .append("th").append("b")
+            .text(function(column) { return column; });
+
+    // create a row for each object in the data
+    var rows = tbody.selectAll("tr")
+        .data(data)
+        .enter()
+        .append("tr");
+
+    // create a cell in each row for each column
+    var cells = rows.selectAll("td")
+        .data(function(row) {
+            return columns.map(function(column) {
+                return {column: column, value: row[column]};
+            });
+        })
+        .enter()
+        .append("td")
+            .text(function(d) { return d.value; });
+</script>
+</html>
