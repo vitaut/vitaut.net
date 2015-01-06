@@ -1,0 +1,17 @@
+Connecting Constraint Solvers to AMPL
+
+We describe a recent project to connect the AMPL optimization modeling language
+to the constraint solvers IBM ILOG CP, Gecode and JaCoP. Our interfaces take
+advantage of logical forms such as constraint disjunctions, counting operators,
+and all-different constraints that were introduced into AMPL in the 1990s to
+complement conventional algebraic equalities and inequalities; the availability
+of these forms permits CP and MIP models to be solved and compared in the same
+context. While general-purpose modeling languages have previously been connected
+to constraint solvers, our work is distinguished by the AMPL language’s connections
+to multiple CP solvers in addition to a broad variety of linear and nonlinear OR
+solvers. Because CP solvers show a great diversity of interface requirements,
+we incorporate new ideas for facilities to support conversion from AMPL’s general
+expression-tree representation of logical constraints to the structures and calls
+required by different solvers. A number of examples illustrate the use of AMPL's
+logical forms in writing CP problems naturally and in trying them out on different
+solver platforms.
