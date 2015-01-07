@@ -1,0 +1,21 @@
+Constraint Programming in AMPL
+
+In this presentation, we’ll give an overview of constraint programming features
+in the AMPL modeling system. AMPL is an efficient, multi-platform modeling system
+based on a high-level algebraic modeling language. It facilitates rapid development
+of optimization models and integration of this models into applications. AMPL
+supports a large variety of solvers and provides streamlined database access.
+
+Originally developed in mid 90s, constraint programming extensions of AMPL enable
+the use of sophisticated modeling constructs such as logical constraints, counting
+operators and all-different constraints in addition to algebraic constraints in an
+optimization model. This allows natural formulation of many combinatorial
+optimization models.
+
+Unlike most other general-purpose modeling systems, AMPL supports multiple CP solvers
+through an open solver interface. This interface is specifically designed to make
+connecting new solvers easy and facilitates testing of solver drivers using a
+common test suite.
+
+AMPL is currently connected to the latest versions of three popular constraint
+programming solvers IBM/ILOG CP Optimizer, Gecode and JaCoP.
