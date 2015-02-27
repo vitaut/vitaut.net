@@ -35,7 +35,7 @@ arguments.
 as [varargs](https://en.wikipedia.org/wiki/Variadic_function). This mechanism is
 inherently unsafe because it relies on the user to handle the type information which,
 in the case of `printf`, is encoded in the format string together with formatting
-options. However, some compilers provide extensions, such as
+options. Some compilers provide extensions, such as
 [\_\_attribute\_\_((format (printf, ...))](http://gcc.gnu.org/onlinedocs/gcc/Function-Attributes.html)
 in GCC, that to some extent address safety issues. However, this only works with
 format string that are string literals which is not always the case especially
