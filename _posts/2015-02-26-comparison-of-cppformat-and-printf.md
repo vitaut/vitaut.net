@@ -34,9 +34,9 @@ arguments.
 as [varargs](https://en.wikipedia.org/wiki/Variadic_function). This mechanism is
 inherently unsafe because it relies on the user to handle the type information which,
 in the case of `printf`, is encoded in the format string together with formatting
-options. Some compilers provide extensions, such as
-[\_\_attribute\_\_((format (printf, ...))](http://gcc.gnu.org/onlinedocs/gcc/Function-Attributes.html)
-in GCC, that, to some extent, address safety issues. However, this only works with
+options. GCC provides an extension,
+[\_\_attribute\_\_((format (printf, ...))](http://gcc.gnu.org/onlinedocs/gcc/Function-Attributes.html),
+that partially addresses safety issues. However, this only works with
 format strings that are string literals which is not always the case especially
 when strings are localized. Also not all C and C++ compilers support this attribute.
 
@@ -129,7 +129,7 @@ which is also supported (and recommended) by C++ Format.
 
 Since C++ Format manages type information automatically, you don't have to
 encode it in the format string as with `printf`, so the same default format
-specifier `{}` can be used with objects of any type. This can alo result in
+specifier `{}` can be used with objects of any type. This can also result in
 shorter format strings as format specifiers like `hh` or `ll` are not required
 any more.
 
