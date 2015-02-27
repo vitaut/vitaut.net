@@ -8,8 +8,7 @@ date: 2015-02-26
 ================
 
 <div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
-  <img border="0" src="/img/printf.jpg" width="280" 
-  title="A mandatory image of a bee.">
+  <img border="0" src="/img/printf.jpg" width="280">
 </div>
 
 I was recently asked on GitHub why would someone use
