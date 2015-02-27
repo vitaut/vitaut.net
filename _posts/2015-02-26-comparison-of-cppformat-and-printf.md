@@ -67,7 +67,7 @@ Segmentation fault (core dumped)
 
 And GCC doesn't even give a warning with `-Wall -Wextra -pedantic`.
 
-Doing the same with 
+Here's the C++ Format version:
 
 {% highlight c++ %}
 #include "format.h"
