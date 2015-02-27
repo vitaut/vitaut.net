@@ -8,7 +8,7 @@ date: 2015-02-26
 ================
 
 <div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
-  <img border="0" src="/img/printf.jpg" width="320" 
+  <img border="0" src="/img/printf.jpg" width="280" 
   title="A mandatory image of a bee.">
 </div>
 
@@ -36,7 +36,7 @@ as [varargs](https://en.wikipedia.org/wiki/Variadic_function). This mechanism is
 inherently unsafe because it relies on the user to handle the type information which,
 in the case of `printf`, is encoded in the format string together with formatting
 options. However, some compilers provide extensions, such as
-[__attribute__ ((format (printf, ...))](http://gcc.gnu.org/onlinedocs/gcc/Function-Attributes.html)
+[\_\_attribute\_\_((format (printf, ...))](http://gcc.gnu.org/onlinedocs/gcc/Function-Attributes.html)
 in GCC, that to some extent address safety issues. However, this only works with
 format string that are string literals which is not always the case especially
 when strings are localized. Also not all C and C++ compilers support this attribute.
