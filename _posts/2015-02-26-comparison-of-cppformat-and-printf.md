@@ -153,7 +153,7 @@ Compiled code size
 ------------------
 
 According to the [code bloat benchmark](https://github.com/cppformat/cppformat#compile-time-and-code-bloat),
-C++ Format generates about 10% to the optimized code size compared to `printf`.
+C++ Format adds about 10% to the optimized code size compared to `printf`.
 The additional size comes from the type information that is passed alongside
 the formatting arguments.
 
