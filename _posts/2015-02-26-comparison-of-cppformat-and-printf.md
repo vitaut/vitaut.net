@@ -20,9 +20,9 @@ This is a fair question and so I decided to write this blog post comparing the t
 
 Disclaimer: I'm the author of C++ Format, so this is all very biased =).
 
-Whenever I mention `printf` without namespace in this post I mean the whole family of `printf`
+Whenever I mention `printf` without a namespace in this post I mean the whole family of `printf`
 functions from the C standard library, including `sprintf` and `fprintf`. The C++ Format library
-includes its own implementation of printf which resides in `fmt` namespace, so I'll use
+includes its own implementation of `printf` which resides in the `fmt` namespace, so I'll use
 qualified name `fmt::printf` to distinguish it from the standard one.
 
 Safety
