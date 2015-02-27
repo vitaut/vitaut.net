@@ -12,9 +12,11 @@ date: 2015-02-26
   title="A mandatory image of a bee.">
 </div>
 
-I was recently asked on GitHub why would someone use `fmt::printf`, which is a part of the
-[C++ Format library](https://github.com/cppformat/cppformat), over the standard C library
-`printf`. This is a fair question and so I decided to write this blog post comparing the two.
+I was recently asked on GitHub why would someone use
+[`fmt::printf`](http://cppformat.readthedocs.org/en/stable/reference.html#printf-formatting-functions),
+which is a part of the [C++ Format library](https://github.com/cppformat/cppformat),
+over the standard C library `printf`.
+This is a fair question and so I decided to write this blog post comparing the two.
 
 Disclaimer: I'm the author of C++ Format, so this is all very biased =).
 
