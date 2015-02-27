@@ -99,7 +99,7 @@ Extensibility
 It is often said that `printf` is not extensible and doesn't support user-defined types.
 This is not entirely true as the GNU C Library provides some
 [extension mechanisms](http://www.gnu.org/software/libc/manual/html_node/Customizing-Printf.html).
-However, as with attributes, this is not standard.
+However, as with attributes, they are not standard.
 
 The current version of C++ Format can format any type that provides overloaded
 `operator<<` in addition to all built-in types, for example:
