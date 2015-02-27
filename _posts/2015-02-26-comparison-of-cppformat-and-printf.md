@@ -43,7 +43,7 @@ when strings are localized. Also not all C and C++ compilers support this attrib
 
 C++ Format uses [variadic templates](https://en.wikipedia.org/wiki/Variadic_template)
 introduces in C++11 and emulates them on older compilers. This ensures complete type
-safety. Mismatch between the format specification and actual type causes exception
+safety. Mismatch between the format specification and the actual type causes exception
 while in `printf` it often leads to segfault.
 
 Here's a small artificial example that illustrates the problem:
@@ -90,7 +90,7 @@ $ ./a.out
 unknown format code 's' for integer
 {% endhighlight %}
 
-As you can see the error is reported as exception that can be safely catched
+As you can see the error is reported as an exception that can be safely catched
 and handled.
 
 Extensibility
