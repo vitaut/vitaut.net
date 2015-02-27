@@ -134,7 +134,7 @@ The current version of C++ Format library is
 [much faster on integer formatting](http://zverovich.net/2013/09/07/integer-to-string-conversion-in-cplusplus.html),
 but not as fast on floating-point formatting
 [compared to EGLIBC](https://github.com/cppformat/cppformat#speed-tests).
-Currently C++ Format relies on `snprintf` for floating-point formatting
+The library relies on `snprintf` for floating-point formatting
 and does some additional processing to ensure consistent output across platforms.
 This will be improved in the next version.
 
