@@ -37,7 +37,7 @@ inherently unsafe because it relies on the user to handle the type information w
 in the case of `printf`, is encoded in the format string together with formatting
 options. Some compilers provide extensions, such as
 [\_\_attribute\_\_((format (printf, ...))](http://gcc.gnu.org/onlinedocs/gcc/Function-Attributes.html)
-in GCC, that to some extent address safety issues. However, this only works with
+in GCC, that, to some extent, address safety issues. However, this only works with
 format strings that are string literals which is not always the case especially
 when strings are localized. Also not all C and C++ compilers support this attribute.
 
@@ -65,7 +65,7 @@ $ ./a.out
 Segmentation fault (core dumped)
 {% endhighlight %}
 
-And GCC doesn't even give a warning with `-Wall -Wextra -pedantic`.
+Note that GCC doesn't even give a warning with `-Wall -Wextra -pedantic`.
 
 Here's the C++ Format version:
 
