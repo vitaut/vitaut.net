@@ -155,7 +155,9 @@ Compiled code size
 According to the [code bloat benchmark](https://github.com/cppformat/cppformat#compile-time-and-code-bloat),
 C++ Format adds about 10% to the optimized code size compared to `printf`.
 The additional size comes from the type information that is passed alongside
-the formatting arguments. In practice, increase in binary size when switching
+the formatting arguments.
+
+In practice, increase in binary size when switching
 from `printf` to C++ Format is small and, of course, depends on amount of
 formatting done by the application. For example, when [0 A.D.](http://play0ad.com/)
 switched to C++ Format, they reported only 3% increase in binary size on older
