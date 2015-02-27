@@ -42,8 +42,8 @@ when strings are localized. Also not all C and C++ compilers support this attrib
 
 C++ Format uses [variadic templates](https://en.wikipedia.org/wiki/Variadic_template)
 introduces in C++11 and emulates them on older compilers. This ensures complete type
-safety. Mismatch between the format specification and the actual type causes exception
-while in `printf` it often leads to segfault.
+safety. Mismatch between the format specification and the actual type causes an exception
+while in `printf` it often leads to a segfault.
 
 Here's a small artificial example that illustrates the problem:
 
@@ -162,8 +162,8 @@ In practice, increase in binary size when switching
 from `printf` to C++ Format is small and, of course, depends on amount of
 formatting done by the application. For example, when [0 A.D.](http://play0ad.com/)
 switched to C++ Format, they reported only 3% increase in binary size on older
-version of the library which was more affected by code bloat. On the current version it
-would be even smaller.
+version of the library (statically linked) which was more affected by code bloat.
+On the current version it would be even smaller.
 
 Conclusion
 ----------
