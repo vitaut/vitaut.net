@@ -42,7 +42,7 @@ format strings that are string literals which is not always the case especially
 when strings are localized. Also not all C and C++ compilers support this attribute.
 
 C++ Format uses variadic functions introduces in C++11 and emulates them on older
-compilers. This provides complete type safety and mismatch between the format
+compilers. This ensures complete type safety. Mismatch between the format
 specification and actual type causes exception while in `printf` it often leads to
 segfault.
 
