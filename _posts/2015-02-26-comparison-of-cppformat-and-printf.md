@@ -125,7 +125,7 @@ which is also supported (and recommended) by C++ Format.
 
 Since C++ Format manages type information automatically, you don't have to
 encode it in the format string as with `printf`, so the same default format
-specifier `{}` can be used with an object of any type.
+specifier `{}` can be used with objects of any type.
 
 Performance
 -----------
