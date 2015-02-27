@@ -165,9 +165,83 @@ switched to C++ Format, they reported only 3% increase in binary size on older
 version of the library (statically linked) which was more affected by code bloat.
 On the current version it would be even smaller.
 
+Memory management
+-----------------
+
+Memory management is related to safety, but I think it deserves a separate section
+not to mix with type safety issues.
+
+[`sprintf`](http://en.cppreference.com/w/cpp/io/c/sprintf) relies on the user
+to provide large enough buffer which may easily result in buffer overflow.
+This issue is addressed in `snprintf` where you can pass buffer size.
+Unfortunately, it is rather awkward to use if you want to grow your buffer
+dynamicaly to accommodate large output as the following example taken from
+the [`snprintf` manpage](http://linux.die.net/man/3/snprintf) nicely illustrates:
+
+{% highlight c++ %}
+char *
+make_message(const char *fmt, ...)
+{
+    int n;
+    int size = 100;     /* Guess we need no more than 100 bytes */
+    char *p, *np;
+    va_list ap;
+
+   if ((p = malloc(size)) == NULL)
+        return NULL;
+
+   while (1) {
+
+       /* Try to print in the allocated space */
+
+       va_start(ap, fmt);
+        n = vsnprintf(p, size, fmt, ap);
+        va_end(ap);
+
+       /* Check error code */
+
+       if (n < 0)
+            return NULL;
+
+       /* If that worked, return the string */
+
+       if (n < size)
+            return p;
+
+       /* Else try again with more space */
+
+       size = n + 1;       /* Precisely what is needed */
+
+       if ((np = realloc (p, size)) == NULL) {
+            free(p);
+            return NULL;
+        } else {
+            p = np;
+        }
+    }
+}
+{% endhighlight %}
+
+C++ Format allocates buffer on stack if the output is small enough and
+uses dynamic memory allocation for larger output. This is all done automatically
+without user intervention. For example, in the following code everything is
+allocated on stack:
+
+{% highlight c++ %}
+fmt::MemoryWriter w;
+w.write("Look, a {} string", 'C');
+w.c_str(); // returns a C string (const char*)
+{% endhighlight %}
+
+If necessary you can specify a
+[custom allocator](http://cppformat.readthedocs.org/en/stable/reference.html#custom-allocators)
+to be used for large output.
+
 Conclusion
 ----------
 
 The C++ Format library provides safe extensible alternative to the C `printf` family
 of functions with comparable (better on integer formatting) performance and compiled
 code size.
+
+**Update**: added Memory management section
