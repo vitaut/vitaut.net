@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Comparison of C++ Format and C library's printf
-date: 2014-12-30
+date: 2015-02-26
 ---
 
 {{ page.title }}
