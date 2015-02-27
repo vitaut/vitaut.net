@@ -38,7 +38,7 @@ in the case of `printf`, is encoded in the format string together with formattin
 options. Some compilers provide extensions, such as
 [\_\_attribute\_\_((format (printf, ...))](http://gcc.gnu.org/onlinedocs/gcc/Function-Attributes.html)
 in GCC, that to some extent address safety issues. However, this only works with
-format string that are string literals which is not always the case especially
+format strings that are string literals which is not always the case especially
 when strings are localized. Also not all C and C++ compilers support this attribute.
 
 C++ Format uses variadic functions introduces in C++11 and emulates them on older
