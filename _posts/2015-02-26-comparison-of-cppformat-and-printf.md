@@ -161,5 +161,5 @@ Conclusion
 ----------
 
 The C++ Format library provides safe extensible alternative to the C `printf` family
-of functions with comparable or better (on integer formatting) performance and compiled
+of functions with comparable (better on integer formatting) performance and compiled
 code size.
