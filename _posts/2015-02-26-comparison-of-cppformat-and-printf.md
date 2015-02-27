@@ -31,7 +31,7 @@ Safety
 The main difference between `printf` and C++ Format is the way they accept formatting
 arguments.
 
-`printf` uses mechanism provided by the C language sometimes referred to
+`printf` uses the mechanism provided by the C language sometimes referred to
 as [varargs](https://en.wikipedia.org/wiki/Variadic_function). This mechanism is
 inherently unsafe because it relies on the user to handle the type information which,
 in the case of `printf`, is encoded in the format string together with formatting
@@ -41,10 +41,10 @@ in GCC, that to some extent address safety issues. However, this only works with
 format strings that are string literals which is not always the case especially
 when strings are localized. Also not all C and C++ compilers support this attribute.
 
-C++ Format uses variadic functions introduces in C++11 and emulates them on older
-compilers. This ensures complete type safety. Mismatch between the format
-specification and actual type causes exception while in `printf` it often leads to
-segfault.
+C++ Format uses [variadic templates](https://en.wikipedia.org/wiki/Variadic_template)
+introduces in C++11 and emulates them on older compilers. This ensures complete type
+safety. Mismatch between the format specification and actual type causes exception
+while in `printf` it often leads to segfault.
 
 Here's a small artificial example that illustrates the problem:
 
