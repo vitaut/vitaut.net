@@ -66,6 +66,10 @@ Segmentation fault (core dumped)
 
 Note that GCC doesn't even give a warning with `-Wall -Wextra -pedantic`.
 
+As was pointed out in one of the comments on Reddit, you can get a warning with
+`-Wformat-nonliteral`. As the name suggests, this will only warn you that
+the format string is nonliteral.
+
 Here's the C++ Format version:
 
 {% highlight c++ %}
@@ -90,7 +94,8 @@ unknown format code 's' for integer
 {% endhighlight %}
 
 As you can see the error is reported as an exception that can be safely catched
-and handled.
+and handled. C++ Format doesn't do compile-time checking of literal format strings
+though.
 
 Extensibility
 -------------
