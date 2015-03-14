@@ -8,17 +8,18 @@ date: 2015-03-13
 ================
 
 <div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
-  <img border="0" src="/img/tannenbaum.jpg" width="280"
+  <img border="0" src="/img/tanenbaum.jpg" width="280"
        title="The nice thing about standards is that you have so many to choose from.">
 </div>
 
-One of the challenges of writing a portable code is dealing with variations of
+One of the challenges of writing portable code is dealing with variations of
 APIs that are supposed to be standard. In this post I'll talk about `strerror` and
-friends which turned out to be a particularly exciting to detect.
+friends which turned out to be particularly interesting to detect.
 
 First, why not just use [`strerror`](http://pubs.opengroup.org/onlinepubs/9699919799/functions/strerror.html)
 which is defined in the C and POSIX standards?
-Unfortunately
+Unfortunately, quoting
+[one of the standards](http://pubs.opengroup.org/onlinepubs/9699919799/functions/strerror.html):
 
 > The strerror() function need not be thread-safe.
 
@@ -46,8 +47,12 @@ writing an application and have control over your build system. But if you are
 writing a library distrubuted in source form that is supposed to be used with any
 build system, you can't rely on CMake.
 
-A common solution for such problem is to use macros. The man page of
-[`strerror_r`](http://linux.die.net/man/3/strerror_r) gives this beatiful condition
+A common solution to such problems is using macros. This is also the only solution
+if you are using C and, if you are interfacing to C from another language via some
+kind of an [FFI](https://en.wikipedia.org/wiki/Foreign_function_interface), you are
+totally out of luck.
+The man page of [`strerror_r`](http://linux.die.net/man/3/strerror_r) gives
+this beatiful condition
 that you can check to see if XSI-compliant is provided:
 
 {% highlight c++ %}
@@ -59,7 +64,7 @@ you keep getting errors [like this](https://github.com/cppformat/cppformat/issue
 and keep adding more checks to the `#ifdef`.
 
 Fortunately, there is a better way. Instead of using macros, you can rely
-on function overloading you can detect if `strerror_r` is available and,
+on function overloading to detect if `strerror_r` is available and,
 whether it is XSI-compliant or GNU-specific.
 
 So here's the code that illustrates and tests the idea:
@@ -76,19 +81,19 @@ char *strerror_r(int, char *, size_t) { return 0; }
 struct None {};
 static None strerror_r(int, char *, ...) { return None(); }
 
-void Check(int) { fmt::print("XSI-compliant strerror_r\n"); }
-void Check(char *) { fmt::print("GNU-specific strerror_r\n"); }
-void Check(None) { fmt::print("No strerror_r\n"); }
+void check(int) { fmt::print("XSI-compliant strerror_r\n"); }
+void check(char *) { fmt::print("GNU-specific strerror_r\n"); }
+void check(None) { fmt::print("No strerror_r\n"); }
 
 int main() {
   char buf[10];
-  Check(strerror_r(0, buf, sizeof(buf)));
+  check(strerror_r(0, buf, sizeof(buf)));
 }
 {% endhighlight %}
 
-Instead of using real functions, I just created prototypes in my code enabled with macros
+Instead of using system functions, I just created prototypes in my code enabled with macros
 to simplify testing. The code is pretty straightforward, it simply calls `strerror_r` and
-passes its result to the `Check` function which prints what version of `strerror_r` is
+passes its result to the `check` function which prints what version of `strerror_r` is
 available.
 
 The only tricky part here is to provide our own overload of `strerror_r`
@@ -97,7 +102,7 @@ that it doesn't cause ambiguity. This is achieved by using varargs.
 
 Let's see how it works:
 
-{% highlight %}
+{% highlight bash %}
 $ g++ -DXSI test.cc format.cc
 $ ./a.out 
 XSI-compliant strerror_r
