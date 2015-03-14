@@ -52,8 +52,7 @@ if you are using C and, if you are interfacing to C from another language via so
 kind of an [FFI](https://en.wikipedia.org/wiki/Foreign_function_interface), you are
 totally out of luck.
 The man page of [`strerror_r`](http://linux.die.net/man/3/strerror_r) gives
-this beatiful condition
-that you can check to see if XSI-compliant is provided:
+this beatiful condition that you can check to see if XSI-compliant versionis provided:
 
 {% highlight c++ %}
 (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE
