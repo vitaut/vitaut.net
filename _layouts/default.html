@@ -24,26 +24,34 @@
 </head>
 <body>
 
+<nav class="navbar navbar-default" style="border-radius: 0px;">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-offset-2 col-md-8">
+        <div class="navbar-header">
+          <!-- Create a button looks like ≡ on narrow screens and toggles navigation. -->
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Home</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="https://github.com/vitaut">GitHub</a></li>
+            <li><a href="http://stackoverflow.com/users/471164/vitaut">StackOverflow</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
 <div class="container">
   <div class="row">
     <div class="col-md-offset-2 col-md-8">
-      <div class="navbar-header">
-        <!-- Create a button looks like ≡ on narrow screens and toggles navigation. -->
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="/">Home</a>
-      </div>
-      <div class="collapse navbar-collapse">
-        <ul class="nav navbar-nav">
-          <li><a href="https://github.com/vitaut">GitHub</a></li>
-          <li><a href="http://stackoverflow.com/users/471164/vitaut">StackOverflow</a></li>
-        </ul>
-      </div>
-
       {{ content }}
       
       <div class="footer">
@@ -59,7 +67,7 @@
   </div>
 </div>
 
-<a href="http://github.com/vitaut"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" /></a>
+<a class="hidden-xs" href="http://github.com/vitaut"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" /></a>
 
 <!-- JavaScript placed at the end of the document so the pages load faster. -->
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
