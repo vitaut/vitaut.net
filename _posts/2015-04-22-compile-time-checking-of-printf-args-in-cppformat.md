@@ -32,7 +32,7 @@ int main() {
 }
 {% endhighlight %}
 
-{% highlight bash %}
+{% highlight text %}
 $ g++ test.cc
 test.cc: In function ‘int main()’:
 test.cc:4:18: warning: format ‘%s’ expects argument of type ‘char*’, but argument 2 has type ‘int’ [-Wformat=]
@@ -54,7 +54,7 @@ int main() {
 }
 {% endhighlight %}
 
-{% highlight bash %}
+{% highlight text %}
 $ g++ -std=c++11 test.cc
 test.cc: In substitution of ‘template<class ... Args> void format(const char*, const Args& ...) [with Args = {int}]’:
 test.cc:6:18:   required from here
@@ -90,7 +90,7 @@ int main() {
 The `check_args` function is never called, so it doesn't introduce runtime overheads or
 safety issues. But it makes the compiler do its magic:
 
-{% highlight bash %}
+{% highlight text %}
 $ g++ -std=c++11 test.cc
 test.cc: In function ‘int main()’:
 test.cc:6:36: warning: format ‘%s’ expects argument of type ‘char*’, but argument 2 has type ‘int’ [-Wformat=]
