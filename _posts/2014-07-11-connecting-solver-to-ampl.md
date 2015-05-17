@@ -48,7 +48,7 @@ In this post I'll use the C++ ASL API because it simplifies writing a
 solver connection. Besides LocalSolver itself only provides C++ and not C API.
 To get started, let's clone the [AMPL GitHub repository](https://github.com/ampl/ampl):
 
-{% highlight bash %}
+{% highlight text %}
 $ git clone https://github.com/ampl/ampl.git
 {% endhighlight %}
 
@@ -358,20 +358,20 @@ The easiest way to build an AMPL driver is by using CMake, a cross-platform buil
 system. All we need for a new driver is to add the following line to
 `solvers/CMakeLists.txt`:
 
-{% highlight bash %}
+{% highlight text %}
 add_ampl_solver(localsolver)
 {% endhighlight %}
 
 Now we can go to the top level `ampl` directory and build the code:
 
-{% highlight bash %}
+{% highlight text %}
 $ cmake .
 $ make
 {% endhighlight %}
 
 which gives us a `localsolver` binary that can be used with AMPL:
 
-{% highlight bash %}
+{% highlight text %}
 ampl: model toy.ampl
 ampl: option solver localsolver;
 ampl: option localsolver_options 'timelimit=1';

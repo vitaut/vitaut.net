@@ -68,7 +68,7 @@ variables' values and types were also populated very slowly. As it turned out
 the problem was in gdb and updating to version 7.6 built from the source
 resolved it (gdb version 7.6-5ubuntu2 from Ubuntu repositories was not good enough):
 
-{% highlight bash %}
+{% highlight text %}
 $ sudo apt-get install libncurses5-dev
 $ wget http://ftp.gnu.org/gnu/gdb/gdb-7.6.tar.gz
 $ tar xzf gdb-7.6.tar.gz

@@ -62,7 +62,7 @@ results for Boost Format show.
 
 As usual, you can reproduce the results yourself:
 
-{% highlight bash %}
+{% highlight text %}
 $ git clone --recursive https://github.com/cppformat/format-benchmark.git
 $ cd format-benchmark
 $ cmake .

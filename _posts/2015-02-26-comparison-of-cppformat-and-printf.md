@@ -58,7 +58,7 @@ int main() {
 
 Let's compile and run it:
 
-{% highlight bash %}
+{% highlight text %}
 $ g++ -Wall -Wextra -pedantic test.cc
 $ ./a.out 
 Segmentation fault (core dumped)
@@ -87,7 +87,7 @@ int main() {
 
 Let's compile and run it:
 
-{% highlight bash %}
+{% highlight text %}
 $ g++ test.cc
 $ ./a.out 
 unknown format code 's' for integer

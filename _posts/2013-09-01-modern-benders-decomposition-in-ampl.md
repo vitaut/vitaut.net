@@ -45,7 +45,7 @@ Here is the implementation of the original Benders decomposition in AMPL:
 
 Let's measure how fast it is:
 
-{% highlight bash %}
+{% highlight text %}
 $ time ampl trnloc1.run
 ...
 RE-SOLVING MASTER PROBLEM

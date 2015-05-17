@@ -150,7 +150,7 @@ this makes processing .nl files extremely fast.
 
 Let's build this example:
 
-{% highlight bash %}
+{% highlight text %}
 $ git clone https://github.com/ampl/mp.git
 $ cd mp
 $ cmake .
@@ -163,7 +163,7 @@ Now let's get a bunch of nonlinear problems from
 the [CUTE set](http://orfe.princeton.edu/~rvdb/ampl/nlmodels/cute/index.html),
 convert them into .nl format and pass them to our program:
 
-{% highlight bash %}
+{% highlight text %}
 $ git clone https://github.com/ampl/cute.git
 $ for f in cute/*.mod; do sed 's/solve;//' < $f | ampl -og$f > /dev/null; done
 $ time ./nlreader-example cute/*.nl

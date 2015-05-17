@@ -86,7 +86,7 @@ compiler flags: `-O3 -DNDEBUG -std=c++11`.
 
 Running the benchmark:
 
-{% highlight bash %}
+{% highlight text %}
 $ git clone --recursive https://github.com/vitaut/format.git
 $ cd format
 $ cmake .

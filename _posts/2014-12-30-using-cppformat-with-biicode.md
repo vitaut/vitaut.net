@@ -38,7 +38,7 @@ client code and imported it as [vitaut/cppformat](http://www.biicode.com/vitaut/
 Now I'm going to demonstrate how to use C++ Format with Biicode on a small example.
 First let's create a Biicode project with a "Hello World" example:
 
-{% highlight bash %}
+{% highlight text %}
 $ bii init
 Successfully initialized biicode project
 $ bii new myuser/myblock --hello=cpp
@@ -56,7 +56,7 @@ int main() {
 
 Now let's resolve dependencies:
 
-{% highlight bash %}
+{% highlight text %}
 $ bii find
 INFO: Processing changes...
 INFO: Finding missing dependencies in server
@@ -76,7 +76,7 @@ configuration was needed.
 
 And finally build the example:
 
-{% highlight bash %}
+{% highlight text %}
 $ bii cpp:build
 ...
 [100%] Built target myuser_myblock_main

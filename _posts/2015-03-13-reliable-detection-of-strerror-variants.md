@@ -101,7 +101,7 @@ that it doesn't cause ambiguity. This is achieved by using varargs.
 
 Let's see how it works:
 
-{% highlight bash %}
+{% highlight text %}
 $ g++ -DXSI test.cc format.cc
 $ ./a.out 
 XSI-compliant strerror_r
