@@ -132,6 +132,7 @@ problems. But I think it is as good illustration.
 </p>
 
 Here are the files I used to test the modern Benders decomposition:
+
 * [trnloc-scenario.mod](/files/trnloc-scenario.ampl) - model
 * [trnloc.dat](http://www.ampl.com/NEW/LOOP2/trnloc.dat) - data (the same as before)
 * [trnloc-modern-benders.ampl](/files/trnloc-modern-benders.ampl) - script
