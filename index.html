@@ -4,20 +4,24 @@ title: zverovich.net
 ---
 
 <div id="home">
-  <h1>Blog Posts</h1>
+  <div class="page-header">
+    <h1>Victor Zverovich</h1>
+  </div>
+  
+  <h2>Blog Posts</h2>
   <ul class="posts">
     {% for post in site.posts %}
       <li><span>{{ post.date | date_to_string }}</span> &raquo; <a href="{{ post.url }}">{{ post.title }}</a></li>
     {% endfor %}
   </ul>
 
-  <h1>Open Source Projects</h1>
+  <h2>Open Source Projects</h2>
   <ul class="posts">
     <li><a href="https://github.com/cppformat/cppformat">C++ Format</a>: small, safe and fast string formatting library for C++.</li>
     <li><a href="https://github.com/ampl/ampl">AMPL</a>: AMPL solvers, table handlers and examples.</li>
   </ul>
 
-  <h1>Talks</h1>
+  <h2>Talks</h2>
   <ul>
     <li><a href="slides/2015-01-11-ics/socp-reformulation.html">
       Automatic Reformulation of Second-Order Cone Programming Problems</a>. ICS 2015, Richmond, VA, January 2015.</li>
@@ -33,7 +37,7 @@ title: zverovich.net
       The AMPL Interface to Constraint Programming Solvers</a>. ICS 2013, Santa Fe, NM, January 2013.</li>
   </ul>
 
-  <h1>Publications</h1>
+  <h2>Publications</h2>
   <ul>
     <li>Fábián, C.I., Mitra G., Roman D., and Zverovich V. (2011).
         An enhanced model for portfolio choice with SSD criteria: a constructive approach.
