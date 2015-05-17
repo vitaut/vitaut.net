@@ -8,7 +8,7 @@ date: 2015-04-22
 ================
 
 <div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
-  <img border="0" src="/img/safety.jpg" width="280"
+  <img border="0" src="/img/safety.jpg" width="200"
        title="Safety first!">
 </div>
 

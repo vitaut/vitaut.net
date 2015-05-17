@@ -1,0 +1,20 @@
+ul.posts {
+  list-style-type: none;
+}
+
+#home li {
+  padding-bottom: 1ex;
+}
+
+ul.posts span {
+  color: #aaa;
+  font-family: Monaco, "Courier New", monospace;
+  font-size: 80%;
+}
+
+.footer {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  border-top: 1px solid #eee;
+  text-align: center;
+}
