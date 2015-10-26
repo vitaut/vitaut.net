@@ -39,9 +39,9 @@ improvements and submitted bug reports and patches. Due to their help, the libra
 is now compatible with a wide range of platforms including ARM, ppc64, ppc64le and
 s390x.
 
-Since I'm a Ubuntu user myself, I'll show you how to install C++ Format in the
-recently released Ubuntu 15.10 Wily Werewolf. First you need to enable the Universe
-repository if you haven't done it before:
+Since I'm an Ubuntu user myself, I'll show how to install C++ Format in the
+recently released Ubuntu 15.10 [Wily Werewolf](http://releases.ubuntu.com/15.10/).
+First you need to enable the Universe repository if you haven't done it before:
 
 {% highlight text %}
 $ sudo apt-add-repository universe && sudo apt-get update
