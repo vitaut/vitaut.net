@@ -39,5 +39,40 @@ improvements and submitted bug reports and patches. Due to their help, the libra
 is now compatible with a wide range of platforms including ARM, ppc64, ppc64le and
 s390x.
 
+Since I'm a Ubuntu user myself, I'll show you how to install C++ Format in the
+recently released Ubuntu 15.10 Wily Werewolf. First you need to enable the Universe
+repository if you haven't done it before:
+
+{% highlight text %}
+$ sudo apt-add-repository universe && sudo apt-get update
+{% endhighlight %}
+
+Then you can install the library with `apt-get`:
+
+{% highlight text %}
+$ sudo apt-get install libcppformat1-dev
+{% endhighlight %}
+
+To check that it works let's create a small example:
+
+{% highlight c++ %}
+// test.cc
+#include <cppformat/format.h>
+
+int main() {
+  fmt::print("The answer is {}.\n", 42);
+}
+{% endhighlight %}
+
+compile and run it:
+
+{% highlight text %}
+$ g++ -otest test.cc -lcppformat
+$ ./test
+The answer is 42.
+{% endhighlight %}
+
+As you can see everything works as expected.
+
 If you know about other distributions that support C++ Format, please let me know
 in the comments section below.
