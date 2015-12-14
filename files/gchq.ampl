@@ -22,7 +22,7 @@ s.t. no_row_overlap{(r, i) in RowRuns: i < MaxRun}:
 s.t. no_col_overlap{(c, i) in ColRuns: i < MaxRun}:
   ColRunStart[c, i] + ColRunLen[c, i] <= ColRunStart[c, i + 1] - 1;
 
-# Each square in a row run should intersect some column run.
+# Each square in a row run should belong to some column run.
 s.t. row_col_intersect{(r, i) in RowRuns, l in 0..RowRunLen[r, i] - 1}:
   exists{(c, j) in ColRuns} (c == RowRunStart[r, i] + l &&
                              ColRunStart[c, j] <= r &&
