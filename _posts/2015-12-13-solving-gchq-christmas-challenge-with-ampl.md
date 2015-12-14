@@ -69,7 +69,7 @@ set ColRuns = {c in RC, i in 1..MaxRun: ColRunLen[c, i] > 0};
 
 The most challenging part of this particular puzzle for me was to enter the data.
 Fortunately AMPL has a powerful data specification language so I came up with a
-tabluar format similar to the form used in the original puzzle which was easy
+tabular format similar to the form used in the original puzzle which was easy
 to verify.
 
 {% highlight text %}
@@ -138,7 +138,7 @@ set KnownPos :=
 22 22;
 {% endhighlight %}
 
-Now to the interesting part: I used two sets of decicion variables, `RowRunStart` and 
+Now to the interesting part: I used two sets of decision variables, `RowRunStart` and 
 `ColRunStart`, to represent start positions of row and column runs respectively:
 
 {% highlight text %}
@@ -212,5 +212,7 @@ fancier way would be to use something like [iampl](https://github.com/vitaut/iam
 
 And this post would be incomplete without mentioning related approaches to solving this puzzle,
 [Solving The GCHQ Christmas Puzzle As A MIP With Python](https://www.ibm.com/developerworks/community/blogs/jfp/entry/Solving_The_GCHQ_Christmas_Puzzle_As_A_MIP_With_Python?lang=en)
-by JeanFrancois Puget and [Solving the GCHQ christmas card with Python and pycosat](http://matthewearl.github.io/2015/12/10/gchq-xmas-card/?cm_mc_uid=40052151720514307744226&cm_mc_sid_50200000=1450054102)
+by Jean-Francois Puget and [Solving the GCHQ christmas card with Python and pycosat](http://matthewearl.github.io/2015/12/10/gchq-xmas-card/?cm_mc_uid=40052151720514307744226&cm_mc_sid_50200000=1450054102)
 by Matthew Earl.
+
+You can find the complete AMPL code to solve this puzzle [here](/files/gchq.ampl).
