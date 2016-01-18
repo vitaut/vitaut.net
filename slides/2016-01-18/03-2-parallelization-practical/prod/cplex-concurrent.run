@@ -1,0 +1,6 @@
+reset;
+model 5-prod-sp.mod;
+include generate-data.run;
+option cplex_options 'outlev=1';
+option solver cplex;
+solve;

@@ -1,0 +1,1205 @@
+<!doctype html> <html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Interesting examples/implementations</title>
+
+  <meta name="author" content="Victor Zverovich">
+
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <link rel="stylesheet" href="../../common/reveal.js/css/reveal.css">
+  <link rel="stylesheet" href="../../common/reveal.js/css/theme/beige.css" id="theme">
+
+  <!-- For syntax highlighting -->
+  <link rel="stylesheet" href="../../common/reveal.js/lib/css/zenburn.css">
+
+  <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+  <script>
+    if( window.location.search.match(/print-pdf/gi) ) {
+      var link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = '../../common/reveal.js/css/print/pdf.css';
+      document.getElementsByTagName('head')[0].appendChild(link);
+    }
+  </script>
+
+  <style>
+  body {background: white;}
+  comment {display: none;}
+
+  .reveal h1 {
+    padding-bottom: 50px;
+  }
+  
+  .reveal h1,
+  .reveal h2 {
+    font-size: 200%;
+    text-transform: none;
+    text-align: center;
+    margin: 0;
+  }
+  .reveal section:first-of-type {
+    text-align: center;
+  }
+  .reveal section {
+    text-align: left;
+  }
+  
+  .reveal p {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+  .reveal .MathJax_Display {
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  .reveal .plot {
+    box-shadow: 0 0 20px #888888;
+    margin-left: auto; margin-right: auto;
+  }
+  
+  .reveal .transp-image {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    border: none;
+    box-shadow: none;
+  }
+  
+  /* Fix nohighlight styles. */
+  .reveal pre code { display: block; background: #3F3F3F; color: #DCDCDC; }
+  
+  /* Fix image styles. */
+  .reveal section img { border: none; box-shadow: none; }
+  
+  img.float-right {
+    clear:right;
+    float:right;
+  }
+
+  div .new { color: red; }
+
+  /* D3 styles */
+  .node circle {
+    fill: #fff;
+    stroke: steelblue;
+    stroke-width: 1.5px;
+  }
+
+  .node {
+    font: 20px sans-serif;
+  }
+
+  .link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 1.5px;
+  }
+  
+  .chart rect {
+    fill: steelblue;
+  }
+
+  .chart .bar text {
+    fill: white;
+    font: 20px sans-serif;
+    text-anchor: end;
+  }
+  .chart .axis text {
+    font: 20px sans-serif;
+    fill: black;
+  }
+  .chart .x.axis text {
+    font: 16px sans-serif;
+  }
+
+  .chart .axis path,
+  .chart .axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+  }
+  .chart .y.axis line,
+  .chart .y.axis path {
+    display: none;
+  }
+  </style>
+
+  <script type="text/javascript" charset="utf-8" src="MathBox.js/vendor/domready.js"></script>
+  <script type="text/javascript" charset="utf-8" src="MathBox.js/build/MathBox-bundle.js"></script>
+
+<!-- Begin shaders -->
+<script type="application/x-glsl" id="bezierSurface3">
+// Vertex shader: bicubic bezier surface
+
+// These matrices contain M*P*M precalculated where m = bezier matrix and p = control points.
+uniform mat4 bezierSurfaceX;
+uniform mat4 bezierSurfaceY;
+uniform mat4 bezierSurfaceZ;
+
+const float epsilon = 0.01;
+
+void bezierSurface3(out vec3 positionOut, out vec3 positionDUOut, out vec3 positionDVOut) {
+  // uv  = tu,   tv
+  // uv2 = tu^2, tv^2
+  // uv3 = tu^3, tv^3
+  vec2 uv = position.xy;
+  vec2 uv2 = uv * uv;
+  vec2 uv3 = uv * uv2;
+
+  // t vector for u and v directions
+  vec4 tu = vec4(uv3.x, uv2.x, uv.x, 1.0);
+  vec4 tv = vec4(uv3.y, uv2.y, uv.y, 1.0);
+
+  // t derivative vector for u and v directions
+  vec2 uv_2 = uv * 2.0; // 2t
+  vec2 uv2_3 = uv2 * 3.0; // 3t^2
+  vec4 dtu = vec4(uv2_3.x, uv_2.x, 1.0, 0.0);
+  vec4 dtv = vec4(uv2_3.y, uv_2.y, 1.0, 0.0);
+
+  // interpolate position.
+  positionOut.x = dot(tu, bezierSurfaceX * tv);
+  positionOut.y = dot(tu, bezierSurfaceY * tv);
+  positionOut.z = dot(tu, bezierSurfaceZ * tv);
+
+  // interpolate tangent U.
+  vec3 tU;
+  tU.x = dot(dtu, bezierSurfaceX * tv);
+  tU.y = dot(dtu, bezierSurfaceY * tv);
+  tU.z = dot(dtu, bezierSurfaceZ * tv);
+
+  // interpolate tangent V.
+  vec3 tV;
+  tV.x = dot(tu, bezierSurfaceX * dtv);
+  tV.y = dot(tu, bezierSurfaceY * dtv);
+  tV.z = dot(tu, bezierSurfaceZ * dtv);
+
+  // output adjacent positions in DU / DV for determining normal post-transform.
+  positionDUOut = positionOut + tU * epsilon;
+  positionDVOut = positionOut + tV * epsilon;
+}
+</script>
+
+<script type="application/x-glsl" id="bezier1">
+// Vertex shader: line (1st order bezier)
+uniform vec3 bezierPoints[2];
+
+void bezier1(out vec3 positionOut) {
+  float t = position.x;
+
+  vec3 a = bezierPoints[0];
+  vec3 b = bezierPoints[1];
+
+  positionOut = a + (b - a) * t;
+}
+</script>
+
+<script type="application/x-glsl" id="bezier2">
+// Vertex shader: quadratic bezier curve
+uniform vec3 bezierPoints[3];
+
+void bezier2(out vec3 positionOut) {
+  float t = position.x;
+  float it = (1.0 - t);
+
+  vec3 a = bezierPoints[0];
+  vec3 b = bezierPoints[1];
+  vec3 c = bezierPoints[2];
+
+  vec3 d = 2.0 * b;
+  vec3 e = t * c;
+  vec3 f = a + (d - a) * t;
+  vec3 g = f + (e - f) * t;
+
+  positionOut = g;
+}
+</script>
+
+<script type="application/x-glsl" id="bezier3">
+// Vertex shader: cubic bezier curve
+uniform vec3 bezierPoints[4];
+
+void bezier3(out vec3 positionOut) {
+  float t = position.x;
+  float t2 = t * t, it2 = (1.0 - t)*(1.0 - t);
+
+  vec3 a = bezierPoints[0];
+  vec3 b = bezierPoints[1];
+  vec3 c = bezierPoints[2];
+  vec3 d = bezierPoints[3];
+
+  vec3 e = 3.0 * b;
+  vec3 f = 3.0 * c;
+  vec3 g = a + (e - a) * t;
+  vec3 h = f + (d - f) * t;
+
+  positionOut = g*it2 + h*t2;
+}
+</script>
+
+<script type="application/x-glsl" id="tickVertexSplit">
+// Vertex shader: split position into two, to transform a differential along.
+uniform vec3 tickEpsilon;
+
+void tickVertex(in vec3 positionIn, out vec3 positionA, out vec3 positionB) {
+  positionA = positionIn;
+  positionB = positionIn + tickEpsilon;
+}
+</script>
+
+<script type="application/x-glsl" id="tickVertexJoin">
+// Vertx shader: join position + differential, render normalized tick marks.
+attribute float tickSign;
+uniform float tickSize;
+
+void tickVertex(in vec3 positionA, in vec3 positionB, out vec3 positionOut) {
+  vec3 diff = normalize(positionB - positionA);
+
+  positionOut = positionA + diff * tickSign * tickSize;
+}
+</script>
+
+<script type="application/x-glsl" id="polarPower">
+// Vertex shader: apply a power operator to complex numbers represented in polar coordinates.
+uniform float polarPower;
+uniform float polarFold;
+
+void polarPower(in vec3 positionIn, out vec3 positionOut) {
+
+  if (polarPower != 1.0 || polarFold != 1.0) {
+    positionOut = vec3(
+      positionIn.x * polarFold,
+      sign(positionIn.y) * pow(abs(positionIn.y), polarPower),
+      positionIn.z//,
+    );
+  }
+  else {
+    positionOut = positionIn;
+  }
+}
+</script>
+
+<script type="application/x-glsl" id="worldToMath">
+// Vertex shader: transform from world-space to math-space
+uniform mat4 viewportInverse;
+
+void worldToMath(in vec3 positionIn, out vec3 positionOut) {
+  vec4 pos4 = viewportInverse * vec4(positionIn, 1.0);
+  positionOut = pos4.xyz;
+}
+</script>
+
+<script type="application/x-glsl" id="mathToWorld">
+// Vertex shader: transform from math-space to world-space
+uniform mat4 viewportTransform;
+
+void mathToWorld(in vec3 positionIn, out vec3 positionOut) {
+  vec4 pos4 = viewportTransform * vec4(positionIn, 1.0);
+  positionOut = pos4.xyz;
+}
+
+</script>
+
+<script type="application/x-glsl" id="projectiveTransform">
+// Vertex shader: apply the projective viewport transform
+uniform mat4 projectiveTransform;
+
+void projective(in vec3 positionIn, out vec3 positionOut) {
+  vec4 pos4 = projectiveTransform * vec4(positionIn, 1.0);
+  positionOut = pos4.xyz / pos4.w;
+}
+</script>
+
+<script type="application/x-glsl" id="mathTransform">
+// Vertex shader: apply an arbitrary transform in math space
+uniform mat4 mathTransform;
+
+void mathTransform(in vec3 positionIn, out vec3 positionOut) {
+  vec4 pos4 = mathTransform * vec4(positionIn, 1.0);
+  positionOut = pos4.xyz / pos4.w;
+}
+</script>
+
+<script type="application/x-glsl" id="worldTransform">
+// Vertex shader: apply an arbitrary transform in world space
+uniform mat4 worldTransform;
+
+void worldTransform(in vec3 positionIn, out vec3 positionOut) {
+  vec4 pos4 = worldTransform * vec4(positionIn, 1.0);
+  positionOut = pos4.xyz / pos4.w;
+}
+</script>
+
+<script type="application/x-glsl" id="cartesianToPolar">
+// Vertex shader: transform smoothly between cartesian viewport and polar viewport.
+uniform float polarAlpha;
+uniform float polarFocus;
+uniform float polarAspect;
+uniform float polarHelix;
+
+void cartesianToPolar(in vec3 positionIn, out vec3 positionOut) {
+  if (polarAlpha > 0.0001) {
+    vec2 xy = positionIn.xy * vec2(polarAlpha, polarAspect);
+    float radius = polarFocus + xy.y;
+    positionOut = vec3(
+      sin(xy.x) * radius,
+      (cos(xy.x) * radius - polarFocus) / polarAspect,
+      positionIn.z + positionIn.x * polarHelix * polarAlpha//,
+    );
+  }
+  else {
+    positionOut = positionIn;
+  }
+}
+</script>
+
+<script type="application/x-glsl" id="cartesianToSphere">
+// Vertex shader: transform smoothly between cartesian viewport and spherical viewport.
+uniform float sphereAlpha;
+uniform float sphereFocus;
+uniform float sphereAspectX;
+uniform float sphereAspectY;
+uniform float sphereYScale;
+
+void cartesianToSphere(in vec3 positionIn, out vec3 positionOut) {
+  if (sphereAlpha > 0.0001) {
+    vec3 xyz = positionIn.xyz * vec3(sphereAlpha, sphereAlpha / sphereAspectY * sphereYScale, sphereAspectX);
+    float radius = sphereFocus + xyz.z;
+    float cosTR = cos(xyz.y) * radius;
+    positionOut = vec3(
+      sin(xyz.x) * cosTR,
+      sin(xyz.y) * radius * sphereAspectY,
+      (cos(xyz.x) * cosTR - sphereFocus) / sphereAspectX//,
+    );
+  }
+  else {
+    positionOut = positionIn;
+  }
+}
+</script>
+
+<script type="application/x-glsl" id="projectToView">
+// Vertex shader: project points to view (and apply zIndex bias).
+uniform float zIndex;
+
+void projectToView(in vec3 positionIn, out vec4 positionOut, out vec3 viewPositionOut) {
+  vec4 worldPosition = modelViewMatrix * vec4(positionIn, 1.0);
+
+  viewPositionOut = -worldPosition.xyz;
+
+  positionOut = projectionMatrix * worldPosition;
+  positionOut.z -= zIndex * .00001;
+}
+</script>
+
+<script type="application/x-glsl" id="projectToViewNormal">
+// Vertex shader: project points to view (and apply zIndex bias).
+uniform float zIndex;
+varying vec3 vNormal;
+
+void projectToView(in vec3 positionIn, out vec4 positionOut, out vec3 viewPositionOut) {
+  vec4 worldPosition = modelViewMatrix * vec4(positionIn, 1.0);
+
+  vNormal = normalMatrix * normal;
+
+  viewPositionOut = -worldPosition.xyz;
+
+  positionOut = projectionMatrix * worldPosition;
+  positionOut.z -= zIndex * .00001;
+}
+</script>
+
+<script type="application/x-glsl" id="projectToViewDUDV">
+// Vertex shader: project points + DU/DV to view (and apply zIndex bias).
+uniform float zIndex;
+varying vec3 vNormal;
+
+void projectToView(in vec3 positionIn, in vec3 positionDUIn, in vec3 positionDVIn, out vec4 positionOut, out vec3 viewPositionOut) {
+  vec4 worldPosition = modelViewMatrix * vec4(positionIn, 1.0);
+  vec4 worldPositionDU = modelViewMatrix * vec4(positionDUIn, 1.0);
+  vec4 worldPositionDV = modelViewMatrix * vec4(positionDVIn, 1.0);
+
+  vec3 du = worldPositionDU.xyz - worldPosition.xyz;
+  vec3 dv = worldPositionDV.xyz - worldPosition.xyz;
+  vNormal = normalize(cross(dv, du));
+
+  viewPositionOut = -worldPosition.xyz;
+
+  positionOut = projectionMatrix * worldPosition;
+  positionOut.z -= zIndex * .00001;
+}
+
+</script>
+
+<script type="application/x-glsl" id="getPosition">
+// Vertex shader: read three.js vertex position attribute
+void getPosition(out vec3 positionOut) {
+  positionOut = position;
+}
+</script>
+
+<script type="application/x-glsl" id="getPositionDUDV">
+attribute vec3 positionDU;
+attribute vec3 positionDV;
+
+// Vertex shader: read three.js vertex position attribute
+void getPositionDUDV(out vec3 positionOut, out vec3 positionDUOut, out vec3 positionDVOut) {
+  positionOut = position;
+  positionDUOut = positionDU;
+  positionDVOut = positionDV;
+}
+</script>
+
+<script type="application/x-glsl" id="vertexOutput">
+// Vertex shader: set GL vertex properties and varyings
+uniform float pointSize;
+
+uniform vec4 offsetRepeat;
+varying vec2 vUV;
+
+varying vec3 vViewPosition;
+
+void vertexOutput(in vec4 position, in vec3 viewPosition) {
+  gl_Position = position;
+  gl_PointSize = pointSize;
+
+  vUV = uv * offsetRepeat.zw + offsetRepeat.xy;
+  vViewPosition = viewPosition;
+}
+</script>
+
+<script type="application/x-glsl" id="fragmentShaded">
+// Fragment shader: render a shaded surface fragment.
+uniform vec3 color;
+uniform float opacity;
+uniform float mapColor;
+uniform float mapOpacity;
+
+uniform sampler2D texture;
+varying vec2 vUV;
+
+varying vec3 vNormal;
+varying vec3 vViewPosition;
+uniform float flipSided;
+
+void fragmentShaded() {
+  if (opacity < 0.01) discard;
+
+  float shininess = 5.0;
+
+        vec3 normal = normalize(vNormal);
+        #ifdef DOUBLE_SIDED
+          normal = normal * (-1.0 + 2.0 * float(gl_FrontFacing)) * flipSided;
+        #endif
+
+  vec3 viewPosition = normalize(vViewPosition);
+  vec3 lightPosition = (viewMatrix * vec4(1.0, 2.0, -1.0, 0.0)).xyz;
+  vec3 lightVector = normalize(lightPosition);
+
+  float dotNormal = dot(normal, lightVector);
+  float diffuse = dotNormal * .5 + .5;
+        #ifdef DOUBLE_SIDED
+          if (!gl_FrontFacing) {
+            diffuse = diffuse * .9 + .1;
+          }
+        #endif
+
+        vec3 halfVector = normalize(lightVector + viewPosition);
+        float dotNormalHalf = max(dot(normal, halfVector), 0.0);
+        float specular = pow(max(dotNormalHalf, 0.0), shininess);
+
+  vec4 sample = texture2D(texture, vUV);
+
+  float alpha = opacity * (1.0 - mapOpacity * (1.0 - sample.w));
+  if (alpha < 0.01) discard;
+
+  vec3 sampleLinear = sample.xyz * sample.xyz;
+  vec3 colorLinear = color * color;
+
+  // Don't ungamma the specular value, looks nicer, it adds subtle color shading
+  vec3 specColor = normalize(.1 + sqrt(color)) * .35 * specular;
+
+  vec3 textured = colorLinear + (colorLinear * sampleLinear.xyz - colorLinear) * mapColor;
+
+  gl_FragColor = vec4(sqrt(max(vec3(0.0, 0.0, 0.0), textured * diffuse + specColor)), alpha);
+}
+</script>
+
+<script type="application/x-glsl" id="fragmentSolid">
+// Fragment shader: render a solid surface fragment.
+uniform vec3 color;
+uniform float opacity;
+uniform float mapColor;
+uniform float mapOpacity;
+
+uniform sampler2D texture;
+varying vec2 vUV;
+
+void fragmentSolid() {
+  if (opacity < 0.01) discard;
+
+  vec4 sample = texture2D(texture, vUV);
+  float alpha = opacity * (1.0 - mapOpacity * (1.0 - sample.w));
+  if (alpha < 0.01) discard;
+
+  vec3 textured = color + (color * sample.xyz - color) * mapColor;
+
+  gl_FragColor = vec4(textured, alpha);
+}
+</script>
+
+<script type="application/x-glsl" id="fragmentSolidPoint">
+// Fragment shader: render an anti-aliased circular point sprite.
+uniform vec3 color;
+uniform float opacity;
+uniform float pointSize;
+
+void fragmentSolidPoint() {
+  float c = dot(gl_PointCoord - 0.5, gl_PointCoord - 0.5) * 4.0;
+  if (c > 1.0) {
+    discard;
+  }
+  float edgeAlpha = min(1.0, .25 * pointSize * (1.0 - c));
+  gl_FragColor = vec4(color, opacity * edgeAlpha);
+}
+</script>
+
+<script type="application/x-glsl" id="fragmentTexture">
+// Fragment shader: render a textured sample.
+uniform sampler2D texture;
+varying vec2 vUV;
+
+void fragmentTexture() {
+    gl_FragColor = texture2D(texture, vUV);
+}
+</script>
+<!-- End shaders -->  
+  
+  <link href="MathBox.js/base.css" rel="stylesheet" type="text/css" media="screen">  
+</head>
+
+<body>
+<script src="../../common/reveal.js/lib/js/head.min.js"></script>
+<script src="../../common/reveal.js/js/reveal.js"></script>
+
+<img id="logo" style="position: absolute; top: 40px; right: 20px; border: 0;" src="ampl-logo-text.png" width="100px"/>
+<div class="reveal">
+<!-- Any section element inside of this container is displayed as a slide -->
+<div class="slides">
+
+<section data-markdown data-separator="---">
+<script type="text/template">
+Interesting examples/implementations
+====================================
+
+Victor Zverovich
+
+<small><a href="mailto:viz@ampl.com">viz@ampl.com</a></small>
+
+AMPL Optimization Inc.
+
+<br>
+
+<small>University of Santiago de Compostela, <br>
+January 18-19, 2016, Spain</small>
+---
+
+## Outline
+
+* Transformation to SOCP problems
+
+  * Introduction and motivation
+  * Example
+  * Reformulations
+
+* Real-world example: Zara  
+
+* References
+
+---
+
+## Second-order cone programming (SOCP)
+
+Problem statement:
+
+$$
+\begin{array}{ll}
+\mathrm{minimize} & f^T x \\\\
+\mathrm{s.t.}     & \\| A_i x + b_i \\|_2 \leq c^T_i x + d_i, \quad i = 1, ..., m \quad \\\\
+                  & F x = g, \\\\
+\end{array}
+$$
+
+where $x \in \mathbb{R}^n$ is the optimization variable,
+
+$f \in \mathbb{R}^n, A_i \in \mathbb{R}^{n_i \times n}, b_i \in \mathbb{R}^{n_i},
+c_i \in \mathbb{R}^{n}, d_i \in \mathbb{R}, $  
+$F \in \mathbb{R}^{p \times n}$, and $g \in \mathbb{R}^p$.
+
+---
+
+## SOCP constraint
+
+<div id="cone" class="plot" style="height: 400px; width: 600px;"></div>
+
+$$\\| A x + b \\|_2 \leq c^T x + d$$
+
+---
+
+## Motivation
+
+Second-order cone programming problems
+
+* Have a wide range of applications:
+  * Robust optimization
+  * Engineering applications: filter design, antenna array design, etc.
+    See, for example, *Applications of Second-Order Cone Programming* by Lobo et al (1998).
+* Can be solved efficiently with interior-point methods 
+* Many types of problems are convertible to SOCP (Erickson (2013))
+
+But solvers only accept very limited forms of SOCP constraints
+
+---
+
+## Example
+
+<div id="example" class="plot" style="height: 400px; width: 600px;"></div>
+
+$$\mathrm{minimize} \sqrt{(x + 2) ^ 2 + (y + 1) ^ 2} + \sqrt{(x + y) ^ 2}$$
+
+---
+
+## Problem
+
+AMPL model:
+```
+var x;
+var y;
+minimize obj: sqrt((x + 2) ^ 2 + (y + 1) ^ 2) + sqrt((x + y) ^ 2);
+```
+
+CPLEX:
+
+```nohighlight
+ampl: option solver cplex;
+ampl: solve;
+CPLEX 12.6.1.0: /tmp/at12668.nl contains a nonlinear objective.
+```
+
+MINOS:
+
+```nohighlight
+ampl: option solver minos;
+ampl: solve;
+MINOS 5.51: Error evaluating objective obj: can't evaluate sqrt'(0).
+ampl: let {i in 1.._nvars} _var[i] := 0.1; solve;
+MINOS 5.51: optimal solution found?  Optimality
+tests satisfied, but reduced gradient is large.
+12 iterations, objective 2.19544929
+Nonlin evals: obj = 126, grad = 125.
+```
+
+---
+
+## SOCP reformulation
+
+$$
+\begin{array}{ll}
+\mathrm{minimize} & u + v \\\\
+\mathrm{s.t.}     & (x + 2) ^ 2 + (y + 1) ^ 2 \leq u ^ 2, \\\\
+                  & (x + y) ^ 2 \leq v ^ 2 \\\\
+                  & u, v \geq 0 \\\\
+\end{array}
+$$
+
+<comment>
+## SOCP reformulation
+<div id="socp" class="plot" style="height: 400px; width: 600px;"></div>
+<div style="color: #2070C0;">$$(x + 2) ^ 2 + (y + 1) ^ 2 \leq u ^ 2, u \geq 0$$</div>
+<div style="color: #20C070;">$$(x + y) ^ 2 \leq v ^ 2, v \geq 0$$</div>
+</comment>
+
+---
+
+## Solving SOCP reformulation
+
+AMPL model:
+```
+var x;
+var y;
+var u >= 0;
+var v >= 0;
+minimize obj: u + v;
+s.t. c1: (x + 2) ^ 2 + (y + 1) ^ 2 <= u ^ 2;
+s.t. c2: (x + y) ^ 2 <= v ^ 2;
+```
+
+CPLEX:
+
+```nohighlight
+ampl: option solver cplex; solve;
+CPLEX 12.6.1.0: QP Hessian is not positive semi-definite.
+```
+
+KNITRO:
+
+```nohighlight
+ampl: option solver knitro; solve;
+KNITRO 9.0.1: Locally optimal solution.
+objective 2.121313302; feasibility error 9.97e-11
+21 iterations; 22 function evaluations
+```
+
+---
+
+## Solver forms
+
+<div style="height: 500px">
+"Standard" second-order cone constraint:
+$$
+\sum\_{i=1}^n a\_i x\_i^2 \leq a\_{n + 1} x\_{n + 1}^2
+$$
+where $a\_i \geq 0, x\_{n + 1} \geq 0$.
+
+Rotated cone constraint:
+$$
+\sum\_{i=1}^n a\_i x\_i^2 \leq a\_{n + 1} x\_{n + 1} x\_{n + 2}
+$$
+where $a\_i \geq 0, x\_{n + 1} \geq 0, x\_{n + 2} \geq 0$.
+</div>
+
+---
+
+## Making solver happy
+
+AMPL model:
+```
+var x;
+var y;
+var u >= 0;
+var v >= 0;
+var r;
+var s;
+var t;
+minimize obj: u + v;
+s.t. c1: r ^ 2 + s ^ 2 <= u ^ 2;
+s.t. c2: t ^ 2 <= v ^ 2;
+s.t. c3: x + 2 = r;
+s.t. c4: y + 1 = s;
+s.t. c5: x + y = t;
+```
+
+CPLEX:
+
+```nohighlight
+ampl: option solver cplex; solve;
+CPLEX 12.6.1.0: optimal solution; objective 2.121320344
+5 barrier iterations
+```
+Works but tedious and error-prone, so...
+
+---
+
+## Let machine do the work
+
+<img class="transp-image" src="useless-machine.gif" style="height: 500px;" />
+
+---
+
+## SOCP reformulation system
+
+Features:
+
+* Fast detection of problems convertible to SOCP
+
+* Compatibility with existing solvers:
+  no modifications to the source code of existing solvers required
+
+* Automatic reformulation into SOCP forms accepted by solvers
+
+* Easy to write new transformations
+
+* Modular: components can be reused for different purposes
+
+---
+
+## SOCP-convertible forms
+
+<div style="height: 500px">
+Quadriatic constraints:
+$$ \sum\_{i=1}^n a\_i ({\bf f\_i x} + g\_i)^2 \leq a\_{n + 1} ({\bf f\_{n + 1} x} + g\_{n + 1})^2 $$
+where $a\_i \geq 0$ and ${\bf f\_{n + 1} x} + g\_{n + 1} \geq 0$ for all feasible $\bf x$.
+
+$$ \sum\_{i=1}^n a\_i ({\bf f\_i x} + g\_i)^2 \leq a\_{n + 1} ({\bf f\_{n + 1} x} + g\_{n + 1}) ({\bf f\_{n + 2} x} + g\_{n + 2}) $$
+where $a\_i \geq 0, {\bf f\_{n + 1} x} + g\_{n + 1} \geq 0,
+{\bf f\_{n + 2} x} + g\_{n + 2} \geq 0$ for all feasible $\bf x$.
+</div>
+
+---
+
+## SOC-representable functions
+
+* A function $\mathrm{SOC}(x)$ is SOC-representable 
+  if $\mathrm{SOC}({\bf x}) \leq {\bf f\_{n + 1} x} + g\_{n + 1}$ can be equivalently represented by a collection of
+  second-order cone and linear constraints.
+
+* Any positive multiple, sum, or maximum of SOC-representable functions is also SOC-representable.
+
+* Minimization of a SOC-representable function is equivalent to SOCP.
+
+---
+
+## Examples of SOC-representable functions
+
+* $(\sum\_{i=1}^n a\_i |{\bf f\_i x} + g\_i|^{\alpha\_i})^{1/\alpha\_0}$, where
+  $\alpha_i \geq \alpha_0 \geq 1$. Includes norms.
+
+* Quadratic-linear ratios: $\frac{\sum\_{i=1}^n a\_i ({\bf f\_i x} + g\_i)^2}{{\bf f\_{n + 2} x} + g\_{n + 2}}$
+
+* Generalization of negative geometric mean: $\prod_{i = 1}^p ({\bf f\_i x} + g\_i)^{-\alpha\_i}$ for
+  rational $\alpha_i \geq 0$.
+
+  and more (see Erickson (2013))
+
+---
+
+## Example revisited
+
+AMPL model:
+
+```
+var x;
+var y;
+minimize obj: sqrt((x + 2) ^ 2 + (y + 1) ^ 2) + sqrt((x + y) ^ 2);
+```
+
+CPLEX*:
+```nohighlight
+ampl: option solver cplex-socp;
+ampl: solve;
+CPLEX 12.4.0.0: optimal solution; objective 2.121320344
+5 barrier iterations
+No basis.
+```
+
+It just works!&#0153; 
+---
+
+## Summary
+
+* **Current status**:
+  - Reformulation infrastructure is ready
+  - Transformations are being developed
+
+* **Future work**:
+  - More transformations
+  - Build solver representation directly: faster, but requires modifications to a solver driver
+  - Support more solvers: easy as only recompilation required
+
+---
+
+## Business Customer Example
+
+<div style="text-align: center">
+<img src="zara.png" style="height: 100px">
+</div>
+
+* Clothing retailing
+
+* Optimization of worldwide shipments
+
+* One of the finalists for INFORMS Edelman Award for practice of Operations Research
+
+---
+
+## ZARA Example
+
+![AMPL IDE](zara-process.png)
+
+* Piecewise-linear AMPL model with integer variables
+* Run once for each product each week
+* Decides how much of each size to ship to each store
+* Increases sales 3-4%
+
+---
+
+## Zara's formulation
+
+**Given**
+
+$S = S^+ \cup S^-$ - Set of sizes partitioned into major & regular
+
+$J$ - Set of stores
+
+$W_s$ - Inventory of size $s$ available at the warehouse
+
+$I_{sj}$ - Inventory of size $s$ available in store $j$
+
+$P_j$ - Selling price in store $j$
+
+$K$ - Aggressiveness factor (value of inventory remaining
+in the warehouse after the current shipments)
+
+$\lambda_{sj}$ - Demand rate for size $s$ in store $j$
+
+$N_{sj}$ - Approximation set for size $s$ in the inventory-to-sales
+function approximation for store $j$
+
+</script>
+</section>
+
+<section>
+
+<h2>Zara's formulation</h2>
+
+<b>Determine</b>
+
+<p>
+$x_{sj}$ - (integer) shipment quantity of each size $s \in S$
+  to each store $j \in J$ for the current replenishment period
+</p>
+<p>
+$z_j$ - ($\geq 0$) approximate expected sales across all sizes
+in each store $j \in J$ for the current period
+</p>
+
+<b>to maximize</b>
+
+<p>
+$\sum_{j \in J} P_j z_j + K \sum_{s \in S} (W_s - \sum_{j \in J} x_{sj})$
+</p>
+<p>
+Expected sales plus value of items remaining in warehouse
+</p>
+</section>
+
+<section>
+
+<h2>Zara's formulation</h2>
+
+<b>subject to</b>
+<p>
+$\sum_{j \in J} x_{sj} \leq W_s \quad \mathrm{for all} \; s \in S$
+<p>
+Total shipments of size $s$
+must not exceed amount available in warehouse
+
+<p>
+$z_j \leq (\sum_{s \in S^+} \lambda_{sj}) y_j + \sum_{s \in S^-} \lambda_{sj} v_{sj} \quad \mathrm{for all} \; j \in J$
+<p>
+$y_j \leq a_i \lambda_{sj} (I_{sj} + x_{sj} - i) + b_i \lambda_{sj} \quad \mathrm{for all} \; j \in J, s \in S^+, i \in N_{sj}$
+<p>
+$v_{sj} \leq a_i \lambda_{sj} (I_{sj} + x_{sj} - i) + b_i \lambda_{sj} \quad \mathrm{for all} \; j \in J, s \in S^-, i \in N_{sj}$
+<p>
+$v_{sj} \leq y_j \quad \mathrm{for all} \; j \in J, s \in S^-$
+<p>
+Relationship between sales
+and store inventory after shipments
+</section>
+
+<section data-markdown data-separator="---">
+<script type="text/template">
+
+## References
+
+* Jared Erickson (2013). *Detection and Transformation of Objective and Constraint Structures for Optimization Algorithms*.
+
+* Stephen Boyd, Lieven Vandenberghe (2004).
+  [*Convex Optimization*](http://web.stanford.edu/~boyd/cvxbook/bv_cvxbook.pdf).
+
+* Miguel Soma Lobo, Lieven Vandenberghe, Stephen Boyd, Hervé Lebret (1998).
+  [*Applications of Second-Order Cone Programming*](http://stanford.edu/~boyd/papers/pdf/socp.pdf).
+
+* Source code of SOCP prototype: [https://github.com/ampl/mp](https://github.com/ampl/mp)
+
+* F. Caro, J. Gallien, M. Díaz, J. García, J.M. Corredoira, M. Montes, J.A.
+Ramos, J. Correa, “Zara Uses Operations Research to Reengineer Its
+Global Distribution Process.” Interfaces 40, 1 (Jan–Feb 2010) 71–84.
+
+<!-- .element: style="font-size: 32px;" -->
+
+---
+
+## Questions?
+
+</script>
+</section>
+
+</div>
+</div>
+
+<script>
+  // Full list of configuration options available here:
+  // https://github.com/hakimel/reveal.js#configuration
+  Reveal.initialize({
+    controls: true,
+    progress: true,
+    history: true,
+    center: true,
+
+    theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+    transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+    // Parallax scrolling
+    // parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+    // parallaxBackgroundSize: '2100px 900px',
+
+    math: {
+      mathjax: '../../common/MathJax-2.4.0/MathJax.js',
+      config: 'TeX-AMS-MML_HTMLorMML'  // See http://docs.mathjax.org/en/latest/config-files.html
+    },
+
+    // Optional libraries used to extend on reveal.js
+    dependencies: [
+      { src: '../../common/reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+      { src: '../../common/reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      { src: '../../common/reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      { src: '../../common/reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+      { src: '../../common/reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+      { src: '../../common/reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+      { src: '../../common/reveal.js/plugin/math/math.js', async: true }
+    ]
+  });
+  //Reveal.addEventListener('slidechanged', function(event) {
+  //  document.getElementById("logo").style.visibility = Reveal.isFirstSlide() ? 'hidden' : 'visible';
+  //});
+  function plot(element, funcs, options) {
+      // MathBox boilerplate
+    var mathbox = window.mathbox = mathBox(document.getElementById(element), {
+      cameraControls: true,
+      cursor:         true,
+      controlClass:   ThreeBox.OrbitControls,
+      elementResize:  true,
+      fullscreen:     true,
+      screenshot:     true,
+      stats:          false,
+      scale:          1,
+    }).start();
+    
+    if (!options)
+      options = {};
+      
+    // Viewport camera/setup
+    mathbox
+      // Cartesian viewport
+      .viewport({
+        type: 'cartesian',
+        range: [[-2, 2], [3, 7], [-2, 2]],
+        scale: [1, 1, 1],
+        polar: 0,
+      })
+      .camera({
+        orbit: 7,
+        phi: 0.4 * τ,
+        theta: 0.2,
+      })
+      .transition(300)
+      .grid({
+        id: 'grid',
+        axis: [0, 2],
+        offset: [0, 2, 0],
+        color: 0xa0a0a0,
+      });
+      
+      // Surface function
+      for (var i = 0; i < funcs.length; i++) {
+        mathbox.surface({
+          id: 'surf' + i,
+          shaded: true,
+          domain: options['domain'] || [[-2, 2], [-2, 2]],
+          n: [21, 21],
+          expression: funcs[i],
+          line: options['line'] || false,
+          opacity: .999, // Bugfix: for some reason, tangent attribute is gone when material.transparent = false
+        });
+      }
+      var sliceFunc = options['sliceFunc'];
+      if (sliceFunc) {
+        mathbox.surface({
+          shaded: false,
+          domain: [[-2, 2], [-2, 2]],
+          n: [2, 2],
+          expression: sliceFunc,
+          color: 0x20C050,
+          opacity: .5,
+        });
+      }
+      return mathbox;
+  }
+  
+  // Clock that starts as soon as it is first called (per id).
+  var clocks = {};
+  window.clock = function (id) {
+    if (!clocks[id]) clocks[id] = +new Date();
+    return (+new Date() - clocks[id]) * .001;
+  }
+
+  // Horizontal slice
+  function sliceFunc(x, y) {
+    var t = clock(1);
+    return Math.sin(t) + 3;
+  }
+
+  function cone(x, y) {
+    return Math.sqrt(x * x + y * y) + 2;
+  }
+
+  function objective(x, y) {
+    return Math.sqrt(Math.pow(x + 2, 2) + Math.pow(y + 1, 2)) + Math.sqrt(Math.pow(x + y, 2));
+  }
+
+  function cone2(x, y) {
+    return Math.sqrt(Math.pow(x + 2, 2) + Math.pow(y + 1, 2));
+  }
+
+  function cone3(x, y) {
+    return Math.sqrt(Math.pow(x + y, 2));
+  }
+
+  // Create plot.
+  Reveal.addEventListener('ready', function(event) {
+    plot('cone', [cone], {domain: [[-1, 1], [-1, 1]]})
+      .viewport({range: [[-1.5, 1.5], [2, 3.5], [-1.5, 1.5]]})
+      .camera({orbit: 5, phi: 0.5, theta: 0.4});
+    plot('example', [objective], {sliceFunc: sliceFunc});
+    
+    var codes = document.getElementsByTagName('pre');
+    for (var i = 0; i < codes.length; i++) {
+      codes[i].innerHTML = codes[i].innerHTML
+        .replace(/&amp;gt;/g, '>').replace(/&amp;lt;/g, '<').replace(/&amp;/g, '&');
+    }
+      /*console.log('making plot');
+      var mathbox = plot('socp', [cone2, cone3], {domain: [[-3, 3], [-3, 3]]})
+        .viewport({range: [[-4, 4], [0, 5], [-4, 4]]})
+        .camera({phi: 2.7});
+      mathbox.set('#grid', {offset: [0, 0, 0]});
+      mathbox.set('#surf1', {color: 0x30F080});*/
+  });
+  var examplePlot = false;
+  Reveal.addEventListener('slidechanged', function(event) {
+    if (!examplePlot && $(event.currentSlide).find('#example').length > 0) {
+      examplePlot = true;
+      plot('example', [objective], {sliceFunc: sliceFunc});
+    }
+  });
+</script>
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-20116650-1']);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+# Generate random data for the SP production problem.
+
+let T := 200;
+let PROD := 1..100;
+let SCEN := 1..4;
+
+let{t in 1..T} avail[t] := round(Uniform(30, 40));
+let{p in PROD} rate[p] := round(Uniform(140, 200));
+let{p in PROD} inv0[p] := round(Uniform(0, 10));
+
+let{p in PROD} prodcost[p] := round(Uniform(10, 15));
+let{p in PROD} invcost[p] := round(Uniform(2, 5));
+
+let{p in PROD, s in SCEN} revenue[p, 1, s] := round(Uniform(20, 40), 1);
+let{p in PROD, t in 2..T, s in SCEN}
+  revenue[p, t, s] := round(revenue[p, t - 1, s] * Uniform(0.9, 1.1), 1);
+
+let{p in PROD} market[p, 1] := round(Uniform(2000, 7000));
+let{p in PROD, t in 2..T} market[p, t] := round(market[p, t - 1] * Uniform(0.9, 1.1));
+
+let{s in SCEN} prob[s] := 1 / card(SCEN);

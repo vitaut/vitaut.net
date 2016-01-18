@@ -1,0 +1,4 @@
+reset;
+model 0-prod.mod;
+data prod.dat;
+solve;

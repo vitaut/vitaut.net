@@ -1,0 +1,77 @@
+option solver ipopt;
+option parampl_options 'solver=ipopt';
+option parampl_queue_id 'powelltest';
+
+
+
+#defines how the program should be executed: 1 - with solve command; 2 - with parampl calls;
+param execution;
+let execution := num($p20_ex);
+
+
+
+# value of N:
+param N;
+let N := num($p20_n);
+
+# variable for results
+param x{i in 1..N};
+param prevx{i in 1..N};
+
+
+# temp. variable for subproblems:
+var xx{1..N};
+
+
+# stores number of iteration/parallel subproblem:
+param subp_no;
+
+
+# objective for subbproblems
+minimize g:
+	0.5*sum {i in 1..N} xx[i]^2;
+
+subject to cons1{k in 1..N-1}:
+	xx[k+1]-xx[k] >= -0.5+(-1)^(k)*(k);
+
+subject to cons2:
+	xx[1]-xx[N] >= N - 0.5;
+
+
+
+let {i in 1..N} xx[i] := if ( (i mod 2) == 1) then 0 else -0.5-i;
+
+
+
+# solve:
+
+if execution == 1 then {
+	solve;
+};
+
+if execution == 2 then {
+	# execute solver (non blocking execution):
+	printf "\n\n-- Non blocking solver call for a subtask --\n\n";
+	commands paramplsub;
+
+	# retrieve solution from the solver:
+	printf "\n\n-- Retrieving the solution from the solver --\n\n";
+	commands paramplret;
+}
+
+
+
+
+# assign the results to the appropriate subvector of x:
+for {i in 1..N} {
+	let x[i] := xx[i];
+};
+
+
+
+
+
+
+display 0.5*sum {i in 1..N} x[i]^2;
+
+display g;

@@ -1,0 +1,4 @@
+reset;
+model 3-prod-inventory.mod;
+data prod-inventory.dat;
+solve;

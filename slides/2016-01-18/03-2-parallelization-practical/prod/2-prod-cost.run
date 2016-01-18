@@ -1,0 +1,4 @@
+reset;
+model 2-prod-cost.mod;
+data prod-cost.dat;
+solve;

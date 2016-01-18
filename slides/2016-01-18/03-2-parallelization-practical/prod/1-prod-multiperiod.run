@@ -1,0 +1,4 @@
+reset;
+model 1-prod-multiperiod.mod;
+data prod-multiperiod.dat;
+solve;

@@ -1,0 +1,57 @@
+reset;
+model 6-prod-benders.mod;
+commands generate-data.run;
+
+option solver cbc;
+
+problem Master: Make1, Inv1, Sell1, Min_Stage2_Profit,
+   Expected_Profit, Cut_Defn, Time1, Balance1;
+
+problem Sub {s in SCEN}: 
+   {p in PROD, t in 2..T} Make[p,t,s], 
+   {p in PROD, t in 2..T} Inv[p,t,s], 
+   {p in PROD, t in 2..T} Sell[p,t,s], 
+   Exp_Stage2_Profit[s], 
+   {t in 2..T} Time[t,s], 
+   {p in PROD} Balance2[p,s], 
+   {p in PROD, t in 3..T} Balance[p,t,s];
+
+let nCUT := 0;
+let Min_Stage2_Profit := Infinity;
+
+param GAP default Infinity;
+param newGAP;
+
+for {1..3} {
+   printf "\nITERATION %d\n\n", nCUT+1;
+
+   let nCUT := nCUT + 1;
+
+   for {s in SCEN} { 
+      solve Sub[s];
+      #display _solve_elapsed_time, _solve_time;
+      let {t in 2..T} time_price[t,s,nCUT] := Time[t,s].dual;
+      let {p in PROD} bal2_price[p,s,nCUT] := Balance2[p,s].dual;
+      let {p in PROD, t in 2..T} 
+         sell_lim_price[p,t,s,nCUT] := Sell[p,t,s].urc;
+   }
+
+   let newGAP := Min_Stage2_Profit - sum {s in SCEN} Exp_Stage2_Profit[s];
+   printf "\n";
+
+   if newGAP < 0.00001 then break;
+   let GAP := min (GAP, newGAP);
+   display GAP;
+
+   printf "\nRE-SOLVING MASTER PROBLEM\n\n";
+
+   solve Master;
+   #display _solve_elapsed_time, _solve_time;
+}
+
+#display _ampl_elapsed_time, display _total_solve_elapsed_time;
+
+print "OPTIMAL SOLUTION FOUND";
+print "Expected Profit =", Expected_Profit;
+
+print "Time:", _total_shell_elapsed_time + _total_solve_elapsed_time + _ampl_elapsed_time;

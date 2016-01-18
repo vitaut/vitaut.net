@@ -1,0 +1,12 @@
+#!/bin/sh
+
+if [ -n "$1" ]; then
+	rm parampl_problem_$1.nl
+	rm parampl_problem_$1.sol
+	rm parampl_job_$1_*.nl
+	rm parampl_job_$1_*.sol
+	rm parampl_job_$1_*.not
+	rm parampl_remote_$1
+else
+	echo \$1 is not set
+fi

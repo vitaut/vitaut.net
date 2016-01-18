@@ -1,0 +1,16 @@
+# This is a comment
+
+# Turn off the NLP scaling
+nlp_scaling_method none
+
+# Change the initial barrier parameter
+mu_init 1e-6
+
+# Set the max number of iterations
+max_iter 1000000000
+
+print_level 1
+
+tol 1e-16
+constr_viol_tol 1e-6
+

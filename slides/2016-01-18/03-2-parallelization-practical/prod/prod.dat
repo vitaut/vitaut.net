@@ -1,0 +1,11 @@
+# Data for the basic production model.
+
+data;
+
+set PROD := bands coils;
+
+param:    rate  revenue  market :=
+  bands    200    25     6000
+  coils    140    30     4000 ;
+
+param avail := 40;

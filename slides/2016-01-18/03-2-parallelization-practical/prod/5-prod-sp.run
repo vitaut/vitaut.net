@@ -1,0 +1,4 @@
+reset;
+model 5-prod-sp.mod;
+data prod-sp.dat;
+solve;

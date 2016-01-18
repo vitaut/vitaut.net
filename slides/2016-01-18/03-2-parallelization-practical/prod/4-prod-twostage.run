@@ -1,0 +1,4 @@
+reset;
+model 4-prod-twostage.mod;
+data prod-twostage.dat;
+solve;

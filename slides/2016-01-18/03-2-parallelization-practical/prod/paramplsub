@@ -1,0 +1,2 @@
+write ("bparampl_problem_" & $parampl_queue_id);
+shell 'python -S parampl.py submit';

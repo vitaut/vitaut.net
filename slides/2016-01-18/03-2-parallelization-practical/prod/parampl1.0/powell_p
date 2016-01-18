@@ -1,0 +1,231 @@
+option solver ipopt;
+option parampl_options 'solver=ipopt';
+option parampl_queue_id 'powelltest';
+
+# value of n:
+param n;
+let n:= num($p20_n);
+
+# number of subproblems:
+param p;
+let p := num($p20_p);
+
+#defines how the program should be executed: 
+# 	1 - sequential with solve command; 
+# 	2 - sequential with parampl; 
+# 	3 - parallel with parampl (using non-blocking calls)
+param execution;
+let execution := num($p20_ex);
+
+# variable for results
+param x{1..n};
+param prevx{1..n};
+param fopt{1..p};
+
+param ni:=n/p;
+
+
+
+# number of iterations (gradient coordination algorithm):
+param max_iterations := 1000;
+#param max_iterations := 1;
+param epsilon := 1.e-1;
+param iterations;
+
+# parameter alfa for the gradient coordination algorithm:
+param alfa;
+
+
+
+# initial values of lambdas:
+param lambda {1..p} >= 0;
+let {i in 1..p} lambda[i] := 0;
+
+
+param kco;
+param rhc;
+param inext;
+param gi;
+param con_violQ;
+param ft;
+
+# set the values of constraint Ms:
+param ConstraintM {i in 1..p};
+let {i in 1..p} ConstraintM[i] := 0.5 - (-1)^(i*ni) * (i*ni);
+let ConstraintM[p] := 0.5 - p * ni;
+
+
+
+# temp. variable for subproblems:
+var xx{1..ni};
+
+
+# stores number of iteration/parallel subproblem:
+param subp_no;
+
+
+# objective for subbproblems
+minimize g:
+	0.5*sum {i in 1..ni} xx[i]^2  + lambda[subp_no] * xx[ni] - lambda[((subp_no + p - 1 - 1) mod p) + 1] * xx[1];
+
+subject to cons1{k in 1..ni-1}:
+	xx[k+1]-xx[k] >= -0.5+(-1)^((subp_no - 1)*ni+k)*((subp_no - 1)*ni+k);
+
+# options presolve 0;
+
+
+# solve subtasks and actualize lambdas:
+
+let iterations := 0;
+
+for {iter in 1..max_iterations} {
+	printf "\n\n-- STEP: %d --:\n", iter;
+
+	let iterations := iterations + 1;
+	
+	if iter > 1 then {
+		let {i in 1..n} prevx[i] := x[i];
+	};
+
+
+	# solve subtasks:
+
+	if execution == 1 then {
+		for {i in 1..p} {
+                       
+			let subp_no :=i;
+
+			#set initial values of the vector:
+			if (iter == 1) then {
+				let {j in 1..ni} xx[j] := if ( (j mod 2) == 1) then 0 else -0.5-j;
+			}
+			else {
+				let {j in 1..ni} xx[j] := prevx[j + ni*(i-1)];
+			}
+
+			
+			# execute solver:
+			solve;
+			let fopt[i] := g;
+
+			# assign the results to the appropriate subvector of x:
+			for {j in 1..ni} {
+				let x[j + ni*(i-1)] := xx[j];
+			};
+		};
+	};
+
+	if execution == 2 then {
+		for {i in 1..p} {
+
+			let subp_no :=i;
+
+			#set initial values of the vector:
+			if (iter == 1) then {
+				let {j in 1..ni} xx[j] := if ( (j mod 2) == 1) then 0 else -0.5-j;
+			}
+			else {
+				let {j in 1..ni} xx[j] := prevx[j + ni*(i-1)];
+			}
+
+			# execute solver (non blocking execution):
+			printf "\n\n-- Non blocking solver call for a subtask --\n\n";
+			commands paramplsub;
+
+			# retrieve solution from the solver:
+			printf "\n\n-- Retrieving the solution from the solver --\n\n";
+			commands paramplret;
+
+			let fopt[i] := g;
+			# assign the results to the appropriate subvector of x:
+			for {j in 1..ni} {
+				let x[j + ni*(i-1)] := xx[j];
+			};
+		};
+	};
+
+	if execution == 3 then {
+		#submit jobs:
+		for {i in 1..p} {
+
+			let subp_no :=i;
+
+			#set initial values of the vector:
+			if (iter == 1) then {
+				let {j in 1..ni} xx[j] := if ( (j mod 2) == 1) then 0 else -0.5-j;
+			}
+			else {
+				let {j in 1..ni} xx[j] := prevx[j + ni*(i-1)];
+			}
+			
+			# execute solver (non blocking execution):
+			printf "\n\n-- Non blocking solver call for a subtask --\n\n";
+			commands paramplsub;
+		};
+
+		# retrieve results:
+		for {i in 1..p} {
+		
+			let subp_no :=i;
+			# retrieve solution from the solver:
+			printf "\n\n-- Retrieving the solution from the solver --\n\n";
+			commands paramplret;
+			let fopt[i] := g;
+
+			# assign the results to the appropriate subvector of x:
+			for {j in 1..ni} {
+				let x[j + ni*(i-1)] := xx[j];
+			};
+		};
+	};
+
+
+
+
+	# actualize lambdas:
+	let alfa := n/(iter+p);
+   	let ft := 0.; 
+ 	let con_violQ :=0.;
+	for {i in 1..p} {
+		let kco := i*ni;
+		let rhc := -0.5+(-1)^kco*kco;	
+		let inext := i mod p + 1;
+		let gi := rhc + x[i*ni] - x[(inext-1)*ni+1];
+		let con_violQ := con_violQ + max(0.,gi)^2;
+		let ft := ft + fopt[i] + lambda[i] * rhc;
+		let lambda[i] := max(0., lambda[i]+alfa*gi);
+                
+	};
+
+	printf "\n\n-- New lambdas: --\n";
+
+	display lambda;
+ 
+        display ft;
+        display con_violQ;
+
+	if iter > 1 then {
+		display (sum {i in 1..n} ((prevx[i] - x[i])^2))^0.5;
+		if (sum {i in 1..n} ((prevx[i] - x[i])^2))^0.5 <= epsilon then {
+			printf "\n\n-- Finished before max_iterations reached (no significant change of results) --\n";
+			break;
+		};
+	};
+
+};
+
+
+# display x;
+
+printf "Optimal value of the perf. index:\n";
+ 
+display ft;
+
+
+
+display iterations;
+display _ampl_system_time;
+display _ampl_user_time;
+display _ampl_time;
+
+
