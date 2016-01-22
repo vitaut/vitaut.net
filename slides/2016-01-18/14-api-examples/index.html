@@ -11,11 +11,11 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-  <link rel="stylesheet" href="../common/reveal.js/css/reveal.css">
-  <link rel="stylesheet" href="../common/reveal.js/css/theme/beige.css" id="theme">
+  <link rel="stylesheet" href="../../common/reveal.js/css/reveal.css">
+  <link rel="stylesheet" href="../../common/reveal.js/css/theme/beige.css" id="theme">
 
   <!-- For syntax highlighting -->
-  <link rel="stylesheet" href="../common/reveal.js/lib/css/zenburn.css">
+  <link rel="stylesheet" href="../../common/reveal.js/lib/css/zenburn.css">
 
   <!-- If the query includes 'print-pdf', include the PDF print sheet -->
   <script>
@@ -23,7 +23,7 @@
       var link = document.createElement('link');
       link.rel = 'stylesheet';
       link.type = 'text/css';
-      link.href = '../common/reveal.js/css/print/pdf.css';
+      link.href = '../../common/reveal.js/css/print/pdf.css';
       document.getElementsByTagName('head')[0].appendChild(link);
     }
   </script>
@@ -141,8 +141,8 @@
 </head>
 
 <body>
-<script src="../common/reveal.js/lib/js/head.min.js"></script>
-<script src="../common/reveal.js/js/reveal.js"></script>
+<script src="../../common/reveal.js/lib/js/head.min.js"></script>
+<script src="../../common/reveal.js/js/reveal.js"></script>
 
 <img id="logo" style="position: absolute; top: 40px; right: 20px; border: 0;" src="ampl-logo-text.png" width="100px"/>
 <div class="reveal">
@@ -837,19 +837,19 @@ RETURN    VARIANCE
     // parallaxBackgroundSize: '2100px 900px',
 
     math: {
-      mathjax: '../common/MathJax-2.4.0/MathJax.js',
+      mathjax: '../../common/MathJax-2.4.0/MathJax.js',
       config: 'TeX-AMS-MML_HTMLorMML'  // See http://docs.mathjax.org/en/latest/config-files.html
     },
 
     // Optional libraries used to extend on reveal.js
     dependencies: [
-      { src: '../common/reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
-      { src: '../common/reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-      { src: '../common/reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-      { src: '../common/reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
-      { src: '../common/reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
-      { src: '../common/reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
-      { src: '../common/reveal.js/plugin/math/math.js', async: true }
+      { src: '../../common/reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+      { src: '../../common/reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      { src: '../../common/reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      { src: '../../common/reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+      { src: '../../common/reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+      { src: '../../common/reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+      { src: '../../common/reveal.js/plugin/math/math.js', async: true }
     ]
   });
   //Reveal.addEventListener('slidechanged', function(event) {
