@@ -20,4 +20,10 @@ Day 1
 Day 2
 -----
 
+* [Embedding AMPL in applications](11-embedding)
+* [AMPL scripting](12-scripting)
+* [AMPL API for C++](13-1-api)
 * [AMPL API: practical session](13-2-api-practical)
+* [AMPL API: Interesting examples/implementations](14-api-examples)
+* [Solver interfaces, AMPL Solver Library and the AMPL/MP library](15-solver-interfaces)
+* [Parallelization with the AMPL API](16-api-parallelization)
