@@ -1,0 +1,896 @@
+<!doctype html> <html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>AMPL scripting</title>
+
+  <meta name="author" content="Victor Zverovich">
+
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <link rel="stylesheet" href="../common/reveal.js/css/reveal.css">
+  <link rel="stylesheet" href="../common/reveal.js/css/theme/beige.css" id="theme">
+
+  <!-- For syntax highlighting -->
+  <link rel="stylesheet" href="../common/reveal.js/lib/css/zenburn.css">
+
+  <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+  <script>
+    if( window.location.search.match(/print-pdf/gi) ) {
+      var link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = '../common/reveal.js/css/print/pdf.css';
+      document.getElementsByTagName('head')[0].appendChild(link);
+    }
+  </script>
+
+  <style>
+  body {background: white;}
+  comment {display: none;}
+
+  .reveal h1 {
+    padding-bottom: 50px;
+  }
+  
+  .reveal h1,
+  .reveal h2 {
+    font-size: 200%;
+    text-transform: none;
+    text-align: center;
+    margin: 0;
+  }
+  .reveal section:first-of-type {
+    text-align: center;
+  }
+  .reveal section {
+    text-align: left;
+  }
+  
+  .reveal p {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+  .reveal .MathJax_Display {
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  .reveal .plot {
+    box-shadow: 0 0 20px #888888;
+    margin-left: auto; margin-right: auto;
+  }
+  
+  .reveal .transp-image {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    border: none;
+    box-shadow: none;
+  }
+  
+  /* Fix nohighlight styles. */
+  .reveal pre code { display: block; background: #3F3F3F; color: #DCDCDC; }
+  
+  /* Fix image styles. */
+  .reveal section img { border: none; box-shadow: none; }
+  
+  img.float-right {
+    clear:right;
+    float:right;
+  }
+
+  div .new { color: red; }
+
+  /* D3 styles */
+  .node circle {
+    fill: #fff;
+    stroke: steelblue;
+    stroke-width: 1.5px;
+  }
+
+  .node {
+    font: 20px sans-serif;
+  }
+
+  .link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 1.5px;
+  }
+  
+  .chart rect {
+    fill: steelblue;
+  }
+
+  .chart .bar text {
+    fill: white;
+    font: 20px sans-serif;
+    text-anchor: end;
+  }
+  .chart .axis text {
+    font: 20px sans-serif;
+    fill: black;
+  }
+  .chart .x.axis text {
+    font: 16px sans-serif;
+  }
+
+  .chart .axis path,
+  .chart .axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+  }
+  .chart .y.axis line,
+  .chart .y.axis path {
+    display: none;
+  }
+
+  .reveal table td { border-bottom: 0px; }
+  
+  .reveal pre code { max-height: 500px; }
+  </style>
+
+  <script type="text/javascript" charset="utf-8" src="MathBox.js/vendor/domready.js"></script>
+  <script type="text/javascript" charset="utf-8" src="MathBox.js/build/MathBox-bundle.js"></script>
+
+  <link href="MathBox.js/base.css" rel="stylesheet" type="text/css" media="screen">  
+</head>
+
+<body>
+<script src="../common/reveal.js/lib/js/head.min.js"></script>
+<script src="../common/reveal.js/js/reveal.js"></script>
+
+<img id="logo" style="position: absolute; top: 40px; right: 20px; border: 0;" src="ampl-logo-text.png" width="100px"/>
+<div class="reveal">
+<!-- Any section element inside of this container is displayed as a slide -->
+<div class="slides">
+
+<section data-markdown data-separator="---">
+<script type="text/template">
+AMPL scripting
+==============
+
+Victor Zverovich
+
+<small><a href="mailto:viz@ampl.com">viz@ampl.com</a></small>
+
+AMPL Optimization Inc.
+
+<br>
+
+<small>University of Santiago de Compostela, <br>
+January 18-19, 2016, Spain</small>
+---
+
+## Outline
+
+* Introduction
+
+* Example: roll cutting problem
+
+  * Pattern enumeration
+  * Pattern generation
+    * Knapsack problem
+
+* Advantages and limitations of AMPL script
+
+* References
+
+---
+
+## Scripting
+
+Brings the programmer to the modeling language
+
+Modeling language
+
+* Declarative
+* Designed for optimization modeling
+* Set indexing expressions
+* Algebraic expressions
+  
+is extended with 
+
+* Control flow constructs:
+  * loops
+  * conditionals
+* Assignments
+
+---
+
+## Features
+
+* Control flow constructs and assignments
+
+* Display commands and string processing functions
+
+* Dabase access methods
+
+* External (only) functions
+
+* Some debugging facilities
+
+---
+
+## External functions
+
+AMPL supports dynamic loading of function libraries:
+
+```cs
+ampl: load amplgsl.dll;
+ampl: function gsl_ran_gaussian random;
+ampl: print gsl_ran_gaussian(1);
+-0.0881009918314384
+```
+
+Can be used for anything
+
+```cs
+call report_solution({i in 1..10} x[i]);
+```
+
+but normally used for mathematical functions.
+
+---
+
+## Example: roll cutting problem
+
+**Motivation**
+
+* <img class="float-right" src="guillotine.gif" width="150"/>
+  Fill orders for rolls of various widths
+  * by cutting raw rolls of one (large) fixed width
+  * using a variety of cutting patterns
+
+**Optimization model**
+
+* Decision variables
+  * number of raw rolls to cut according to each pattern
+* Objective
+  * minimize number of raw rolls used
+* Constraints
+  * meet demands for each ordered width
+
+---
+
+## Roll cutting problem
+
+<img src="cutting-stock.gif" width="350"/>
+
+**Source:**
+
+Robert Fourer, "Developing Optimization Applications Quickly and Reliably
+with Algebraic Modeling", INFORMS Annual Meeting, Philadelphia, 1-4 November 2015
+
+---
+
+## Algebraic formulation
+
+**Given**
+
+<table>
+  <tr>
+    <td>$W$</td>
+    <td>set of ordered widths</td>
+  </tr>
+  <tr>
+    <td>$n$</td>
+    <td>number of patterns considered</td>
+  </tr>
+  <tr>
+    <td>$a_{ij}$</td>
+    <td>occurrences of width $i$ in pattern $j$ for each $i \in W$ and $j = 1,...,n$</td>
+  </tr>
+  <tr>
+    <td>$b_i$</td>
+    <td>orders for width $i$ for each $i \in W$</td>
+  </tr>
+</table>
+
+</script>
+</section>
+
+<section>
+
+<h2>Algebraic formulation</h2>
+
+<b>Determine</b>
+
+<table>
+  <tr>
+    <td>$X_j$</td>
+    <td>number of rolls to cut using pattern $j$ for each $j = 1,...,n$</td>
+  </tr>
+</table>
+
+<b>to minimize</b>
+
+<p>
+<dl>
+<p>$\sum_{j=1}^n X_j$
+<p>total number of rolls cut
+</dl>
+
+<p>
+<b>subject to</b>
+
+<dl>
+$\sum_{j=1}^n a_{ij} X_j \geq b_i$, for all $i \in W$
+<p>
+number of rolls of width $i$ cut must be at least the number ordered
+</dl>
+</section>
+
+<section data-markdown data-separator="---">
+<script type="text/template">
+
+## AMPL formulation
+
+`cut-basic.mod`:
+
+```cs
+param nPatterns integer > 0;
+set PATTERNS = 1..nPatterns;  # patterns
+set WIDTHS;                   # finished widths
+
+param order {WIDTHS} >= 0;    # rolls of width j ordered
+
+param rolls {WIDTHS,PATTERNS} >= 0 default 0;
+                              # rolls of width i in pattern j
+
+var Cut {PATTERNS} integer >= 0;
+                              # raw rolls to cut in each pattern
+
+minimize TotalRawRolls: sum {p in PATTERNS} Cut[p];
+
+subject to FinishedRollLimits {w in WIDTHS}:
+   order[w] <= sum {p in PATTERNS} rolls[w,p] * Cut[p];
+```
+
+---
+
+## AMPL data
+
+`cut-basic.dat`:
+
+```cs
+param: WIDTHS: order :=
+ 6.77 10
+ 7.56 40
+17.46 33
+18.76 10 ;
+
+param nPatterns := 9;
+param rolls:
+      1 2 3 4 5 6 7 8 9 :=
+ 6.77 0 1 1 0 3 2 0 1 4
+ 7.56 1 0 2 1 1 4 6 5 2
+17.46 0 1 0 2 1 0 1 1 1
+18.76 3 2 2 1 1 1 0 0 0 ;
+```
+
+---
+
+## Solving in interactive mode
+
+Using AMPL command language:
+
+```cs
+ampl: model cut-basic.mod;
+ampl: data cut-basic.dat; 
+ampl: option solver cplex;
+ampl: solve;
+CPLEX 12.6.3.0: optimal integer solution; objective 20
+3 MIP simplex iterations
+0 branch-and-bound nodes
+ampl: option omit_zero_rows 1;
+ampl: display Cut;            
+Cut [*] :=
+4  13
+7   4
+9   3
+;
+```
+
+Switching solvers is easy:
+
+```cs
+ampl: option solver gurobi;
+ampl: solve;
+Gurobi 6.5.0: optimal solution; objective 20
+2 simplex iterations
+```
+
+---
+
+## Displaying the results
+
+Switch to tabular display:
+```cs
+ampl: option display_1col 0;
+```
+
+Pattern used:
+
+```cs
+ampl: display {j in PATTERNS, i in WIDTHS: Cut[j] > 0} rolls[i,j];
+rolls[i,j] [*,*] (tr)
+:       4   7   9    :=
+6.77    0   0   4
+7.56    1   6   2
+17.46   2   1   1
+18.76   1   0   0
+;
+```
+
+---
+
+## Displaying the results
+
+Width used:
+
+```cs
+ampl:  display {j in PATTERNS} sum {i in WIDTHS} i * rolls[i,j];
+sum{i in WIDTHS} i*rolls[i,j] [*] :=
+1 63.84   3 59.41   5 64.09   7 62.82   9 59.66
+2 61.75   4 61.24   6 62.54   8 62.03
+;
+```
+
+Overruns:
+```cs
+ampl: display FinishedRollLimits.slack;      
+FinishedRollLimits.slack [*] :=
+ 6.77 2    7.56 3   18.76 3
+;
+```
+--- 
+
+## Example: pattern enumeration
+
+Solving the cutting stock model with pattern enumeration:
+
+1. Read AMPL model
+2. Read data: demands, raw widths
+3. Compute all usable patterns
+4. Solve problem instance
+
+Later we'll compare this to the API approach.
+
+---
+
+## Model for pattern enumeration
+
+`cut.mod`:
+```cs
+# New parameters:
+param roll_width > 0;           # raw roll width
+param maxPatterns integer >= 0; # max number of patterns
+
+param nPatterns integer >= 0 <= maxPatterns;
+set PATTERNS = 1..nPatterns;  # patterns
+set WIDTHS ordered by reversed Reals; # finished widths
+
+param order {WIDTHS} >= 0;    # rolls of width j ordered
+
+param rolls {WIDTHS,PATTERNS} >= 0 default 0;
+                              # rolls of width i in pattern j
+
+var Cut {PATTERNS} integer >= 0;
+                              # raw rolls to cut in each pattern
+
+minimize TotalRawRolls: sum {p in PATTERNS} Cut[p];
+
+subject to FinishedRollLimits {w in WIDTHS}:
+   order[w] <= sum {p in PATTERNS} rolls[w,p] * Cut[p];
+```
+
+---
+
+## Data for pattern enumeration
+
+`sorrentino.dat`:
+
+```cs
+param roll_width := 64.50 ;
+param: WIDTHS: order :=
+6.77 10
+7.56 40
+17.46 33
+18.76 10 ;
+```
+
+Note : no pattern data - will be generated programmatically
+
+---
+
+## Pattern enumeration script
+
+Initialization:
+
+```cs
+model cut.mod;
+data sorrentino.dat;
+param curr_sum;
+param curr_width > 0;
+param pattern {WIDTHS} integer >= 0;
+let maxPatterns := 1000000;
+let nPatterns := 0;
+let curr_sum := 0;
+let curr_width := first(WIDTHS);
+let {w in WIDTHS} pattern[w] := 0;
+```
+
+Script constructs:
+
+* Assignment: `let lhs := rhs;`
+* Iterated assignment `let {indexing} lhs := rhs;`
+
+---
+
+## Pattern enumeration script
+
+Main loop:
+
+```cs
+repeat {
+  if curr_sum + curr_width <= roll_width then {
+    let pattern[curr_width] :=
+      floor((roll_width - curr_sum) / curr_width);
+    let curr_sum := curr_sum + pattern[curr_width] * curr_width;
+  }
+  if curr_width != last(WIDTHS) then
+    let curr_width := next(curr_width,WIDTHS);
+  else {
+    let nPatterns := nPatterns + 1;
+    let {w in WIDTHS} rolls[w, nPatterns] := pattern[w];
+    let curr_sum := curr_sum - pattern[last(WIDTHS)] * last(WIDTHS);
+    let pattern[last(WIDTHS)] := 0;
+    let curr_width := min {w in WIDTHS: pattern[w] > 0} w;
+    if curr_width < Infinity then {
+      let curr_sum := curr_sum - curr_width;
+      let pattern[curr_width] := pattern[curr_width] - 1;
+      let curr_width := next(curr_width, WIDTHS);
+    }
+    else break;
+  }
+}
+```
+
+---
+
+## Pattern enumeration script
+
+Solution and reporting:
+
+```
+option solver gurobi;
+solve;
+printf "\n%5i patterns, %3i rolls",
+       nPatterns, sum {j in PATTERNS} Cut[j];
+printf "\n\n Cut ";
+printf {j in PATTERNS: Cut[j] > 0}: "%3i", Cut[j];
+printf "\n\n";
+for {i in WIDTHS} {
+  printf "%7.2f ", i;
+  printf {j in PATTERNS: Cut[j] > 0}: "%3i", rolls[i, j];
+  printf "\n";
+}
+printf "\nWASTE = %5.2f%%\n\n",
+  100 * (1 - (sum {i in WIDTHS} i * order[i]) /
+             (roll_width * TotalRawRolls));
+```
+
+---
+
+## Pattern enumeration
+
+Output:
+
+```cs
+Gurobi 6.5.0: optimal solution; objective 18
+7 simplex iterations
+
+   43 patterns,  18 rolls
+
+ Cut   3  1  4 10
+
+  18.76   3  1  0  0
+  17.46   0  1  3  2
+   7.56   1  3  1  3
+   6.77   0  0  0  1
+
+WASTE =  2.34%
+```
+
+---
+
+## Control flow constructs
+
+* Loops:
+
+  * `repeat` (infinite, `while`, `until`)
+  * `for`
+  * Loop control: `break`, `continue`
+
+* Conditionals:
+
+  * `if-then-else`
+
+* No user-defined functions (except for external),
+  so have to use an iterative procedure
+
+* Recursion could be easier (will be shown in API example)
+
+---
+
+## Pattern generation
+
+Generate the pattern list by a series of solves
+
+* <img class="float-right" src="knapsack.png" width="200"/>
+  Solve LP relaxation using subset of patterns
+
+* Add “most promising” pattern to the subset
+
+  * Minimize reduced cost given dual values
+
+  * Equivalent to a knapsack problem
+
+* Iterate as long as there are promising patterns
+
+* Stop when minimum reduced cost is zero
+
+  * Solve IP using all patterns found
+
+---
+
+## Knapsack model
+
+```cs
+param roll_width > 0;
+param price {WIDTHS} default 0.0;
+
+var Use {WIDTHS} integer >= 0;
+
+minimize Reduced_Cost:
+  1 - sum {i in WIDTHS} price[i] * Use[i];
+
+subj to Width_Limit:
+  sum {i in WIDTHS} i * Use[i] <= roll_width;
+```
+
+---
+
+## Pattern generation script
+
+Initialization:
+
+```cs
+model cutting-gen.mod;
+data sorrentino.dat;
+
+option solver gurobi;
+
+problem Cutting_Opt: Cut, TotalRawRolls, FinishedRollLimits;
+option relax_integrality 1;
+option presolve 0;
+
+problem Pattern_Gen: Use, Reduced_Cost, Width_Limit;
+option relax_integrality 0;
+option presolve 1;
+
+let maxPatterns := Infinity; # not used
+let nPatterns := 0;
+for {i in WIDTHS} {
+  let nPatterns := nPatterns + 1;
+  let rolls[i, nPatterns] := floor(roll_width / i);
+  let {i2 in WIDTHS: i2 <> i} rolls[i2, nPatterns] := 0;
+}
+```
+
+---
+
+## Pattern generation script
+
+Main loop:
+
+```cs
+
+repeat {
+  solve Cutting_Opt;
+  let {i in WIDTHS} price[i] := -FinishedRollLimits[i].dual;
+  solve Pattern_Gen;
+  printf "\n%7.2f%11.2e ", TotalRawRolls, Reduced_Cost;
+  if Reduced_Cost < -0.00001 then {
+    let nPatterns := nPatterns + 1;
+    let {i in WIDTHS} rolls[i, nPatterns] := Use[i];
+  }
+  else break;
+  for {i in WIDTHS} printf "%3i", Use[i];
+}
+```
+
+---
+
+## Pattern generation script
+
+Finding integer solution:
+
+```cs
+
+option Cutting_Opt.relax_integrality 0;
+option Cutting_Opt.presolve 10;
+solve Cutting_Opt;
+
+if Cutting_Opt.result = "infeasible" then
+  printf "\n*** No feasible integer solution ***\n\n";
+else {
+  printf "Best integer: %3i rolls\n\n", sum {j in PATTERNS} Cut[j];
+  for {j in PATTERNS: Cut[j] > 0} {
+    printf "%3i of:", Cut[j];
+    printf {i in WIDTHS: rolls[i,j] > 0}: "%3i x %6.3f", rolls[i,j], i;
+    printf "\n";
+  }
+  printf "\nWASTE = %5.2f%%\n\n",
+  100 * (1 - (sum {i in WIDTHS} i * order[i]) /
+             (roll_width * TotalRawRolls));
+}
+```
+
+---
+
+## Pattern generation
+
+Results:
+
+```cs
+...
+Gurobi 6.5.0: optimal solution; objective 17.94117647
+5 simplex iterations
+Gurobi 6.5.0: optimal solution; objective 0
+1 simplex iterations
+
+  17.94   0.00e+00 Gurobi 6.5.0: optimal solution; objective 19
+4 simplex iterations
+Best integer:  19 rolls
+
+ 10 of:  2 x 17.460  3 x  7.560  1 x  6.770
+  4 of:  3 x 17.460  1 x  7.560
+  4 of:  3 x 18.760  1 x  7.560
+  1 of:  1 x 17.460  6 x  7.560
+
+WASTE =  7.48%
+```
+
+---
+
+## Advantages
+
+* Seamless integration with the modeling language
+
+* Powerful indexing expressions for loops and iterated commands (like display)
+
+* Database connectivity
+
+* Useful for exploratory and rapid prototyping purposes
+
+* Doesn't require additional software to run
+
+---
+
+## Scripts in practice
+
+* Large and complicated
+
+  * Multiple files
+  * Hundreds of statements
+  * Millions of statements executed
+
+* Run within broader applications
+
+* Often used together with a database system
+
+---
+
+## Limitations
+
+* Only external functions
+
+* Not a general-purpose language, in particular no user-defined data types
+
+* Limited library support
+
+  * Connecting numeric libraries is possible, e.g. GNU Scientific Library
+
+* Interpreted language - not as fast as compiled
+
+* Limited error handling
+
+---
+
+## Future improvements
+
+* Faster loops
+
+* True script functions
+
+  * Arguments and return values
+  * Local sets & parameters
+  * Callback functions
+
+---
+
+## References
+
+* Chapter 13. "Command Scripts" of the AMPL book:
+  http://ampl.com/BOOK/CHAPTERS/16-script.pdf
+
+* Robert Fourer, [Developing Optimization Applications Quickly and Reliably
+  with Algebraic Modeling](http://ampl.com/MEETINGS/TALKS/2015_11_Philadelphia_MB79.pdf),
+  INFORMS Annual Meeting, Philadelphia — 1-4 November 2015
+
+* LOOPING AND TESTING 2: implementing algorithms through AMPL scripts
+  http://www.ampl.com/NEW/loop2.html
+
+</script>
+</section>
+
+</div>
+</div>
+
+<script>
+  // Full list of configuration options available here:
+  // https://github.com/hakimel/reveal.js#configuration
+  Reveal.initialize({
+    controls: true,
+    progress: true,
+    history: true,
+    center: true,
+
+    theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+    transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+    // Parallax scrolling
+    // parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+    // parallaxBackgroundSize: '2100px 900px',
+
+    math: {
+      mathjax: '../common/MathJax-2.4.0/MathJax.js',
+      config: 'TeX-AMS-MML_HTMLorMML'  // See http://docs.mathjax.org/en/latest/config-files.html
+    },
+
+    // Optional libraries used to extend on reveal.js
+    dependencies: [
+      { src: '../common/reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+      { src: '../common/reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      { src: '../common/reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      { src: '../common/reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+      { src: '../common/reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+      { src: '../common/reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+      { src: '../common/reveal.js/plugin/math/math.js', async: true }
+    ]
+  });
+  //Reveal.addEventListener('slidechanged', function(event) {
+  //  document.getElementById("logo").style.visibility = Reveal.isFirstSlide() ? 'hidden' : 'visible';
+  //});
+</script>
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-20116650-1']);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+</body>
+</html>

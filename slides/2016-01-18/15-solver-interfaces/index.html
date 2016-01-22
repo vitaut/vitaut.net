@@ -1,0 +1,1148 @@
+<!doctype html> <html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Solver interfaces, AMPL Solver Library and the AMPL/MP library</title>
+
+  <meta name="author" content="Victor Zverovich">
+
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <link rel="stylesheet" href="../common/reveal.js/css/reveal.css">
+  <link rel="stylesheet" href="../common/reveal.js/css/theme/beige.css" id="theme">
+
+  <!-- For syntax highlighting -->
+  <link rel="stylesheet" href="../common/reveal.js/lib/css/zenburn.css">
+
+  <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+  <script>
+    if( window.location.search.match(/print-pdf/gi) ) {
+      var link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = '../common/reveal.js/css/print/pdf.css';
+      document.getElementsByTagName('head')[0].appendChild(link);
+    }
+  </script>
+
+  <style>
+  body {background: white;}
+  comment {display: none;}
+
+  .reveal h1 {
+    padding-bottom: 50px;
+  }
+  
+  .reveal h1,
+  .reveal h2 {
+    font-size: 200%;
+    text-transform: none;
+    text-align: center;
+    margin: 0;
+  }
+  .reveal section:first-of-type {
+    text-align: center;
+  }
+  .reveal section {
+    text-align: left;
+  }
+  
+  .reveal p {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+  .reveal .MathJax_Display {
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  .reveal .plot {
+    box-shadow: 0 0 20px #888888;
+    margin-left: auto; margin-right: auto;
+  }
+  
+  .reveal .transp-image {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    border: none;
+    box-shadow: none;
+  }
+  
+  /* Fix nohighlight styles. */
+  .reveal pre code { display: block; background: #3F3F3F; color: #DCDCDC; }
+  
+  /* Fix image styles. */
+  .reveal section img { border: none; box-shadow: none; }
+  
+  img.float-right {
+    clear:right;
+    float:right;
+  }
+
+  div .new { color: red; }
+
+  /* D3 styles */
+  .node circle {
+    fill: #fff;
+    stroke: steelblue;
+    stroke-width: 1.5px;
+  }
+
+  .node {
+    font: 20px sans-serif;
+  }
+
+  .link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 1.5px;
+  }
+  
+  .chart rect {
+    fill: steelblue;
+  }
+
+  .chart .bar text {
+    fill: white;
+    font: 20px sans-serif;
+    text-anchor: end;
+  }
+  .chart .axis text {
+    font: 20px sans-serif;
+    fill: black;
+  }
+  .chart .x.axis text {
+    font: 16px sans-serif;
+  }
+
+  .chart .axis path,
+  .chart .axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+  }
+  .chart .y.axis line,
+  .chart .y.axis path {
+    display: none;
+  }
+  
+  .reveal pre code { max-height: 500px; }
+  </style>
+
+  <script type="text/javascript" charset="utf-8" src="MathBox.js/vendor/domready.js"></script>
+  <script type="text/javascript" charset="utf-8" src="MathBox.js/build/MathBox-bundle.js"></script>
+
+  <link href="MathBox.js/base.css" rel="stylesheet" type="text/css" media="screen">  
+</head>
+
+<body>
+<script src="../common/reveal.js/lib/js/head.min.js"></script>
+<script src="../common/reveal.js/js/reveal.js"></script>
+
+<img id="logo" style="position: absolute; top: 40px; right: 20px; border: 0;" src="ampl-logo-text.png" width="100px"/>
+<div class="reveal">
+<!-- Any section element inside of this container is displayed as a slide -->
+<div class="slides">
+
+<section data-markdown data-separator="---">
+<script type="text/template">
+Solver interfaces, AMPL Solver Library and the AMPL/MP library
+==============================================================
+
+Victor Zverovich
+
+<small><a href="mailto:viz@ampl.com">viz@ampl.com</a></small>
+
+AMPL Optimization Inc.
+
+<br>
+
+<small>University of Santiago de Compostela, <br>
+January 18-19, 2016, Spain</small>
+---
+
+## Outline
+
+* Overview
+
+  * AMPL Solver Library
+  * The AMPL/MP library
+
+* NL reader
+
+* AMPL solver interface
+
+  * Solver options
+  * Problem builder
+  * Solving and reporting solution
+
+* Automatic differentiation
+
+* User-defined functions
+
+* References
+
+---
+
+## AMPL Solver Library
+
+* <img class="float-right" src="parthenon.gif" width="300"/>
+  A C library for connecting solvers to AMPL
+
+* Used by most solvers
+
+* "Classical" API
+
+* Open-source
+  * http://ampl.com/netlib/
+  * https://github.com/ampl/mp
+
+* Portable
+
+* Described in Technical Report "Hooking Your Solver to AMPL" 
+  by David M. Gay, Bell Laboratories, April 18, 1997.
+
+---
+
+## AMPL Solver Library
+
+Functionality:
+
+* NL reader
+
+* NL writer
+
+* in-memory problem representation
+
+* automatic differentiation
+
+* function library interface
+
+---
+
+## The AMPL/MP library
+
+* <img class="float-right" src="sydney-opera.jpg" width="300"/>
+  A C++ alternative to ASL
+
+* Used in several new solver interfaces
+  * constraint programming solvers: ilogcp, gecode, jacop
+  * LocalSolver
+  * Experimental "solvers": SMPS writer, SSD solver
+
+* Open-source: https://github.com/ampl/mp (includes ASL)
+
+* Portable
+
+* Documentation: http://ampl.github.io/
+  
+---
+
+## The AMPL/MP library
+
+Features:
+
+* modern, type-safe API
+* modular architecture
+* high performance
+
+Functionality:
+
+* NL reader
+* problem builder
+* in-memory problem representation
+* ASL converter (WIP)
+* solver connection API
+* Doesn't support all ASL features, but integrates with ASL
+
+---
+
+## Supported problem types
+
+NL format supports a wide range of optimization problem types:
+
+* linear programming
+* quadratic programming
+* second-order cone programming
+* semidefinite programming
+* general nonlinear problems
+* complementarity problems
+* logic and constraint programming
+* ...
+
+All in discrete and continuous variables
+
+Same as NL format (not surprisingly)
+
+---
+
+## AMPL/MP NL reader
+
+* High performance:
+
+  - [mmap](http://en.wikipedia.org/wiki/Mmap)-based
+  - no dynamic memory allocations
+  - handler methods can be inlined
+
+* Simple [SAX](http://en.wikipedia.org/wiki/Simple_API_for_XML)-like API
+
+* Reusable: not limited to a single problem representation
+
+* Can read input from memory
+
+* Complete
+
+---
+
+## NL reader performance
+
+<svg id="nl-text" class="chart"></svg><svg id="nl-binary" class="chart"></svg>
+
+* 730 problems from the [CUTE](http://orfe.princeton.edu/~rvdb/ampl/nlmodels/cute/index.html) test set
+* nl reader w/o problem construction is up to 6x faster than ASL
+* Problem construction is faster than ASL, but has room for improvement (pool allocator)
+
+---
+
+## Modularity
+
+* <img class="float-right" src="modularity.jpg" width="300"/>
+  ASL NL reader always constructs the problem representation
+
+* AMPL/MP NL reader sends notifications to NLHandler instead
+
+  * Enables efficient processing of NL files without constructing expensive data structures
+
+  * Custom problem representation can be built (used in LocalSolver interface)
+  
+  * Facilitates testing
+
+---
+
+## NL reader example
+
+```c++
+#include "mp/nl.h"
+
+// Count the number of variable references in all
+// nonlinear expressions.
+struct VarCounter : mp::NLHandler<int> {
+  int num_vars;
+  VarCounter() : num_vars(0) {}
+  Reference OnVariableRef(int) {
+    ++num_vars;
+    return Reference();
+  }
+};
+
+int main() {
+  VarCounter counter;
+  mp::ReadNLFile("test.nl", counter);
+  fmt::print("The number of variable references is {}.",
+             counter.num_vars);
+}
+```
+
+---
+
+## AMPL solver interface
+
+<img src="solver-interface.svg" width="900"/>
+
+---
+
+## Connecting a solver to AMPL
+
+* <img class="float-right" src="connect.jpg" width="300"/>
+  Handle solver options
+
+* Build a problem representation in the native solver format
+
+* Solve the problem
+
+* Return the solve result and solution(s)
+
+AMPL/MP simplifies all these steps
+
+---
+
+## Solver options
+
+* AMPL/MP provides a uniform interface for working with options:
+
+  * Single definition
+  * Programmatic access, e.g. `solver.GetIntOption("name")`
+  * Description in a subset of reStructuredText
+    * Text rendering for console output (`solver -=`)
+    * HTML rendering for online reference
+
+* The importance of options is often underestimated leading to poor
+  usability and/or broken concurrent use, e.g. separate option files
+
+---
+
+## Solver options
+
+```c++
+class LocalSolver : public SolverImpl<LSProblemBuilder> {
+ private:
+  fmt::LongLong iterlimit_;
+
+  fmt::LongLong GetIterLimit(const SolverOption &) const {
+    return iterlimit_;
+  }
+  void SetIterLimit(const SolverOption &opt, fmt::LongLong value) {
+    if (value < 0)
+      throw InvalidOptionValue(opt, value);
+    iterlimit_ = value;
+  }
+
+  // ...
+};
+
+// In LocalSolver constructor:
+AddIntOption("iterlimit",
+    "Iteration limit (nonnegative integer). "
+    "Default = largest positive integer.",
+    &LocalSolver::GetIterLimit, &LocalSolver::SetIterLimit);
+```
+
+---
+
+## Solver options
+
+Option documentation
+
+```nohighlight
+> ./localsolver -=
+LocalSolver Options for AMPL
+
+To set these options, assign a string specifying their values to the
+AMPL option "locsol_options". For example:
+
+   ampl: option locsol_options 'version timelimit=30';
+
+Options:
+
+annealing_level
+      Simulated annealing level. Default = 1.
+
+envfile
+      Path to the file where to export LocalSolver environment.
+      Default = "" (no file)
+
+iterlimit
+      Iteration limit (nonnegative integer). Default = largest positive
+      integer.
+...
+```
+
+---
+
+## Solver options
+
+Automatic HTML generation (from RST):
+
+<img src="options.png" width="800"/>
+
+---
+
+## Problem builder
+
+* An API to construct an optimization problem in memory
+
+  * Add variables, objectives and constrants
+  * Build linear and nonlinear expressions
+
+* AMPL/MP defines the API and provides the default implementation
+
+* Solvers can provide their own - simple and efficient way to connect a solver to AMPL
+  (Example: LocalSolver)
+
+* Static polymorphism: inlining, no virtual function calls
+
+* No or little intermediate data structures!
+
+---
+
+## Problem builder
+
+<img src="problem-builder.svg" width="900"/>
+
+Can be used both for .nl input and for programmatic problem construction
+
+---
+
+## Problem builder example
+
+```c++
+class LSProblemBuilder {
+ public:
+  // Adds a variable.
+  void AddVar(double lb, double ub, var::Type type);
+
+  // Adds an objective.
+  LinearObjBuilder AddObj(obj::Type type, ls::LSExpression expr, int);
+
+  // Adds an algebraic constraint.
+  LinearConBuilder AddCon(double lb, double ub,
+                          ls::LSExpression expr, int);
+
+  // Adds a logical constraint.
+  void AddCon(ls::LSExpression expr) {
+    model_.addConstraint(expr);
+  }
+
+  // ...
+};
+```
+
+---
+
+## Problem builder example
+
+Building binary expressions in LocalSolver:
+
+```c++
+ls::LSExpression LSProblemBuilder::MakeBinary(
+    expr::Kind kind, ls::LSExpression lhs, ls::LSExpression rhs) {
+  ls::LSOperator op = ls::O_Bool;
+  switch (kind) {
+  case expr::ADD:
+    op = ls::O_Sum;
+    break;
+  case expr::SUB:
+    op = ls::O_Sub;
+    break;
+  case expr::MUL:
+    op = ls::O_Prod;
+    break;
+  case expr::DIV:
+    op = ls::O_Div;
+    break;
+    // ...
+  }
+  return MakeBinary(op, lhs, rhs);
+}
+```
+
+---
+## Problem builder example
+
+Adding a constraint in LocalSolver:
+
+```c++
+LSProblemBuilder::LinearConBuilder LSProblemBuilder::AddCon(
+    double lb, double ub, ls::LSExpression expr, int) {
+  ++num_cons_;
+  double inf = std::numeric_limits<double>::infinity();
+  ls::LSExpression sum = model_.createExpression(ls::O_Sum);
+  if (lb <= -inf) {
+    model_.addConstraint(model_.createExpression(ls::O_Leq, sum, ub));
+  } else if (ub >= inf) {
+    model_.addConstraint(model_.createExpression(ls::O_Geq, sum, lb));
+  } else if (lb == ub) {
+    model_.addConstraint(model_.createExpression(ls::O_Eq, sum, lb));
+  } else {
+    model_.addConstraint(model_.createExpression(ls::O_Geq, sum, lb));
+    model_.addConstraint(model_.createExpression(ls::O_Leq, sum, ub));
+  }
+  return LinearConBuilder(*this, expr, sum);
+}
+```
+
+`LinearConBuilder` allows adding linear terms.
+
+---
+
+## Solving the problem
+
+Solve and convert solution status:
+```c++
+void LocalSolver::Solve(ProblemBuilder &builder,
+                        SolutionHandler &sh) {
+  // ...
+  // Solve the problem.
+  solver.solve();
+
+  // Convert solution status.
+  int solve_code = sol::UNKNOWN;
+  ls::LSSolutionStatus ls_status = solver.getSolution().getStatus();
+  const char *status = "unknown";
+  if (interrupter()->Stop()) {
+    solve_code = sol::INTERRUPTED;
+    status = "interrupted";
+  } else {
+    switch (ls_status) {
+    case ls::SS_Inconsistent:
+      solve_code = sol::INFEASIBLE;
+      status = "infeasible problem";
+      break;
+    case ls::SS_Infeasible:
+      // Solution is infeasible, but problem may be feasible.
+      // This can only happen if stopped by a limit.
+      solve_code = sol::LIMIT;
+      status = "limit";
+      break;
+    case ls::SS_Feasible:
+      solve_code = sol::UNSOLVED;
+      status = "feasible solution";
+      break;
+    case ls::SS_Optimal:
+      solve_code = sol::SOLVED;
+      status = builder.num_objs() > 0 ?
+            "optimal solution" : "feasible solution";
+      break;
+    default:
+      solve_code = sol::FAILURE;
+      status = "unknown solution status";
+      break;
+    }
+  }
+```
+
+---
+
+## Returning the solution
+
+Get the solution and pass it to `SolutionHandler`:
+```c++
+  fmt::MemoryWriter w;
+  w.write("{}: {}", long_name(), status);
+  double obj_val = std::numeric_limits<double>::quiet_NaN();
+  std::vector<double> solution;
+  if (ls_status == ls::SS_Optimal || ls_status == ls::SS_Feasible) {
+    if (builder.num_objs() != 0) {
+      obj_val = GetValue(model.getObjective(0));
+      w.write("; objective {}", FormatObjValue(obj_val));
+    }
+    int num_vars = builder.num_vars();
+    solution.resize(num_vars);
+    for (int i = 0; i < num_vars; ++i)
+      solution[i] = GetValue(vars[i]);
+  }
+  w << "\n";
+
+  sh.HandleSolution(solve_code, w.c_str(),
+                    solution.empty() ? 0 : solution.data(), 0,
+                    obj_val);
+```
+
+Multiple solution can be returned.
+
+---
+
+## Automatic differentiation
+
+* AMPL Solver Library (but not AMPL/MP) provides
+
+  * Efficient computation of gradients and Jacobians
+
+  * Automatic recognition of partial separability.
+    A nonlinear function can be recognized as a sum of terms that each depend on only a few variables.
+
+  * Computation of Hessians. Elements of the matrix of 2nd derivatives can be computed in a range of forms.
+    Partial separability can be exploited to speed the computations.
+
+* David M. Gay, [Automatic Differentiation of Nonlinear AMPL Models](http://ampl.com/REFS/autodiff.pdf).
+  August 22, 1991. AT&T Bell Laboriatories.
+
+* Some solvers also provide numeric differentiation (finite differences)
+
+---
+
+## Example
+
+Maximum area for unit-diameter polygon of N sides (`pgon.mod)
+```cs
+param N integer = 6;
+set I := 1..N;
+
+param pi := 4*atan(1.);
+
+var rho{i in I} <= 1, >= 0 # polar radius (distance to fixed vertex)
+                :=  4*i*(N + 1 - i)/(N+1)**2;
+
+var the{i in I} >= 0 # polar angle (measured from fixed direction)
+                := pi*i/N;
+
+s.t. cd{i in I, j in i+1 .. N}:
+  rho[i]**2 + rho[j]**2 - 2*rho[i]*rho[j]*cos(the[j]-the[i]) <= 1;
+
+s.t. ac{i in 2..N}:
+  the[i] >= the[i-1];
+
+s.t. fix_theta: the[N] = pi;
+s.t. fix_rho:   rho[N] = 0;
+
+maximize area: .5*sum{i in 2..N} rho[i]*rho[i-1]*sin(the[i]-the[i-1]);
+```
+
+---
+
+## Example
+
+<img src="pgon.png" width="800"/>
+
+---
+
+## gjh "solver"
+
+* "Solver" gjh computes the current
+  * objective gradient
+  * constraint Jacobian matrix
+  * Lagrangian Hessian
+* writes them as AMPL params (`g`, `J`, and `H`),
+* parameter names controled via `$gjh_options`
+
+Example:
+```cs
+ampl: model pgon.mod
+ampl data: option solver gjh;
+ampl: solve;
+gjh: "/tmp/at29580.gjh" written.  Execute
+
+        include "/tmp/at29580.gjh"
+        remove "/tmp/at29580.gjh";
+```
+---
+
+## gjh "solver"
+
+```
+ampl: include "/tmp/at29580.gjh"
+ampl: remove "/tmp/at29580.gjh";
+ampl: display g;
+g [*] :=
+ 1   0.204082
+ 2   0.367347
+ 3   0.44898
+ 4   0.44898
+ 5   0.244898
+ 6  -0.173133
+ 7  -0.173133
+ 8  -0.0692532
+ 9   0.0692532
+10   0.346266
+;
+ampl: display J;
+J [*,*]
+:         1             2           3          4           5            6    :=
+1    -0.434327       0.784302     .          .           .          -0.399833
+2     2.22045e-16     .          1.46939     .           .          -0.831038
+...
+```
+
+---
+
+## ASL example
+
+```c++
+int main(int argc, char **argv) {
+  // Create ASL data structure.
+  ASL *asl = ASL_alloc(ASL_read_pfgh);
+
+  // Parse options.
+  char *s = getstops(argv, &Oinfo);
+  if (!s)
+    return 1;
+
+  // Read NL header.
+  FILE *f = jac0dim(s, 0);
+  
+  // Read the rest of NL file.
+  pfgh_read(f, ASL_findgroups);
+  
+  // ...
+
+  // Write solution and free resources.
+  fclose(f);
+  write_sol(message, 0, 0, &Oinfo);
+  ASL_free(&asl);
+}
+```
+---
+
+## Automatic differentiation with ASL
+
+```c++
+double *x = ...; // point
+int error = 0;
+
+// Compute objective value.
+double value = objval(obj_index, x, &error);
+std::vector<double> grad(n_var);
+// Compute objective gradient.
+objgrd(obj_index, x, &grad[0], &error);
+
+// Evaluate constraint body.
+value = conival(con_index, x, &error);
+// Compute constraint gradient.
+congrd(con_index, x, &grad[0], &error);
+```
+
+* Bodies of a range of constraints can be evaluated with `conval`.
+* Constraint Jacobian matrix can be computed with `jacval` instead of computing individual gradients.
+
+</script>
+</section>
+
+<section>
+
+<h2>Automatic differentiation with ASL</h2>
+
+Computing a Hessian-vector product:
+
+<pre><code class="c++ hljs ">void hvcomp(real *HV, real *P, int nobj, real *OW, real *Y);
+</code></pre>
+
+$$
+\mathrm{HV} = W \cdot \mathrm{P},
+$$
+
+where $W$ is the Lagrangian Hessian
+
+$$
+W = \nabla^2 \left[ \sum_{i=0}^{\mathrm{n\_obj}-1} OW[i] f_i +
+  \sigma \sum_{i=0}^{\mathrm{n\_con}-1} Y[i] c_i \right],
+$$
+
+in which $f_i$ and $c_i$ denote objective function $i$ and constraint $i$ and $\sigma$ is a given scaling factor.
+
+<p>
+Other methods: `duthes` - dense upper triangle of the Hessian, `fullhes` - full Hessian, `sphes` - sparse Hessian
+</p>
+
+</section>
+
+<section data-markdown data-separator="---">
+<script type="text/template">
+
+## User-defined functions
+
+* AMPL function libraries are shared libraries that provide
+
+  * External functions (registered with `addfunc`)
+
+  * Table handlers (registered with `add_table_handler`)
+
+* Entry point which is called when the library is loaded and registers
+  functions and handlers:
+
+```c++
+extern "C" void funcadd_ASL(AmplExports *ae);
+```
+
+* Available libraries
+  * `ampltabl.dll`: standard table handlers
+  * `amplgsl.dll`: bindings for the GNU Scientific Library
+
+---
+  
+## User-defined functions  
+
+* AMPL commands for working with libraries:
+
+  `load`, `unload`, `reload`
+
+* Built-in sets:
+
+  * `_LIBS`:         currently loaded libraries
+  * `_AVAILFUNCS`:   currently available imported functions
+  * `_AVAILFUNC2`:   (available function, library) pairs
+  * `_SFUNCS`:       imported functions that "solve;" currently uses
+
+http://www.ampl.com/NEW/libload.html
+
+---
+
+## Function library example
+
+```c++
+static double amplgsl_sf_bessel_J0(arglist *al) {
+  double x = al->ra[0];
+  double j0 = gsl_sf_bessel_J0(x);
+  if (al->derivs) {
+    *al->derivs = -gsl_sf_bessel_J1(x);
+    if (al->hes)
+      *al->hes = 0.5 * (gsl_sf_bessel_Jn(2, x) - j0);
+  }
+  // Set al->Errmsg if error occurred.
+  return check_result(al, j0);
+}
+
+// Add the regular cylindrical Bessel function of zeroth order,
+// $J_0(x)$.
+extern "C" void funcadd_ASL(AmplExports *ae) {
+  addfunc("gsl_sf_bessel_J0", amplgsl_sf_bessel_J0,
+          FUNCADD_REAL_VALUED, 0, 0);
+}
+```
+
+---
+
+## Special functions
+
+String-valued function:
+
+```c++
+static const char *amplgsl_version(arglist *) {
+  return gsl_version;
+}
+
+addfunc("gsl_version", reinterpret_cast<rfunc>(amplgsl_version),
+        FUNCADD_STRING_VALUED, 0, 0);
+```
+
+Random functions:
+
+```c++
+static gsl_rng *rng;
+
+static double amplgsl_ran_gaussian(arglist *al) {
+  if (al->derivs)
+    deriv_error(al, "derivatives are not provided");
+  return check_result(al, gsl_ran_gaussian(rng, al->ra[0]));
+}
+
+addfunc("gsl_ran_gaussian", amplgsl_ran_gaussian,
+        FUNCADD_RANDOM_VALUED, 1, 0);
+```
+
+---
+
+## External function example
+
+Problem 69 of the [Hock-Schittkowski test set](http://www.ai7.uni-bayreuth.de/tpnp.htm), `hs069.mod`:
+```cs
+function gsl_cdf_ugaussian_P;
+param l {1..4};
+param u {1..4};
+var x {j in 1..4} >= l[j], <= u[j] := 1;
+param a := 0.1;
+param b := 1000;
+param d := 1;
+param n := 4;
+minimize obj:
+  ( a*n - (b*(exp(x[1])-1) - x[3])*x[4]/(exp(x[1]) - 1 + x[4]) )/x[1] ;
+subject to constr1:
+    x[3] = 2*gsl_cdf_ugaussian_P(-x[2]);
+subject to constr2:
+    x[4] = gsl_cdf_ugaussian_P(-x[2] + d*sqrt(n)) +
+           gsl_cdf_ugaussian_P(-x[2] - d*sqrt(n));
+```
+
+```cs
+# hs069.dat
+param:    l       u :=
+  1    0.0001   100
+  2    0        100
+  3    0          2
+  4    0          2 ;
+```
+
+---
+## External function example
+
+```cs
+ampl: model hs069.mod;
+ampl: data hs069.dat;
+ampl: load amplgsl.dll;
+ampl: option solver knitro;
+ampl: solve;
+KNITRO 8.0.0: Locally optimal solution.
+objective -956.7128867; feasibility error 3.41e-11
+10 iterations; 11 function evaluations
+ampl: display x;
+1  0.0293714
+2  1.19025
+3  0.233947
+4  0.791668
+```
+
+`gsl.ampl` can be used instead of declaring functions manually and using `load`:
+
+```cs
+include gsl.ampl;
+```
+
+---
+
+## References
+
+* AMPL/MP
+
+  * GitHub repo: https://github.com/ampl/mp
+  * Documentation: http://ampl.github.io/
+
+* David M. Gay, [Automatic Differentiation of Nonlinear AMPL Models](http://ampl.com/REFS/autodiff.pdf).
+  August 22, 1991. AT&T Bell Laboriatories.
+
+* David M. Gay, Automatically Finding and Exploiting Partially Separable Structure in Nonlinear Programming Problems.
+  Bell Laboratories, Murray Hill, NJ (1996).
+
+* David M. Gay, Hooking Your Solver to AMPL. Bell Laboratories, April 18, 1997.
+
+* AMPL Bindings for the GNU Scientific Library: http://ampl.github.io/amplgsl/index.html
+
+</script>
+</section>
+
+</div>
+</div>
+
+<script>
+  // Full list of configuration options available here:
+  // https://github.com/hakimel/reveal.js#configuration
+  Reveal.initialize({
+    controls: true,
+    progress: true,
+    history: true,
+    center: true,
+
+    theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+    transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+    // Parallax scrolling
+    // parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+    // parallaxBackgroundSize: '2100px 900px',
+
+    math: {
+      mathjax: '../common/MathJax-2.4.0/MathJax.js',
+      config: 'TeX-AMS-MML_HTMLorMML'  // See http://docs.mathjax.org/en/latest/config-files.html
+    },
+
+    // Optional libraries used to extend on reveal.js
+    dependencies: [
+      { src: '../common/reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+      { src: '../common/reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      { src: '../common/reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      { src: '../common/reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+      { src: '../common/reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+      { src: '../common/reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+      { src: '../common/reveal.js/plugin/math/math.js', async: true }
+    ]
+  });
+  //Reveal.addEventListener('slidechanged', function(event) {
+  //  document.getElementById("logo").style.visibility = Reveal.isFirstSlide() ? 'hidden' : 'visible';
+  //});
+</script>
+
+<script src="../common/d3/d3.v3.min.js"></script>
+<script>
+function type(d) {
+  d.value = +d.value;
+  return d;
+}
+
+function makeChart(selector, data, title, showYAxis) {
+  var margin = {top: 100, right: 30, bottom: 50, left: 150},
+      width = 500 - margin.left - margin.right,
+      height = 280 - margin.top - margin.bottom;
+  if (!showYAxis)
+    margin.left = 10;
+
+  var chart = d3.select(selector)
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  var x = d3.scale.linear()
+    .domain([0, d3.max(data, function (d) { return d.Time; })])
+    .range([0, width]);
+
+  var y = d3.scale.ordinal()
+    .domain(data.map(function (d) { return d.Method; }))
+    .rangeBands([0, height], 0.1);
+
+  var bar = chart.selectAll("g").data(data)
+    .enter()
+      .append("g")
+        .attr("class", "bar")
+        .attr("transform", function(d) { return "translate(0, " + y(d.Method) + ")"; });
+
+  bar.append("rect")
+    .attr("width", function (d) { return x(d.Time); })
+    .attr("height", y.rangeBand());
+
+  bar.append("text")
+    .attr("x", function (d) { return x(d.Time) - 10; })
+    .attr("y", y.rangeBand() / 2)
+    .attr("dy", "0.35em")
+    .text(function (d) { return d.Time; });
+
+  chart.append("g")
+    .append("text")
+      .attr("x", width / 2)
+      .attr("y", -margin.top / 2)
+      .style("text-anchor", "middle")
+      .text(title);
+  chart.append("g")
+    .attr("class", "x axis")
+    .call(d3.svg.axis().scale(x).orient("top"))
+    .append("text")
+      .attr("x", width / 2)
+      .attr("y", -25)
+      .style("text-anchor", "middle")
+      .text("Time, s");
+
+  var xRelative = d3.scale.linear()
+    .domain([0, d3.max(data, function (d) { return d.Time / data[0].Time; })])
+    .range([0, width]);
+  chart.append("g")
+    .attr("class", "x axis")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.svg.axis().scale(xRelative).ticks(5))
+    .append("text")
+      .attr("x", width / 2)
+      .attr("y", 40)
+      .style("text-anchor", "middle")
+      .text("Time, relative to nl reader");
+
+  if (showYAxis) {
+    var yAxis = d3.svg.axis()
+      .scale(y)
+      .orient("left");
+    chart.append("g")
+      .attr("class", "y axis")
+      .call(yAxis);
+  }
+}
+
+Reveal.addEventListener('ready', function(event) {
+  var data = d3.csv.parse((function () {/*
+Method,Time
+nl reader,1.73
+nl reader+build,3.74
+ASL,4.69
+*/}).toString().match(/[^]*\/\*\n([^]*)\*\/\}$/)[1], type);
+  makeChart("#nl-text", data, "Text 218.9 MiB", true);
+
+  var data = d3.csv.parse((function () {/*
+Method,Time
+nl reader,0.50
+nl reader+build,2.37
+ASL,3.23
+*/}).toString().match(/[^]*\/\*\n([^]*)\*\/\}$/)[1], type);
+  makeChart("#nl-binary", data, "Binary 246.9 MiB");
+  });
+</script>
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-20116650-1']);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+</body>
+</html>

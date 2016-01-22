@@ -1,0 +1,6 @@
+param roll_width := 64.50 ;
+param: WIDTHS: order :=
+6.77 10
+7.56 40
+17.46 33
+18.76 10 ;

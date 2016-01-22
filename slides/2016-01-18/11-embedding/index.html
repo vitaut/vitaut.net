@@ -1,0 +1,683 @@
+<!doctype html> <html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Embedding AMPL in applications</title>
+
+  <meta name="author" content="Victor Zverovich">
+
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <link rel="stylesheet" href="../common/reveal.js/css/reveal.css">
+  <link rel="stylesheet" href="../common/reveal.js/css/theme/beige.css" id="theme">
+
+  <!-- For syntax highlighting -->
+  <link rel="stylesheet" href="../common/reveal.js/lib/css/zenburn.css">
+
+  <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+  <script>
+    if( window.location.search.match(/print-pdf/gi) ) {
+      var link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = '../common/reveal.js/css/print/pdf.css';
+      document.getElementsByTagName('head')[0].appendChild(link);
+    }
+  </script>
+
+  <style>
+  body {background: white;}
+  comment {display: none;}
+
+  .reveal h1 {
+    padding-bottom: 50px;
+  }
+  
+  .reveal h1,
+  .reveal h2 {
+    font-size: 200%;
+    text-transform: none;
+    text-align: center;
+    margin: 0;
+  }
+  .reveal section:first-of-type {
+    text-align: center;
+  }
+  .reveal section {
+    text-align: left;
+  }
+  
+  .reveal p {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+  .reveal .MathJax_Display {
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  .reveal .plot {
+    box-shadow: 0 0 20px #888888;
+    margin-left: auto; margin-right: auto;
+  }
+  
+  .reveal .transp-image {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    border: none;
+    box-shadow: none;
+  }
+  
+  /* Fix nohighlight styles. */
+  .reveal pre code { display: block; background: #3F3F3F; color: #DCDCDC; }
+  
+  /* Fix image styles. */
+  .reveal section img { border: none; box-shadow: none; }
+  
+  img.float-right {
+    clear:right;
+    float:right;
+  }
+
+  div .new { color: red; }
+
+  /* D3 styles */
+  .node circle {
+    fill: #fff;
+    stroke: steelblue;
+    stroke-width: 1.5px;
+  }
+
+  .node {
+    font: 20px sans-serif;
+  }
+
+  .link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 1.5px;
+  }
+  
+  .chart rect {
+    fill: steelblue;
+  }
+
+  .chart .bar text {
+    fill: white;
+    font: 20px sans-serif;
+    text-anchor: end;
+  }
+  .chart .axis text {
+    font: 20px sans-serif;
+    fill: black;
+  }
+  .chart .x.axis text {
+    font: 16px sans-serif;
+  }
+
+  .chart .axis path,
+  .chart .axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+  }
+  .chart .y.axis line,
+  .chart .y.axis path {
+    display: none;
+  }
+  
+  .reveal table td { border-bottom: 0px; }
+  </style>
+
+  <script type="text/javascript" charset="utf-8" src="MathBox.js/vendor/domready.js"></script>
+  <script type="text/javascript" charset="utf-8" src="MathBox.js/build/MathBox-bundle.js"></script>
+
+  <link href="MathBox.js/base.css" rel="stylesheet" type="text/css" media="screen">  
+</head>
+
+<body>
+<script src="../common/reveal.js/lib/js/head.min.js"></script>
+<script src="../common/reveal.js/js/reveal.js"></script>
+
+<img id="logo" style="position: absolute; top: 40px; right: 20px; border: 0;" src="ampl-logo-text.png" width="100px"/>
+<div class="reveal">
+<!-- Any section element inside of this container is displayed as a slide -->
+<div class="slides">
+
+<section data-markdown data-separator="---">
+<script type="text/template">
+Embedding AMPL in applications
+==============================
+
+Victor Zverovich
+
+<small><a href="mailto:viz@ampl.com">viz@ampl.com</a></small>
+
+AMPL Optimization Inc.
+
+<br>
+
+<small>University of Santiago de Compostela, <br>
+January 18-19, 2016, Spain</small>
+---
+
+## Outline
+
+* Embedding options
+
+  * Batch
+  * Incremental
+  * Interactive
+
+* Real-world example: Norske Skog
+
+* Lessons learned
+
+* References
+
+---
+
+## Modeling cycle & deployment
+
+<div style="text-align: center">
+<img src="modeling-cycle.svg" width="700px">
+</div>
+
+* Deployment for application is where embedding comes in
+* Plan ahead for deployment
+
+---
+
+## Embedding AMPL
+
+* Applications are usually developed in general-purpose programming languages (duh)
+
+* Need to connect optimization model with the application logic
+
+* Options
+
+  * Batch
+  * Incremental
+  * Interactive
+
+---
+
+## Batch mode
+
+* <img class="float-right" src="batch.gif" width="300"/>
+  Workflow:
+
+  1. Prepare model
+  2. Prepare data
+  3. Send model and data to AMPL
+  4. AMPL generates a problem instance and sends to a solver
+  5. Get results from AMPL
+
+* Often controlled from AMPL script
+
+* Communication via files or databases
+
+---
+
+## Databases vs files
+
+Files
+
+* No configuration
+
+* Easy debugging
+
+* AMPL has a powerful data specification language
+
+Databases
+
+* Many real-world application already use database systems
+
+* Can be more efficient than using files, especially when non-trivial
+  parsing is involved in the latter
+
+* Data consistency, remote access
+
+---
+
+## Incremental mode
+
+* Application maintains a connection to the AMPL interpreter
+
+* Communication is done via pipes or AMPL API
+
+* More fine-grained control compared to batch mode
+
+* Application can change some data, resolve, query data multiple times
+
+* Better coordination between application and modeling logic
+
+---
+
+## Communicating with AMPL
+
+* Block I/O mode
+
+  ```cs
+> ampl -b
+14 prompt1
+ampl:
+```
+
+  where 14 is the number of characters in the block.
+
+* Can be used for communication via pipes (to prevent buffering issues)
+
+* Two modes: block mode with sizes or just block-mode buffering
+
+* API is preferable if available
+
+---
+
+## Interactive mode
+
+* <img class="float-right" src="anykey.jpg" width="300"/>
+  User has access to the AMPL interpreter via the shell
+
+* Convenient for power users
+
+* Useful for debugging
+
+* Can be combined with other methods
+
+* Inversion of control (not in the dependency injection sense):
+  the application can be invoked and controled from AMPL - possible, but less common
+
+---
+
+## Solver isolation
+
+* Solvers can crash, run out of memory and don't recover properly, leak memory, stall.
+
+* AMPL runs each solver in a separate process.
+
+* Apart from improved reliability, this allows interrupting the solution process at any time.
+
+* Solvers often return the current best solution when interrupted.
+
+* Can be done via API or, when embedded manually, by sending `SIGINT` (Windows needs special
+  handling because passing signals between processes is broken there).
+
+---
+
+## Business customer examples
+
+Two outstanding projects:
+
+* <img class="float-right" src="edelman.jpg" width="400"/>
+  ZARA, clothing retailer
+
+* Norske Skog, paper manufacturer
+
+Finalists for INFORMS Edelman Award
+for practice of Operations Research
+
+Source: Robert Fourer,
+"Using a Modeling Language for Efficient and Reliable
+Optimization in Logistics and Related Applications."
+International Symposium on Mathematics of Logistics
+Tokyo, 29 November 2011.
+
+---
+
+## Norske Skog: paper manufacturer
+
+Optimization of production and distribution
+<img class="float-right" src="norske-skog.png" width="250"/>
+  
+* Australasia
+* Europe
+  * 640 binary variables
+  * 524,000 continuous variables
+  * 33,000 constraints
+
+Optimization of shutdown decisions worldwide
+
+* Multiple scenarios, numerous sensitivity analyses
+* Key role of AMPL models
+  * Implemented in a few weeks
+  * Modified to analyze alternatives
+  * Run interactively at meetings
+
+---
+
+## Norske Skog’s formulation
+
+**Given sets**
+
+$N$ - Number of mills
+
+$M_n$ - Set of machines at mill $n$
+
+$M$ - Number of paper machines
+
+$J$ - Number of products
+
+$L$ - Number of raw material sources
+
+$R$ - Number of raw materials
+
+$K$ - Number of customers
+
+$P$ - Number of recipes
+
+---
+
+## Norske Skog’s formulation
+
+**Given capital parameters**
+
+$l_n$ - fixed cost of mill $n$ running for one period
+(excluding machine fixed costs)
+
+$f_m$ - fixed cost of machine $m$ running for one period
+
+$\theta_m$ - proportion of fixed running costs saved from
+a temporary shutdown on machine $m$
+
+$q_m$ - minimum time that machine $m$ must be shut
+before savings accrue
+
+$\phi_m$ - amortized cost of a permanent closure of machine $m$
+
+---
+
+## Norske Skog’s formulation
+
+**and operating parameters**
+
+$g_{mjk}$ - variable freight cost for shipping product $j$
+from machine $m$ to customer $k$
+
+$a_{mjp}$ - capacity of machine $m$ making product $j$ using recipe $p$
+
+$c_{mjp}$ - variable cost incurred by producing
+one tonne of product $j$ using recipe $p$ on machine $m$
+
+$h_{mjrp}$ - tonnes of raw material $r$ required to make
+one tonne of product $j$ using recipe $p$ on machine $m$
+
+---
+
+## Norske Skog’s formulation
+
+**operating parameters continued**
+
+$\pi_{mrl}$ - procurement, transportation, and process cost
+of raw material $r$ from source $l$ for machine $m$
+
+$W_{rl}$ - supply of raw material $r$ at source $l$
+
+$d_{jk}$ - demand for product $j$ by customer $k$
+
+$s_{jk}$ - sales price for product $j$ by customer $k$
+
+---
+
+## Norske Skog’s formulation
+
+**Make capital decisions**
+
+$\delta_n$ - 1 if mill $n$ closes, 0 otherwise
+
+$\mu_m$ - 1 if machine $m$ shuts down permanently, 0 otherwise
+
+$u_m$ - time that machine $m$ has been shut down
+
+$\xi_m$ - 1 if machine $m$ has been shut down long enough
+to accrue savings, 0 otherwise
+
+$v_m$ - time that qualifies for savings on machine $m$
+
+---
+
+## Norske Skog’s formulation
+
+**and operating decisions**
+
+$x_{mjp}$ - tonnes of product $j$ made on machine $m$ using recipe $p$
+
+$y_{mjk}$ - tonnes of product $j$ made on machine $m$ and
+delivered to customer $k$
+
+$w_{mrl}$ - tonnes of raw material $r$ from source $l$ used by machine $m$
+
+$\sigma_{mp}$ - 1 if recipe $p$ is used on machine $m$, 0 otherwise
+</script>
+</section>
+
+<section>
+
+<h2>Norske Skog’s formulation</h2>
+
+<b>Maximize</b>
+
+<small>
+$$
+\sum_{m=1}^{M} \sum_{j=1}^{J} (\sum_{k=1}^{K} (s_{jk} - g_{mjk}) y_{mjk} - \sum_{p=1}^{P} c_{mjp} x_{mjp}) \\
+- \sum_{m=1}^{M} \sum_{l=1}^{L} \sum_{r=1}^{R} \pi_{mrl} w_{mrl}
++ \sum_{m=1}^{M} \theta_m f_m v_m \\
+- \sum_{n=1}^{N} (l_n (1 - \delta_n) + \lambda_n \delta_n)
+- \sum_{m=1}^{M} (f_m (1 - \mu_m) + \phi_m \mu_m)
+$$
+</small>
+
+<ul>
+<li> Income from sales,
+<li> minus raw material, production and distribution costs,
+<li> plus savings from shutdowns,
+<li> minus fixed operating and shutdown costs
+</ul>
+
+</section>
+
+<section>
+
+<h2>Norske Skog’s formulation</h2>
+
+<b>Subject to</b>
+
+<table style="font-size:25px">
+  <tr>
+    <td>$\sum_{j=1}^{J} \sum_{p=1}^{P} \frac{x_{mjp}}{a_{mjp}} = 1 - u_m$</td>
+    <td>for $m = 1, ..., M$</td>
+  </tr>
+  <tr>
+    <td colspan="2">Capacity used equals capacity available</td>
+  </tr>
+  <tr>
+    <td>$\sum_{k=1}^{K} y_{mjk} = \sum_{p=1}^{P} x_{mjp}$</td>
+    <td>for $j = 1, ..., J, m = 1, ..., M$</td>
+  </tr>
+  <tr>
+    <td colspan="2">Amounts produced equal amounts shipped</td>
+  </tr>
+  <tr>
+    <td>$\sum_{m=1}^{M} y_{mjk} \leq d_{jk}$</td>
+    <td>for $j = 1, ..., J, k = 1, ..., K$</td>
+  </tr>
+  <tr>
+    <td colspan="2">Amounts produced do not exceed demand</td>
+  </tr>
+  <tr>
+    <td>$\sum_{j=1}^{J} \sum_{p=1}^{P} h_{mjrp} x_{mjp} = \sum_{l=1}^{L}w_{mrl}$</td>
+    <td>for $m = 1, ..., M, r = 1, ..., R$</td>
+  </tr>
+  <tr>
+    <td colspan="2">Raw material used equals raw material purchased</td>
+  </tr>
+  <tr>
+    <td>$\sum_{m=1}^{M} w_{mrl} \leq W_{rl}$</td>
+    <td>for $r = 1, ..., R, l = 1, ..., L$</td>
+  </tr>
+  <tr>
+    <td colspan="2">Raw material purchased does not exceed amount available</td>
+  </tr>
+</table>
+
+</section>
+
+<section>
+
+<h2>Norske Skog’s formulation</h2>
+
+<b>Subject to</b>
+
+<table>
+  <tr>
+    <td>$\sum_{p=1}^{P} \sigma_{mp} = 1 - \mu_p$</td>
+    <td>for $m = 1, ..., M$</td>
+  </tr>
+  <tr>
+    <td>$x_{mjp} \leq a_{mjp} \sigma_{mjp}$</td>
+    <td>for $j = 1, ..., J, m = 1, ..., M, p = 1, ..., P$</td>
+  </tr>
+  <tr>
+    <td>$\delta_n \leq \mu_m$</td>
+    <td>for $m \in M_n, n = 1, ..., N$</td>
+  </tr>
+  <tr>
+    <td>$v_m \leq \xi_m$</td>
+    <td>for $m = 1, ..., M$</td>
+  </tr>
+  <tr>
+    <td>$v_m \leq 1 - \mu_m$</td>
+    <td>for $m = 1, ..., M$</td>
+  </tr>
+  <tr>
+    <td>$v_m \leq u_m - q_m \xi_m$</td>
+    <td>for $m = 1, ..., M$</td>
+  </tr>
+  <tr>
+    <td colspan="2">Definitions of zero-one variables</td>
+  </tr>
+</table>
+
+</section>
+
+<section data-markdown data-separator="---">
+<script type="text/template">
+
+## Issues with the old implementation
+
+The old implementation used a combination of spreadsheet and files. Some issues [2]:
+
+* "Whenever a new set element such as a product or a market was added to the model
+  the spreadsheets were required to be altered in numerous locations. Errors could
+  easily be introduced."
+* "Relatively minor changes in data required specialist expertise."
+* "A simple change to data normally required the entire data file to be re-built."
+* "Relationships between data were not easy to observe from the spreadsheet."
+
+---
+
+## Improvement: database and custom UI
+
+* Solved the issues with the implementation that relied on files and spreasheets 
+
+* Improved data consistency
+
+* The application UI allowed using the system by non-specialists and
+  "has contributed to growing interest in supply chain optimisation in
+  other parts of the Norske Skog organisation".
+
+* AMPL database and scripting functionality was used in the new implementation.
+
+---
+
+## Lessons learned
+
+* Spreadsheets
+
+  * encourage bad practices: copy-paste, lack of testing, hidden logic
+  * not a substitute for a proper UI
+
+* Communication via files is OK provided that it is automated
+
+* Databases and custom UI can improve reliability and usability
+
+* Limited use of spreadsheets is OK as a poor man's database system
+
+  * will simplify migration to a more robust system later
+
+---
+
+## References
+  
+1. G. Everett, A. Philpott, K. Vatn, R. Gjessing, “Norske Skog Improves
+   Global Profitability Using Operations Research.” Interfaces 40, 1
+   (Jan–Feb 2010) 58–70.
+
+2. Graeme R. Everett, Jeff A. Meyer,
+   [Flexible Interface for Supply Chain Optimisation Model](http://www.orsnz.org.nz/conf37/Papers/EverettMeyer.pdf).
+
+3. Robert Fourer,
+   "Using a Modeling Language for Efficient and Reliable
+   Optimization in Logistics and Related Applications."
+   International Symposium on Mathematics of Logistics
+   Tokyo, 29 November 2011.
+</script>
+</section>
+
+</div>
+</div>
+
+<script>
+  // Full list of configuration options available here:
+  // https://github.com/hakimel/reveal.js#configuration
+  Reveal.initialize({
+    controls: true,
+    progress: true,
+    history: true,
+    center: true,
+
+    theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+    transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+    // Parallax scrolling
+    // parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+    // parallaxBackgroundSize: '2100px 900px',
+
+    math: {
+      mathjax: '../common/MathJax-2.4.0/MathJax.js',
+      config: 'TeX-AMS-MML_HTMLorMML'  // See http://docs.mathjax.org/en/latest/config-files.html
+    },
+
+    // Optional libraries used to extend on reveal.js
+    dependencies: [
+      { src: '../common/reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+      { src: '../common/reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      { src: '../common/reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      { src: '../common/reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+      { src: '../common/reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+      { src: '../common/reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+      { src: '../common/reveal.js/plugin/math/math.js', async: true }
+    ]
+  });
+  //Reveal.addEventListener('slidechanged', function(event) {
+  //  document.getElementById("logo").style.visibility = Reveal.isFirstSlide() ? 'hidden' : 'visible';
+  //});
+</script>
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-20116650-1']);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+</body>
+</html>

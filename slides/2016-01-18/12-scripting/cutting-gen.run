@@ -1,0 +1,51 @@
+model cutting-gen.mod;
+data sorrentino.dat;
+
+option solver gurobi;
+
+problem Cutting_Opt: Cut, TotalRawRolls, FinishedRollLimits;
+option relax_integrality 1;
+option presolve 0;
+
+problem Pattern_Gen: Use, Reduced_Cost, Width_Limit;
+option relax_integrality 0;
+option presolve 1;
+
+let maxPatterns := Infinity; # not used
+let nPatterns := 0;
+for {i in WIDTHS} {
+  let nPatterns := nPatterns + 1;
+  let rolls[i, nPatterns] := floor(roll_width / i);
+  let {i2 in WIDTHS: i2 <> i} rolls[i2, nPatterns] := 0;
+}
+
+repeat {
+  solve Cutting_Opt;
+  let {i in WIDTHS} price[i] := -FinishedRollLimits[i].dual;
+  solve Pattern_Gen;
+  printf "\n%7.2f%11.2e ", TotalRawRolls, Reduced_Cost;
+  if Reduced_Cost < -0.00001 then {
+    let nPatterns := nPatterns + 1;
+    let {i in WIDTHS} rolls[i, nPatterns] := Use[i];
+  }
+  else break;
+  for {i in WIDTHS} printf "%3i", Use[i];
+}
+
+option Cutting_Opt.relax_integrality 0;
+option Cutting_Opt.presolve 10;
+solve Cutting_Opt;
+
+if Cutting_Opt.result = "infeasible" then
+  printf "\n*** No feasible integer solution ***\n\n";
+else {
+  printf "Best integer: %3i rolls\n\n", sum {j in PATTERNS} Cut[j];
+  for {j in PATTERNS: Cut[j] > 0} {
+    printf "%3i of:", Cut[j];
+    printf {i in WIDTHS: rolls[i,j] > 0}: "%3i x %6.3f", rolls[i,j], i;
+    printf "\n";
+  }
+  printf "\nWASTE = %5.2f%%\n\n",
+  100 * (1 - (sum {i in WIDTHS} i * order[i]) /
+             (roll_width * TotalRawRolls));
+}

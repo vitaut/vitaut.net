@@ -1,0 +1,46 @@
+model cut.mod;
+data sorrentino.dat;
+param curr_sum;
+param curr_width > 0;
+param pattern {WIDTHS} integer >= 0;
+let maxPatterns := 1000000;
+let nPatterns := 0;
+let curr_sum := 0;
+let curr_width := first(WIDTHS);
+let {w in WIDTHS} pattern[w] := 0;
+
+repeat {
+  if curr_sum + curr_width <= roll_width then {
+    let pattern[curr_width] := floor((roll_width - curr_sum) / curr_width);
+    let curr_sum := curr_sum + pattern[curr_width] * curr_width;
+  }
+  if curr_width != last(WIDTHS) then
+    let curr_width := next(curr_width,WIDTHS);
+  else {
+    let nPatterns := nPatterns + 1;
+    let {w in WIDTHS} rolls[w, nPatterns] := pattern[w];
+    let curr_sum := curr_sum - pattern[last(WIDTHS)] * last(WIDTHS);
+    let pattern[last(WIDTHS)] := 0;
+    let curr_width := min {w in WIDTHS: pattern[w] > 0} w;
+    if curr_width < Infinity then {
+      let curr_sum := curr_sum - curr_width;
+      let pattern[curr_width] := pattern[curr_width] - 1;
+      let curr_width := next(curr_width, WIDTHS);
+    }
+    else break;
+  }
+}
+
+option solver gurobi;
+solve;
+printf "\n%5i patterns, %3i rolls", nPatterns, sum {j in PATTERNS} Cut[j];
+printf "\n\n Cut ";
+printf {j in PATTERNS: Cut[j] > 0}: "%3i", Cut[j];
+printf "\n\n";
+for {i in WIDTHS} {
+  printf "%7.2f ", i;
+  printf {j in PATTERNS: Cut[j] > 0}: "%3i", rolls[i, j];
+  printf "\n";
+}
+printf "\nWASTE = %5.2f%%\n\n",
+  100 * (1 - (sum {i in WIDTHS} i * order[i]) / (roll_width * TotalRawRolls));

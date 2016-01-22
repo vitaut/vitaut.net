@@ -1,0 +1,1135 @@
+<!doctype html> <html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>AMPL API for C++</title>
+
+  <meta name="author" content="Victor Zverovich">
+
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <link rel="stylesheet" href="../common/reveal.js/css/reveal.css">
+  <link rel="stylesheet" href="../common/reveal.js/css/theme/beige.css" id="theme">
+
+  <!-- For syntax highlighting -->
+  <link rel="stylesheet" href="../common/reveal.js/lib/css/zenburn.css">
+
+  <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+  <script>
+    if( window.location.search.match(/print-pdf/gi) ) {
+      var link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = '../common/reveal.js/css/print/pdf.css';
+      document.getElementsByTagName('head')[0].appendChild(link);
+    }
+  </script>
+
+  <style>
+  body {background: white;}
+  comment {display: none;}
+
+  .reveal h1 {
+    padding-bottom: 50px;
+  }
+  
+  .reveal h1,
+  .reveal h2 {
+    font-size: 200%;
+    text-transform: none;
+    text-align: center;
+    margin: 0;
+  }
+  .reveal section:first-of-type {
+    text-align: center;
+  }
+  .reveal section {
+    text-align: left;
+  }
+  
+  .reveal p {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+  .reveal .MathJax_Display {
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  .reveal .plot {
+    box-shadow: 0 0 20px #888888;
+    margin-left: auto; margin-right: auto;
+  }
+  
+  .reveal .transp-image {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    border: none;
+    box-shadow: none;
+  }
+  
+  /* Fix nohighlight styles. */
+  .reveal pre code { display: block; background: #3F3F3F; color: #DCDCDC; }
+  
+  /* Fix image styles. */
+  .reveal section img { border: none; box-shadow: none; }
+  
+  img.float-right {
+    clear:right;
+    float:right;
+  }
+
+  div .new { color: red; }
+
+  /* D3 styles */
+  .node circle {
+    fill: #fff;
+    stroke: steelblue;
+    stroke-width: 1.5px;
+  }
+
+  .node {
+    font: 20px sans-serif;
+  }
+
+  .link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 1.5px;
+  }
+  
+  .chart rect {
+    fill: steelblue;
+  }
+
+  .chart .bar text {
+    fill: white;
+    font: 20px sans-serif;
+    text-anchor: end;
+  }
+  .chart .axis text {
+    font: 20px sans-serif;
+    fill: black;
+  }
+  .chart .x.axis text {
+    font: 16px sans-serif;
+  }
+
+  .chart .axis path,
+  .chart .axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+  }
+  .chart .y.axis line,
+  .chart .y.axis path {
+    display: none;
+  }
+  
+  .reveal pre code { max-height: 500px; }
+  </style>
+
+  <script type="text/javascript" charset="utf-8" src="MathBox.js/vendor/domready.js"></script>
+  <script type="text/javascript" charset="utf-8" src="MathBox.js/build/MathBox-bundle.js"></script>
+
+  <link href="MathBox.js/base.css" rel="stylesheet" type="text/css" media="screen">  
+</head>
+
+<body>
+<script src="../common/reveal.js/lib/js/head.min.js"></script>
+<script src="../common/reveal.js/js/reveal.js"></script>
+
+<img id="logo" style="position: absolute; top: 40px; right: 20px; border: 0;" src="ampl-logo-text.png" width="100px"/>
+<div class="reveal">
+<!-- Any section element inside of this container is displayed as a slide -->
+<div class="slides">
+
+<section data-markdown data-separator="---">
+<script type="text/template">
+AMPL API for C++
+================
+
+Victor Zverovich
+
+<small><a href="mailto:viz@ampl.com">viz@ampl.com</a></small>
+
+AMPL Optimization Inc.
+
+<br>
+
+<small>University of Santiago de Compostela, <br>
+January 18-19, 2016, Spain</small>
+---
+
+## Outline
+
+* Features
+
+* Modeling classes
+
+  * The AMPL class
+  * Entity classes
+  * Instance classes
+
+* Utilities
+  * DataFrame: bulk data transfer
+
+* Error and output handling
+
+* Comparison with Java/MATLAB API
+
+* References
+
+---
+
+## Features
+
+* High-level and conceptually simple
+
+* Object-oriented
+
+* Efficient bulk data transfer
+
+* Supported languages
+
+  * Java and JVM-based languages: Scala, Clojure, ...
+  * MATLAB
+  * C++
+
+* Makes use of language-specific features, e.g. iterators and operator overloading in C++
+
+---
+
+## Portability
+
+* All major platforms are supported
+  <div style="text-align:center">
+  <img src="tux.svg" height="50px"/>
+  <img src="apple-logo.svg" height="50px" style="padding-left:50px"/>
+  <img src="windows-logo.svg" height="50px" style="padding-left:50px"/>
+  </div>
+
+* Java and MATLAB packages are portable
+
+* The C++ API supports the following systems:
+
+  * GNU/Linux with GCC 4.4+
+  * OS X with Clang 4.2+
+  * Windows with MSVC 2010+
+
+---
+
+## Evolution of API
+
+<dl>
+  <img class="float-right" src="evolution.jpg" width="300"/>
+  <dt>May 2014</dt>
+  <dd>0.1.0: beta release of Java and MATLAB API</dd>
+  <dt>Oct 2014</dt>
+  <dd>0.2.2: fixes, performance improvements</dd>
+  <dt>Feb 2015</dt>
+  <dd>0.2.4: fixes, improved error handling</dd>
+  <dt>Mar 2015</dt>
+  <dd>1.0.0: fixes</dd>
+  <dt>Mar 2015</dt>
+  <dd>1.1.0: fixes, indexarity, sstatus, etc.</dd>
+  <dt>Jan 2016</dt>
+  <dd>1.2.0: initial beta release of C++ API</dd>
+</dl>
+
+---
+
+## C++ API beta
+
+C++ API beta is about to be released.
+
+<img src="beta.gif"/>
+
+Will be ready for testing but not for production use (yet).
+
+If stability is important right now consider Java API.
+
+---
+
+## Modeling classes
+
+* The `AMPL` class
+
+* Entity classes
+
+* Instance classes
+
+* Error and output handling classes
+  * Exceptions
+  * Handlers
+
+* Utility classes
+  * `Tuple`, `DataFrame`, `Environment`
+
+---
+
+## The AMPL class
+
+* Represents an AMPL session and used to
+
+  * Read models and data from files: `AMPL::read`, `AMPL::readData`
+  * Solve optimization problems constructed from model and data: `AMPL::solve`
+  * Access components of an optimization problem: `AMPL::getVariable`, `AMPL::getObjective`, ...
+  * Get/set options: `AMPL::getOption`, `AMPL::setOption`, ...
+  * Get/set data: `AMPL::getData`, `AMPL::setData`
+  * Run AMPL code: `AMPL::eval`
+  * Output data: `AMPL::display`, `AMPL::expand`
+
+---
+
+## Example: diet model
+
+`diet.mod`:
+
+```cs
+set NUTR;
+set FOOD;
+
+param cost {FOOD} > 0;
+param f_min {FOOD} >= 0;
+param f_max {j in FOOD} >= f_min[j];
+
+param n_min {NUTR} >= 0;
+param n_max {i in NUTR} >= n_min[i];
+
+param amt {NUTR,FOOD} >= 0;
+
+var Buy {j in FOOD} >= f_min[j], <= f_max[j];
+
+minimize total_cost:  sum {j in FOOD} cost[j] * Buy[j];
+
+subject to diet {i in NUTR}:
+   n_min[i] <= sum {j in FOOD} amt[i,j] * Buy[j] <= n_max[i];
+```
+
+---
+
+## Diet data
+
+`diet.dat`:
+
+```cs
+set NUTR := A B1 B2 C NA CAL ;
+set FOOD := BEEF CHK FISH HAM MCH MTL SPG TUR ;
+
+param:   cost  f_min  f_max :=
+  BEEF   3.19    2     10
+  CHK    2.59    2     10
+  FISH   2.29    2     10
+  HAM    2.89    2     10
+  MCH    1.89    2     10
+  MTL    1.99    2     10
+  SPG    1.99    2     10
+  TUR    2.49    2     10  ;
+
+param:   n_min  n_max :=
+   A      700   20000
+   C      700   20000
+   B1     700   20000
+   B2     700   20000
+   NA       0   50000
+   CAL  16000   24000 ;
+
+param amt (tr):
+           A    C   B1   B2    NA   CAL :=
+   BEEF   60   20   10   15   938   295
+   CHK     8    0   20   20  2180   770
+   FISH    8   10   15   10   945   440
+   HAM    40   40   35   10   278   430
+   MCH    15   35   15   15  1182   315
+   MTL    70   30   15   15   896   400
+   SPG    25   50   25   15  1329   370
+   TUR    60   20   15   10  1397   450 ;
+```
+
+---
+
+## Reading AMPL files and solving
+
+`test.cc`:
+
+```c++
+#include "ampl/ampl.h"
+
+int main() {
+  ampl::AMPL ampl;
+  
+  // Read model and data.
+  ampl.read("diet.mod");
+  ampl.readData("diet.dat");
+  
+  // Solve.
+  ampl.solve();
+}
+```
+
+Output:
+
+```nohighlight
+> g++ test.cc -I... -lampl -L... -otest
+> ./test
+MINOS 5.51: 
+optimal solution found.
+13 iterations, objective 118.0594032
+```
+---
+
+## AMPL and solver options
+
+* String: `AMPL::getOption`/`setOption`
+
+* Integer: `AMPL::getIntOption`/`setIntOption`
+
+* Double: `AMPL::getDblOption`/`setDblOption`
+
+* Bool: `AMPL::getBoolOption`/`setBoolOption`
+
+* Getters return `Optional<T>` that can be checked if an option exists
+
+* Solver options are set with
+
+  `setOption("<solver>_options", ...)`
+
+---
+
+## Option examples
+
+Setting options:
+
+```c++
+  ampl.setOption("solver", "gurobi");
+  ampl.setBoolOption("relax_integrality", true);
+  ampl.setIntOption("display_1col", 20);
+  ampl.setDblOption("boundtol_max", 1e-5);
+```
+
+Setting solver options:
+```c++
+  ampl.setOption("gurobi_options", "mipgap=1e-5");
+```
+
+Checking if an option exists and getting its value:
+```c++
+  if (ampl::Optional<int> value = ampl.getIntOption("foo"))
+    std::cout << "foo value: " << *value;
+```
+
+Getting option value if it is guaranteed to exist:
+
+```c++
+  std::cout << *ampl.getBoolOption("relax_integrality");
+```
+
+---
+
+## Running AMPL code
+
+`AMPL::eval` evaluates complete AMPL statements
+
+```c++
+ampl.eval("display {j in FOOD: Buy[j] > 0} Buy[j];");
+```
+
+Prints:
+
+```
+'BEEF' 5.36061
+'CHK' 2
+'FISH' 2
+'HAM' 10
+'MCH' 10
+'MTL' 10
+'SPG' 9.30605
+'TUR' 2
+```
+
+Powerful, but unstructured
+
+---
+
+## Alternatives to eval
+
+Prefer structured API calls to `AMPL::eval`
+
+* Can be more efficient
+
+* More robust (type checking)
+
+* But sometimes more verbose
+
+```c++
+ampl.display("{j in FOOD: Buy[j] > 0} Buy[j]");
+```
+or 
+```c++
+for (auto row: ampl.getData("Buy")) {
+  if (row[1] > 0)
+    std::cout << row[0].toString() << " " << row[1].toString() << "\n";
+  // This can be simplified with appropriate overloads.
+}
+```
+
+* `getData` returns a tabular data structure - more info later.
+
+---
+
+## Output methods
+
+* Output methods:
+  * `AMPL::display`: display expressions
+  * `AMPL::show`: print declaration
+  * `AMPL::expand`: print instances
+  
+* Correspond to AMPL commands
+
+* Useful for debugging
+
+* Output can be captured via `OutputHandler`
+
+---
+
+## The display method
+
+Takes entities or strings representing AMPL expressions
+
+Example:
+```c++
+ampl.display("Buy");
+```
+Output:
+```cs
+Buy [*] :=
+BEEF   5.36061
+ CHK   2
+FISH   2
+ HAM  10
+ MCH  10
+ ...
+;
+```
+Passing entity:
+```c++
+ampl::Variable buy = ampl.getVariable("Buy");
+ampl.display(buy);
+```
+
+---
+
+## The show method
+
+Takes an entity and prints its declaration
+
+Example:
+```c++
+auto total_cost = ampl.getObjective("total_cost");
+ampl.show(total_cost);
+```
+Output:
+
+```cs
+minimize total_cost: sum{j in FOOD} cost[j]*Buy[j];
+```
+
+Entity's declaration can also be obtained via `toString`:
+
+```c++
+std::cout << total_cost.toString();
+```
+---
+
+## The expand method
+
+Takes entity and prints its expanded form:
+
+Example:
+```c++
+auto total_cost = ampl.getObjective("total_cost");
+ampl.expand(total_cost);
+```
+Output:
+```cs
+minimize total_cost:
+        3.19*Buy['BEEF'] + 2.59*Buy['CHK'] + 2.29*Buy['FISH'] + 2.89*Buy['HAM']
+         + 1.89*Buy['MCH'] + 1.99*Buy['MTL'] + 1.99*Buy['SPG'] + 
+        2.49*Buy['TUR'];
+```
+
+Can also be obtained via instance's `toString`:
+
+```c++
+std::cout << total_cost.get().toString(); // note get()
+```
+
+---
+
+## Class hierarchy
+
+<img src="hierarchy.png"/>
+
+---
+
+## Entity classes
+
+* Correspond to AMPL entities
+
+* `Entity` - base class
+
+  * `Set`
+  * `Parameter`
+  * `Variable`
+  * `Objective`
+  * `Constraint`
+
+* An entity can represent a collection of objects indexed over a set - like a map or associative array
+
+---
+
+## Enumerating all entities
+
+Example:
+
+```c++
+for (auto p: ampl.getParameters())
+  std::cout << p.name() << "\n";
+```
+
+Output:
+```nohighlight
+amt
+cost
+f_max
+f_min
+n_max
+n_min
+```
+
+Same for other types of entities: `getVariables`, `getObjectives`, ...
+
+---
+
+## Scalar entities
+
+* Entities that are not indexed over sets
+
+```cs
+var x;
+```
+
+* Have methods to access name, value and all AMPL suffixes
+
+```c++
+auto x = ampl.getVariable("x");
+x.lb(); // lower bound - same as x.lb in AMPL
+x.ub(); // upper bound
+x.rc(); // reduced cost
+```
+
+* If not a scalar entity an exception is thrown
+
+---
+
+## Indexed entities
+
+* Entities indexed over sets
+
+```cs
+var Buy {j in FOOD} >= f_min[j], <= f_max[j];
+```
+
+* A single element (instance) can be accessed via `get()` method or
+  `operator[]` if only one key.
+
+* Instances have the same methods to access values and AMPL suffixes
+  
+```c++
+auto buy = ampl.getVariable("Buy");
+buy["CHK"].lb(); // lower bound - same as Buy["CHK"].lb in AMPL
+auto chk_buy = buy["CHK"];
+chk_buy.ub(); // upper bound
+chk_buy.rc(); // reduced cost
+```
+
+* Trying to access indexed entity without a key:
+
+```c++
+buy.lb(); // throws an exception - not a scalar instance
+```
+
+---
+
+## Multiple dimensions
+
+* The `get` method can take multiple arguments to access entities
+  indexed over multidimensional sets:
+
+```c++
+auto amt = ampl.getParameter("amt");
+amt.get("B1", "CHK"); // returns a Variant
+```
+
+* Another option is to pass a Tuple to `operator[]`:
+
+```c++
+amt[ampl::Tuple("B1", "CHK")]
+```
+but `get` is more efficient because it doesn't require constructing a tuple.
+
+---
+
+## Instance classes
+
+* Represent a single element in an indexed entity
+
+* Each entity class except `Parameter` has a corresponding instance class
+
+* `Parameter` stores strings or numbers (`Object` in Java, `Variant` in C++)
+
+* `Instance` - base class
+
+  * `SetInstance`
+  * `VariableInstance`
+  * `ObjectiveInstance`
+  * `ConstraintInstance`
+
+---
+
+## Enumerating instances
+
+Example:
+
+```c++
+  auto buy = ampl.getVariable("Buy");
+  for (auto i: buy) // i is VariableInstance
+    std::cout << i.name() << " " << i.value() << "\n";
+```
+
+Output:
+
+```cs
+Buy['BEEF'] 5.36061
+Buy['CHK'] 2
+Buy['FISH'] 2
+Buy['HAM'] 10
+Buy['MCH'] 10
+Buy['MTL'] 10
+Buy['SPG'] 9.30605
+Buy['TUR'] 2
+```
+
+* Java API allows enumerating over keys and values (instances)
+* C++ doesn't but this will be fixed
+
+---
+
+## Variant
+
+* Simple discriminated union
+
+* Stores strings or numbers
+
+* Two flavors:
+
+  * `VariantRef` - read-only reference to an object a la `std::string_view`.
+    Used for passing arguments efficiently (no copying).
+
+  * `Variant` - variant with normal copy semantics
+
+* If unsure use `Variant`
+
+* Used in AMPL parameters and elements of tuples
+
+* Specific to C++ API (Java uses `Object`)
+
+---
+
+## Variant usage
+
+* Constructors from numbers, C and C++ strings
+
+* Getting type: `type()`
+
+* Accessing as a string
+
+  * C string: `c_str()`
+  * C++ string: `str()`
+
+* Accessing as a double: `dbl()`
+
+Example:
+
+```c++
+ampl::Variant v(4.2);
+v.type(); // returns ampl::NUMERIC
+v.dbl();  // returns 4.2
+```
+
+---
+
+## Tuple
+
+* An immutable fixed-size array of variants
+
+* Two flavors:
+
+  * `TupleRef` - read-only reference to a tuple a la `std::string_view`.
+    Used for passing arguments efficiently (no copying).
+
+  * `Tuple` - tuple with normal copy semantics
+
+* If unsure use `Tuple`
+
+* Used for multidimensional keys
+
+* Specific to C++ API (Java uses `Object[]`)
+
+---
+
+## Variant usage
+
+* Constructors from numbers, C, C++ strings and variants
+
+* The number of items: `size()`
+
+* Accessing an item: `operator[]`
+
+* Conversion to string for debugging: `toString()`
+
+Example:
+
+```c++
+ampl::Tuple t("A", 700, 20000)
+t.size(); // returns 3
+t[0];     // returns a tuple representing "A"
+t[1].dbl();
+```
+
+---
+
+## Lifetime
+
+* <img class="float-right" src="shotinfoot.gif" width="200"/>
+  Instance can be destroyed if the indexing set of the entity
+  that contains it changes
+
+* Similar to iterators - if the container changes
+  they can be invalidated
+
+Example:
+  
+```c++
+ampl.eval("param P;");
+ampl.eval("var x{{P}};");
+ampl.getParameter("P").set(42);
+auto x = ampl.getVariable("x").get(42);
+ampl.getParameter("P").set(43); // x is invalidated
+x.value(); // throws an exception (or worse)
+```
+
+---
+
+## DataFrame
+
+* Accessing many values one by one may not be very efficient
+
+* `DataFrame` objects represent tables of data with named columns
+
+  * Key columns
+  * Data columns
+
+* Similar to relational tables and AMPL data
+
+* Can be used for bulk data transfer to and from AMPL
+
+---
+
+## DataFrame example - providing data
+
+AMPL data:
+```cs
+param:
+  NUTR: n_min  n_max :=
+   A      700   20000
+   C      700   20000
+   B1     700   20000
+   B2     700   20000
+   NA       0   50000
+   CAL  16000   24000 ;
+```
+
+C++ equivalent:
+```c++
+// Create a data frame with one key column.
+ampl::DataFrame df(1, ampl::StringArgs("NUTR", "n_min", "n_max"));
+df.addRow("A",     700, 20000);
+df.addRow("C",     700, 20000);
+df.addRow("B1",    700, 20000);
+df.addRow("B2",    700, 20000);
+df.addRow("NA",    0.0, 50000);
+df.addRow("CAL", 16000, 24000);
+ampl.setData(df, "NUTR");
+```
+
+---
+
+## DataFrame example - getting data
+
+Data of an indexed entity can be retrieved as a `DataFrame` with `getValues`:
+
+```c++
+std::cout << ampl.getParameter("amt").getValues().toString();
+```
+
+Output:
+```
+   index0         index1    |     amt     
+    'A'           'BEEF'    |      60     
+    'A'           'CHK'     |      8      
+    ...
+    'B1'          'BEEF'    |      10     
+    'B1'          'CHK'     |      20     
+    ...
+```
+
+Values of AMPL suffixes such as rc (reduced cost) can also be retrieved:
+
+```c++
+ampl.getVariable("Buy").getValues("rc");
+```
+
+---
+
+## DataFrame construction
+
+* Incremental: `addRow`, `addColumn`
+
+```c++
+df.addRow("A", 700, 20000);
+
+double costs[] = {3.19, 2.59, 2.29, 2.89, 1.89, 1.99, 1.99, 2.49};
+df2.addColumn("cost", costs);
+```
+
+* From arrays: `setArray`, `setMatrix`
+
+```c++
+const char* foods[] = {
+  "BEEF", "CHK", "FISH", "HAM", ...
+};
+
+double amounts[6][8] = {
+  {60, 8, 8, 40, 15, 70, 25, 60},
+  ...
+};
+df = ampl::DataFrame(2, ampl::StringArgs("NUTR", "FOOD", "amt"));
+df.setMatrix(nutrients, foods, amounts);
+```
+
+---
+
+
+## DataFrame usage
+
+* Iteration over rows: `begin`, `end`
+
+```c++
+ampl::DataFrame df = ampl.getVariable("Buy").getValues("rc");
+for (const auto &row: df) {
+    std::cout << row[0].str() << " " << row[1].dbl() << "\n";
+}
+```
+
+* Conversion to string for debugging: `toString`
+
+* Access by keys: `find`, `getRow`
+
+```c++
+auto row = df.getRow("CHK");
+std::cout << row[1].dbl();
+```
+
+---
+
+## Error and output handling
+
+* Output is reported via `OutputHandler`
+
+* AMPL warnings and errors are reported via `ErrorHandler`
+
+* Errors are reported as exceptions:
+
+  * `AMPLException` for AMPL-specific errors such as syntax errors in the code
+
+  * Standard exceptions for API-specific errors, e.g. `std::invalid_argument` if invalid option
+    name passed to `AMPL::setOption`.
+
+---
+
+## AMPLException
+
+* Gives error location for errors in the code:
+
+  * `getSourceName()`
+  * `getLineNumber()`
+  * `getOffset()`
+
+Example:
+```c++
+try {
+  ampl.eval("var x{0} >= 0;");
+} catch (const ampl::AMPLException &e) {
+  std::cout << e.what() << "\n";
+}
+```
+
+Output:
+
+```cs
+Filename: - Row: 1 Offset: 4
+syntax error
+```
+
+---
+
+## ErrorHandler
+
+* Allows capturing AMPL warnings and errors
+
+* Get/set via `AMPL::getErrorHandler`, `AMPL::setErrorHandler`
+
+* Prints warnings to stdout and throws exceptions for errors by default
+
+Example - handling errors:
+```c++
+struct MyErrorHandler : public ampl::ErrorHandler {
+  void warning(const ampl::AMPLException &e) {
+    // ignore warnings - not recommended
+  }
+  void error(const ampl::AMPLException &e) {
+    std::cerr << "Error: " << e.what() << "\n";
+  }
+};
+MyErrorHandler handler;
+ampl.setErrorHandler(&handler); // mind the lifetime!
+ampl.eval("var x{0} >= 0;");
+```
+
+---
+
+## OutputHandler
+
+* Allows capturing AMPL output
+
+* Get/set via `AMPL::getOutputHandler`, `AMPL::setOutputHandler`
+
+* Prints output to stdout by default
+
+Example - capturing output:
+```c++
+struct MyOutputHandler : public ampl::OutputHandler {
+  std::string str;
+  void output(ampl::output::Kind, const char *output) {
+    str += output;
+  }
+};
+MyOutputHandler handler;
+ampl.setOutputHandler(&handler);
+ampl.display("Buy");
+// output captured in handler.str;
+```
+
+* Mind the lifetime!
+
+---
+
+## Comparison with Java (and MATLAB) API
+
+* Same concepts and core classes: the AMPL class, entity and instance classes, handlers
+
+* Utility classes are different
+
+  * Java API uses `Object` instead of `Variant`
+
+* Different standard exception classes
+
+* Idiomatic constructs
+
+  * C++: iterators, operator overloading
+  * Java try-with-resources support
+  * MATLAB: operator overloading, matrix support
+
+---
+
+## References
+
+* AMPL API: http://ampl.com/products/api/
+
+* AMPL API Documentation: included in the distribution
+
+* Robert Fourer, "New Interface Developments in the AMPL Modeling Language & System",
+  EURO-INFORMS Joint International Meeting, Rome — 1-4 July 2013
+
+</script>
+</section>
+
+</div>
+</div>
+
+<script>
+  // Full list of configuration options available here:
+  // https://github.com/hakimel/reveal.js#configuration
+  Reveal.initialize({
+    controls: true,
+    progress: true,
+    history: true,
+    center: true,
+
+    theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+    transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+    // Parallax scrolling
+    // parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+    // parallaxBackgroundSize: '2100px 900px',
+
+    math: {
+      mathjax: '../common/MathJax-2.4.0/MathJax.js',
+      config: 'TeX-AMS-MML_HTMLorMML'  // See http://docs.mathjax.org/en/latest/config-files.html
+    },
+
+    // Optional libraries used to extend on reveal.js
+    dependencies: [
+      { src: '../common/reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+      { src: '../common/reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      { src: '../common/reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      { src: '../common/reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+      { src: '../common/reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+      { src: '../common/reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+      { src: '../common/reveal.js/plugin/math/math.js', async: true }
+    ]
+  });
+  //Reveal.addEventListener('slidechanged', function(event) {
+  //  document.getElementById("logo").style.visibility = Reveal.isFirstSlide() ? 'hidden' : 'visible';
+  //});
+</script>
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-20116650-1']);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+</body>
+</html>
