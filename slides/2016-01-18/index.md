@@ -28,4 +28,4 @@ Day 2
 * [Solver interfaces, AMPL Solver Library and the AMPL/MP library](15-solver-interfaces)
 * [Parallelization with the AMPL API](16-api-parallelization)
 
-![Announcement](cartel_curso_ampl_v6.jpg)
+<img src="cartel_curso_ampl_v6.jpg" width="100%">
