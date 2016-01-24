@@ -27,3 +27,5 @@ Day 2
 * [AMPL API: Interesting examples/implementations](14-api-examples)
 * [Solver interfaces, AMPL Solver Library and the AMPL/MP library](15-solver-interfaces)
 * [Parallelization with the AMPL API](16-api-parallelization)
+
+![Announcement](cartel_curso_ampl_v6.jpg)
