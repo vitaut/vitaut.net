@@ -101,6 +101,7 @@ struct ExprCounter : mp::NLHandler<Expr> {
   Expr OnBinary(mp::expr::Kind kind, Expr lhs, Expr rhs) {
     if (kind == mp::expr::DIV && rhs != CONST)
       ++num_divs;
+    return OTHER;
   }
   Expr OnNumericConstant(double value) { return CONST; }
 };
