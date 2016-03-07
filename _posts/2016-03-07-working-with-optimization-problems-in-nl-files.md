@@ -21,8 +21,9 @@ It is still the way to go if you want to process .nl files in
 [the most efficient way](http://zverovich.net/slides/2015-01-11-ics/socp-reformulation.html#/14).
 However, if you want to load the complete optimization problem and work with it,
 the NL reader will require you to manage the data structures that represent the problem
-yourself. Fortunately, the AMPL/MP library now provides a new API for working with
-optimization problems and this post will introduce this new API.
+yourself. Fortunately, [the AMPL/MP library](https://github.com/ampl/mp)
+now provides a new API for working with optimization problems and this post will introduce
+this new API.
 
 The optimization problem is represented by the `mp::Problem` type which provides methods
 for accessing variables, objectives (multiple objectives are supported) and constraints.
