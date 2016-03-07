@@ -59,7 +59,7 @@ The difference from the ASL is that the new API is simpler, fully type-safe
 and allows modification of the problem after it has been loaded that can be
 [used to implement transformations](http://zverovich.net/slides/2015-01-11-ics/socp-reformulation.html).
 The new implementation is already
-[~36% faster on the CUTE test set][faster](http://zverovich.net/slides/2015-01-11-ics/socp-reformulation.html#/14)
+[~36% faster on the CUTE test set](http://zverovich.net/slides/2015-01-11-ics/socp-reformulation.html#/14)
 and it hasn't been even optimized yet.
 The current limitation is that it doesn't provide support automatic differentiation,
 but this will be addressed in the future.
