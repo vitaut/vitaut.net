@@ -117,7 +117,7 @@ int main(int argc, char **argv) {
 {% endhighlight %}
 
 The header file
-[mp/nl.h](https://github.com/ampl/mp/blob/f429ae0dcc53cf4f454d99e23672b30daa0c948c/include/mp/nl.h)
+[mp/nl-reader.h](https://github.com/ampl/mp/blob/47d5c9fa602aaa980e394e57b0c3d068b203ae46/include/mp/nl-reader.h)
 provides the declarations of `ReadNLFile` and `ReadNLString` functions
 described above as well as the definition of the `NullNLHandler` class.
 This class provides the default implementations of handler methods that
