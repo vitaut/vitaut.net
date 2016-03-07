@@ -8,7 +8,7 @@ date: 2015-12-13
 ================
 
 <div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
-  <img border="0" src="/img/api.png" width="320" title="The truth is out there, in the code comments.">
+  <img border="0" src="/img/api.jpg" width="320" title="The truth is out there, in the code comments.">
 </div>
 
 In [one of the previous posts](http://zverovich.net/2014/09/19/reading-nl-files.html)
