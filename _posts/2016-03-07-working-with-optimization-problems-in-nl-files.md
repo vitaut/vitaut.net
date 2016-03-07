@@ -13,7 +13,8 @@ date: 2015-12-13
 
 In [one of the previous posts](http://zverovich.net/2014/09/19/reading-nl-files.html)
 I have described an API for reading [.nl files](https://en.wikipedia.org/wiki/Nl_(format)).
-The NL reader API is now stable and documented at http://ampl.github.io/nl-reader.html.
+The NL reader API is now stable and documented at
+[http://ampl.github.io/nl-reader.html](http://ampl.github.io/nl-reader.html).
 Also you can find a few examples of using it in
 [nl-example.cc](https://github.com/ampl/mp/blob/master/src/nl-example.cc).
 It is still the way to go if you want to process .nl files in
