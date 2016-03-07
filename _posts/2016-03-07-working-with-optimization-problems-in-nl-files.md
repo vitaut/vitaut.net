@@ -64,7 +64,7 @@ and it hasn't been even optimized yet.
 The current limitation is that it doesn't provide support automatic differentiation,
 but this will be addressed in the future.
 
-As for the API simplisity, here's an example of reading a problem from an .nl file and
+As for the API simplicity, here's a concrete example of reading a problem from an .nl file and
 checking if the initial solution is feasible using AMPL/MP:
 
 {% highlight c++ %}
