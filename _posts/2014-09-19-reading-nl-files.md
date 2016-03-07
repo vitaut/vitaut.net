@@ -194,4 +194,5 @@ Note that the code described here is fresh from the <s>oven</s>
 [repository](https://github.com/ampl/mp) and, although it has been thoroughly tested,
 it hasn't been documented yet, other than with source comments.
 
-**Update 2016-03-07**: Updated to the latest NL reader API.
+**Update 2016-03-07**: Updated to the latest NL reader API which is now documented at
+[http://ampl.github.io/nl-reader.html](http://ampl.github.io/nl-reader.html).
