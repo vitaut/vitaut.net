@@ -59,15 +59,15 @@ The API of the new .nl reader is very simple, it consists of two functions
 
 {% highlight c++ %}
 template <typename Handler>
-void mp::ReadNLString(fmt::StringRef str, Handler &handler,
-                      fmt::StringRef name = "(input)");
+void mp::ReadNLString(mp::NLStringRef str, Handler &handler,
+                      fmt::CStringRef name = "(input)");
 
 template <typename Handler>
-void mp::ReadNLFile(fmt::StringRef filename, Handler &h);
+void mp::ReadNLFile(fmt::CStringRef filename, Handler &h);
 {% endhighlight %}
 
-where `fmt::StringRef` is a string reference which can be either a C
-string or `std::string`.
+where `mp::NLStringRef` and `fmt::CStringRef` are string references which can refer to
+C strings or `std::string` objects.
 
 As their names suggest, the first function reads a string containing an
 optimization problem in the .nl format while the second one reads an .nl file.
@@ -91,11 +91,11 @@ read each file, count the number of divisions by non-constant expressions and
 print the file name together with expression count:
 
 {% highlight c++ %}
-#include "mp/nl.h"
+#include "mp/nl-reader.h"
 
 enum Expr {OTHER, CONST};
 
-struct ExprCounter : mp::NLHandler<Expr> {
+struct ExprCounter : mp::NullNLHandler<Expr> {
   int num_divs;
   ExprCounter() : num_divs(0) {}
   Expr OnBinary(mp::expr::Kind kind, Expr lhs, Expr rhs) {
@@ -119,7 +119,7 @@ int main(int argc, char **argv) {
 The header file
 [mp/nl.h](https://github.com/ampl/mp/blob/f429ae0dcc53cf4f454d99e23672b30daa0c948c/include/mp/nl.h)
 provides the declarations of `ReadNLFile` and `ReadNLString` functions
-described above as well as the definition of the `NLHandler` class.
+described above as well as the definition of the `NullNLHandler` class.
 This class provides the default implementations of handler methods that
 ignore all input. This is perfect for our example, as we only need
 to handle two types of expressions, numeric constant and division.
@@ -127,8 +127,8 @@ to handle two types of expressions, numeric constant and division.
 The `Expr` type represents an expression. It is a simple enum as we don't
 construct an expression tree here, but only distinguish between constants
 and other expressions. The expression type is passed as a template argument
-to `NLHandler`. This ensures that default handler methods such as
-`NLHandler::OnUnary` also return `Expr`. These methods
+to `NullNLHandler`. This ensures that default handler methods such as
+`NullNLHandler::OnUnary` also return `Expr`. These methods
 [value-initialize](http://en.cppreference.com/w/cpp/language/value_initialization)
 the expression objects they return which in this case gives the value `OTHER`.
 
@@ -193,3 +193,5 @@ them to other formats.
 Note that the code described here is fresh from the <s>oven</s>
 [repository](https://github.com/ampl/mp) and, although it has been thoroughly tested,
 it hasn't been documented yet, other than with source comments.
+
+**Update 2016-03-07**: Updated to the latest NL reader API.
