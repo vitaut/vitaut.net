@@ -27,8 +27,9 @@ this new API.
 
 The optimization problem is represented by the `mp::Problem` type which provides methods
 for accessing variables, objectives (multiple objectives are supported) and constraints.
-It can handle all [types of optimization problems that the NL format](http://ampl.github.io/nl-reader.html)
-can represent including LP, MIP, quadratic, general nonlinear and constraint programming
+It can handle all
+[types of optimization problems that the NL format can represent](http://ampl.github.io/nl-reader.html)
+including LP, MIP, quadratic, general nonlinear and constraint programming
 problems.
 
 Optimization problems can be constructed programmatically or read from .nl files (other
