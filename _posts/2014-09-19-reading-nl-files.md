@@ -156,7 +156,7 @@ $ git clone https://github.com/ampl/mp.git
 $ cd mp
 $ cmake .
 $ make
-$ wget -O nlreader-example.cc http://bit.ly/1paZ3yT
+$ wget -O nlreader-example.cc http://bit.ly/1U2RDS4
 $ g++ -O3 -onlreader-example nlreader-example.cc -Iinclude -Llib -lmp
 {% endhighlight %}
 
