@@ -251,7 +251,7 @@ Development
 I am no stranger to large unfamiliar codebases, but when considering whether to
 contribute to Julia and looking at the repo, I found a mish-mash of C, C++, Julia
 and Lisp, which put me off even though I had some experience with LLVM used in
-the backend. The reason for that is not dislike to any particular language in the
+the backend. The reason for that is not dislike of any particular language in the
 set but that such a mix of languages in one project requires people with a unique
 expertise or working within a narrow scope. As [Dan Luu put it](http://danluu.com/julialang/):
 
