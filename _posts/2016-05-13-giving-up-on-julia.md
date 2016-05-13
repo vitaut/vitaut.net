@@ -190,7 +190,7 @@ the niche Julia targets often don’t make sense" and the general-purpose APIs a
 For example, text formatting is one of the most basic and commonly used language facilities
 one could probably think of and Julia is even behind C++98 there. The standard library
 provides `@printf` and `@sprintf` but they are not extensible.
-You can't even make it [format a complex number](https://github.com/JuliaLang/julia/issues/346).
+You can't even make them [format a complex number](https://github.com/JuliaLang/julia/issues/346).
 There is a rudimentary string interpolation, but in its current form it only seems
 to be useful for very basic formatting.
 
