@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Giving up on Julia
-date: 2016-05-12
+date: 2016-05-13
 ---
 
 {{ page.title }}
