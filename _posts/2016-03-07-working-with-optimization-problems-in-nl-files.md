@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Working with optimization problems in .nl files
-date: 2015-12-13
+date: 2016-03-07
 ---
 
 {{ page.title }}
