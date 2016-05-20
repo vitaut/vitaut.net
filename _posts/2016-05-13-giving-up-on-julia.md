@@ -229,7 +229,7 @@ function f(a, b)
 end
 {% endhighlight %}
 
-If you run `code_native(f, (ASCIItString, Float64))` and look at the output, you'll
+If you run `code_native(f, (ASCIIString, Float64))` and look at the output, you'll
 see almost 500 instructions (which I won't list here for obvious reasons leaving it as
 an exercise for the reader). Now multiply this by the number of times `@(s)printf` is
 called. Since text formatting is used very often, this may create enormous code bloat
