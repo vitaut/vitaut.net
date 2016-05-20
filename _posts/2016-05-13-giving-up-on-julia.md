@@ -202,7 +202,7 @@ let's have a look at a simple printf example in C:
 
 {% highlight c %}
 void f(char *buffer, const char *a, double b) {
-  sprintf(buffer, "this is a %s %15.1f", a, b);
+  sprintf(buffer, "this is a %s %g", a, b);
 }
 {% endhighlight %}
 
