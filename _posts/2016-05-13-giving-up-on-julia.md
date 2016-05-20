@@ -225,12 +225,12 @@ And here's the Julia version:
 
 {% highlight julia %}
 function f(a, b)
-  @sprintf("this is a %s %15.1f", a, b)
+  @sprintf("this is a %s %g", a, b)
 end
 {% endhighlight %}
 
-If you run `code_native(f, (AbstractString, Float64))` and look at the output, you'll
-see over 700 instructions (which I won't list here for obvious reasons leaving it as
+If you run `code_native(f, (ASCIItString, Float64))` and look at the output, you'll
+see almost 500 instructions (which I won't list here for obvious reasons leaving it as
 an exercise for the reader). Now multiply this by the number of times `@(s)printf` is
 called. Since text formatting is used very often, this may create enormous code bloat
 problems. The C version may not be safe, but [there are safe alternatives that don't
@@ -285,3 +285,7 @@ Although I decided to switch my attention to other new languages such as Rust wh
 show more promise, I wish Julia developers the best of luck and hope that a bit of
 (hopefully fair) criticism will be useful and at least some of the issues can be addressed
 in the future versions of the language.
+
+**Update**: Changed `AbstractString` to `ASCIIString` as suggested by 3JPLW on Hacker News.
+This brings the instruction count down but highlights unnecessarily complicated string
+API in Julia 0.4.
