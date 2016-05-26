@@ -231,7 +231,7 @@ w.c_str(); // returns a C string (const char*)
 {% endhighlight %}
 
 If necessary you can specify a
-[custom allocator](http://cppformat.readthedocs.org/en/stable/reference.html#custom-allocators)
+[custom allocator](http://fmtlib.net/latest/api.html#custom-allocators)
 to be used for large output.
 
 Conclusion
