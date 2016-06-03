@@ -25,11 +25,11 @@ of integer to string conversion in C++:
 4. boost::format from the [Boost Format library](http://www.boost.org/doc/libs/1_54_0/libs/format/)
 4. [boost::lexical_cast](http://www.boost.org/doc/libs/1_54_0/doc/html/boost_lexical_cast.html)
 5. karma::generate from the [Boost Spirit Parser framework](http://www.boost.org/doc/libs/1_54_0/libs/spirit/doc/html/index.html)
-6. [fmt::Writer](http://zverovich.net/format/#project0classfmt_1_1_basic_writer) from the [C++ Format library](https://github.com/cppformat/cppformat)
-7. [fmt::format](http://zverovich.net/format/#fmt::Format__StringRef) from the [C++ Format library](https://github.com/cppformat/cppformat)
+6. [fmt::Writer](http://fmtlib.net/latest/api.html#write-api) from the [fmt library](https://github.com/fmtlib/fmt)
+7. [fmt::format](http://zverovich.net/format/#fmt::Format__StringRef) from the [fmt library](https://github.com/fmtlib/fmt)
 8. [Public-domain ltoa](http://www8.cs.umu.se/~isak/snippets/ltoa.c) implementation
 9. [decimal_from](http://ideone.com/nrQfA8) function suggested by Alf P. Steinbach
-10. `fmt::FormatInt` from the [C++ Format library](https://github.com/cppformat/cppformat)
+10. `fmt::FormatInt` from the [fmt library](https://github.com/fmtlib/fmt)
 11. `strtk::type_to_string` from the [strtk library](https://code.google.com/p/strtk/)
 
 To measure the performance I used a
@@ -95,9 +95,9 @@ $ cd format-benchmark
 $ ./int-generator-test.py
 {% endhighlight %}
 
-You can find out more about `fmt::Writer` and `fmt::format` in the [C++ Format
-library repository](https://github.com/cppformat/cppformat) on GitHub and in the
-[documentation](http://cppformat.github.io/doc/latest).
+You can find out more about `fmt::Writer` and `fmt::format` in the [fmt
+library repository](https://github.com/fmtlib/fmt) on GitHub and in the
+[documentation](http://fmtlib.net/).
 
 **Update:**
 Since I don't have `ltoa` on my platform, I've added a basic
@@ -153,3 +153,7 @@ The strlen function is used even in cases where std::string::size could be used
 to make sure the same extra computation is done for all methods. Note that since
 this adds a more or less constant factor to all the methods, high performers are
 penalized more.
+
+**Update 6:**
+
+Fixed links to the fmt library (formerly C++ Format).
