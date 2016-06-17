@@ -27,7 +27,7 @@ documentation system, and Markdown in [Doxygen](http://www.stack.nl/~dimitri/dox
 (optionally), [MkDocs](http://www.mkdocs.org/), the
 [Rust Standard Library](https://doc.rust-lang.org/std/) documentation, and other.
 
-So what are the diferences? According to John Gruber, the inventor of Markdown,
+So what are the differences? According to John Gruber, the inventor of Markdown,
 "Markdown’s syntax is intended for one purpose: to be used as a format for writing for the web."
 ([source](http://daringfireball.net/projects/markdown/syntax#philosophy)) and, in particular,
 it supports inline HTML. reStructuredText on the other hand is specifically designed for writing
@@ -83,9 +83,9 @@ avoid writing them manually most of the time.
 </div>
 
 Although Markdown itself doesn't seem to provide similar standard extension
-mechanisms like RST roles and directives, it is still possible to extend its
+mechanisms like RST's roles and directives, it is still possible to extend its
 syntax. This brings us to one of the issues with Markdown:
-there are almost as many "flavors" of it as there are flavors of Lays.
+there are almost as many "flavors" of it as there are flavors of Lay's.
 With a zoo of subtly incompatible and even incomplete implementations of Markdown
 you have to keep in mind which version you are using in
 order to avoid mistakes.
@@ -110,7 +110,7 @@ is written in a single language right now, chances are that you may want to prov
 an API for a different language in the future. Being able to use the same documentation
 system may save you and your users a lot of time. Unfortunately few documentation
 systems support multiple languages. Doxygen and Sphinx are arguably
-the most popular polyglot systems, at least amongh those that use Markdown and RST.
+the most popular polyglot systems, at least among those that use Markdown and RST.
 Sphinx produces way better output while Doxygen works with more languages.
 Note that C++ support in Sphinx improved considerably in
 [version 1.4 and later](http://www.sphinx-doc.org/en/stable/changes.html#release-1-4-released-mar-28-2016)
