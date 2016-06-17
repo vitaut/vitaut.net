@@ -9,7 +9,7 @@ date: 2016-06-16
 
 <div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
   <img border="0" src="/img/our-their.jpg" width="320"
-       title="Let's the holy markup language war begin!">
+       title="Let the holy markup language war begin!">
 </div>
 
 In this post I am going to share my experience of using
