@@ -130,7 +130,7 @@ cleaner C++11 API, but the results should be the same for the stock version
 which is C++98 compatible.
 
 The `test_print` function calls `make_format_args`
-to place formatting arguments in an `fmt::format` object that is passed to
+to place formatting arguments in an `fmt::format_args` object that is passed to
 `test_vprint`. This looks very similar to the `printf` case but because
 `test_print` and `fmt::make_format_args` are inline, compiler optimizes them away
 and the effect is that the arguments are placed into `fmt::format_args`
