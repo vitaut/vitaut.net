@@ -113,7 +113,7 @@ precompilation of a format string when formatting a sequence of values:
 namespace fmt {
 template <typename T>
 struct formatter<std::vector<T>> : formatter<T> {
-  auto format(buffer& buf, const std::vector<T>& values, context& ctx) {
+  void format(buffer& buf, const std::vector<T>& values, context& ctx) {
     buf.push_back('{');
     auto it = values.begin(), end = values.end();
     if (it != end) {
