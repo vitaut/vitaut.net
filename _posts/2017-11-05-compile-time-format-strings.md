@@ -158,7 +158,7 @@ separate post since it's a big topic on its own.
 
 This functionality is still experimental and, although parsing is fully
 implemented, some errors are not reported yet which will be addressed shortly.
-The compile-time checks work on GCC and Clang only, because they requires
+The compile-time checks work on GCC and Clang only, because they require
 user-defined literal templates which is a GCC extension. The code is compatible
 with Visual C++ but gracefully degrades with compile-time checks replaced with
 runtime ones.
