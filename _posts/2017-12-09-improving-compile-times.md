@@ -140,7 +140,7 @@ There are a few things that can be done to optimize compile-time dependencies:
   > productivity waiting for slow builds is a pretty bad trade off.
 
   Some libraries, fmt included, provide an [opt-in header-only
-mode](https://vittorioromeo.info/index/blog/2016_cpp_library_configuration_api.html)
+mode](https://vittorioromeo.info/index/blog/2016_cpp_library_configuration_api.html).
   While it seems like an easy way to use a library, header-only feature will
   cost you dearly in terms of compile times, so I highly recommend building the
   library instead and using the default non-header-only interface. In case of
