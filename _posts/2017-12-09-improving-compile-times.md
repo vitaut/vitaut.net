@@ -53,8 +53,11 @@ inline std::string format(string_view format_str, const Args&... args) {
 }
 {% endhighlight %}
 
-This makes the code much faster to compile and reduces the code bloat
-at the minor cost of a dispatch on an argument type at runtime.
+This makes the code much faster to compile and reduces the code bloat at the
+minor cost of a dispatch on an argument type at runtime. This cost is negligible
+compared to the actual formatting and parsing, and [fmt can still easily beat
+glibc's
+`printf`](http://zverovich.net/2013/09/07/integer-to-string-conversion-in-cplusplus.html).
 
 To illustrate the effects of this technique, let's compare fmt to Folly Format,
 which wires variadic templates throughout the formatting code, on a
