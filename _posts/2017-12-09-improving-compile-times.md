@@ -94,7 +94,7 @@ arguments:
 
 > No work is less work than some work.
 >
-> -- <cite>Andrej Alexandrescu</cite>
+> -- <cite>Andrei Alexandrescu</cite>
 
 Doing less work at compile time seems like an obvioius thing and it's not
 specific to C++ or AOT compilation for that matter. For example, as I reported
