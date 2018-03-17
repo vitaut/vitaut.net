@@ -26,7 +26,7 @@ asked to
 * allow pre-computation of output size,
 * add benchmarks.
 
-It took me a while to address all the feedback, particularly the first two
+It took me a while to address all the feedback, especially the first two
 items which required substantial API and implementation changes, so I had to
 skip the meeting in Albuquerque. However, this ultimately resulted in a much
 better API so I'm grateful to LEWG for the helpful guidance. Despite all the
