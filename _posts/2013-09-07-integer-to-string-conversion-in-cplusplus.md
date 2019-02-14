@@ -29,7 +29,7 @@ of integer to string conversion in C++:
 7. [fmt::format](http://zverovich.net/format/#fmt::Format__StringRef) from the [fmt library](https://github.com/fmtlib/fmt)
 8. [Public-domain ltoa](http://www8.cs.umu.se/~isak/snippets/ltoa.c) implementation
 9. [decimal_from](http://ideone.com/nrQfA8) function suggested by Alf P. Steinbach
-10. `fmt::FormatInt` from the [fmt library](https://github.com/fmtlib/fmt)
+10. `fmt::format_int` from the [fmt library](https://github.com/fmtlib/fmt)
 11. `strtk::type_to_string` from the [strtk library](https://code.google.com/p/strtk/)
 
 To measure the performance I used a
@@ -129,12 +129,12 @@ the same is true for the second category of methods above, they just have this
 space at the end of the buffer. This avoids unnecessary copying within a buffer
 that is discarded anyway.
 
-I've implemented this method in the `fmt::FormatInt` class which can be used as follows:
+I've implemented this method in the `fmt::format_int` class which can be used as follows:
 
 {% highlight c++ %}
-fmt::FormatInt(42).str();   // convert to std::string
-fmt::FormatInt(42).c_str(); // convert and get as a C string
-                            // (mind the lifetime, same as std::string::c_str())
+fmt::format_int(42).str();   // convert to std::string
+fmt::format_int(42).c_str(); // convert and get as a C string
+                             // (mind the lifetime, same as std::string::c_str())
 {% endhighlight %}
 
 I've updated the test results and as you can see it is about 30% faster than the

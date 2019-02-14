@@ -3,7 +3,7 @@ google.setOnLoadCallback(drawChart);
 function drawChart() {
 var data = google.visualization.arrayToDataTable([
 ['Method'                      , 'Time, s' , 'Time ratio' ],
-['fmt::FormatInt'              ,   0.140499,           1.0],
+['fmt::format_int'              ,   0.140499,           1.0],
 ['cppx::decimal_from'          ,   0.160447, 1.14197965822],
 ['fmt::Writer'                 ,   0.170481, 1.21339653663],
 ['karma::generate'             ,   0.217157, 1.54561242429],
