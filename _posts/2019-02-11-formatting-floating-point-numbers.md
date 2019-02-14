@@ -16,7 +16,7 @@ date: 2019-02-11
 </a>
 </div>
 
-> Is floating point math broken? <br>
+> Is&nbsp;floating point math broken? <br>
 > -- Cato Johnston ([Stack Overflow](https://stackoverflow.com/questions/588004/is-floating-point-math-broken))
 
 Formatting floating-point (FP) numbers is a surprisingly complicated task.
