@@ -131,7 +131,7 @@ one decimal digit, then taking the remainder and repeating the operation:
 
 {% highlight c++ %}
 // Format a fixed-point number given in the form `n * pow(2, exp)`,
-// with `exp` in the range `[0, 63]`.
+// with `exp` in the range `[-63, 0]`.
 std::string format_decimal(uint64_t n, int exp, int* dec_exp = nullptr) {
   fmt::memory_buffer buf;
 
