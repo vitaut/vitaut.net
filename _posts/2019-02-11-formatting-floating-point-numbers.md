@@ -363,7 +363,7 @@ fp(0b1100000010010111110011100111101111001001000001110001010110110011, 56)
 ```
 
 This is very inefficient but needs to be done only once. For the target exponent
-range `[-60, -32]` it's enough to generate every eigth power of 10 covering the
+range `[-60, -32]` it's enough to generate every eighth power of 10 covering the
 range of `double`s.
 
 So now we know how to approximately format floating point numbers with arbitrary
