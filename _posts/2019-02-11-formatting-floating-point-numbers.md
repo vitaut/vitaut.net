@@ -34,7 +34,7 @@ development is the Ryū algorithm by Ulf Adams published in 2018 paper
 http://delivery.acm.org/10.1145/3200000/3192369/pldi18main-p10-p.pdf).
 
 I recently implemented a variation of the Grisu algorithm in the [{fmt}
-formattinglibrary](https://github.com/fmtlib/fmt) and in this blog post I will
+formatting library](https://github.com/fmtlib/fmt) and in this blog post I will
 describe how it works in the first approximation. The goal is to build the
 general intuition and I'll leave some details for a follow-up post.
 
