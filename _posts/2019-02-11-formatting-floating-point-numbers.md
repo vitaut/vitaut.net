@@ -188,7 +188,7 @@ digits and still get the correct result. For example, both 0.3 and
 but you'll probably prefer 0.3.
 
 The "manual" conversion wasn't hard, right? That's because the exponent was
-small and we could easily fit the result of the multiplication by it in a 64-bit
+small and we could easily fit the result of shifting by it in a 64-bit
 integer. The largest double has exponent of 1023 so we'd have to use
 [arbitrary-precision arithmetic](https://en.wikipedia.org/wiki/Arbitrary-precision_arithmetic).
 The solution is to bring the number into a convenient exponent range by
