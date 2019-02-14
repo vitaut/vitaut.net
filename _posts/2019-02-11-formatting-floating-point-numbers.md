@@ -327,7 +327,20 @@ Output:
 1.6162289999999999e-35
 ```
 
-Recall that 36 is the cached power of 10 that we found.
+Recall that 36 is the cached power of 10 that we found. In this case the result
+is not 100% correct, because it should have been rounded:
+
+{% highlight c++ %}
+printf("%.17g\n", 1.616229e-35);
+{% endhighlight %}
+
+Output:
+
+```
+1.616229e-35
+```
+
+but it's pretty close and we'll look into rounding in the next post.
 This example illustrates that the target exponent should be in the range
 `[-63, 0]` or its subrange for convenient processing. One popular choice is
 `[-60, -32]` where integral part fits in a 32-bit integer.
