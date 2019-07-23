@@ -83,7 +83,7 @@ Here's a brief history of the proposal aka "what took you so long?":
     teleconferences after the meeting
 
 2019-07-15 to 20, Cologne, Germany:
-  - presented R9 (here was told to stop bumping revisions between
+  - presented R9 (here I was told to stop bumping revisions between
     mailings, oops)
   - wording review and approval of the final revision
     [R10](https://fmt.dev/Text%20Formatting.html) that will be in the
@@ -102,7 +102,7 @@ here are just a few examples:
 
    ```c++
    std::vector<char> buf;
-   fmt::format_to(std::back_inserter(buf), "{}", 42);
+   std::format_to(std::back_inserter(buf), "{}", 42);
    // buf contains "42"
    ```
 
@@ -110,12 +110,12 @@ here are just a few examples:
 
    ```c++
    char buf[10];
-   auto result = fmt::format_to_n(buf, sizeof(buf), 42);
+   auto result = std::format_to_n(buf, sizeof(buf), "{}", 42);
    // buf contains "42" and result.out points to the end of the output.
    // No dynamic memory allocations.
    ```
 
-* **Precomputing the output size `formatted_size`**
+* **Precomputing the output size**
 
    As the name suggests, `formatted_size` gives you the output size which
    could be useful for preallocating a buffer:
@@ -161,7 +161,7 @@ here are just a few examples:
    this means, that unlike with `printf`, there is no precision loss:
 
    ```c++
-   auto s = fmt::format("{}", M_PI); // s == "3.141592653589793"
+   auto s = std::format("{}", M_PI); // s == "3.141592653589793"
    char buf[20];
    sprintf(buf, "%g", M_PI);         // buf contains "3.14159"
    ```
@@ -219,7 +219,8 @@ Thanks to Alberto Barbati, Antony Polukhin, Beman Dawes, Bengt Gustafsson,
 Daniel Krügler, Daniela Engert, Eric Niebler, Jason McKesson, Jeffrey Yasskin,
 Joël Lamotte, Lars Gullik Bjønnes, Lee Howes, Louis Dionne, Marshall Clow,
 Matt Clarke, Michael Park, Sean Middleditch, Sergey Ignatchenko,
-Thiago Macieira, Tomasz Kamiński, Zach Laine, Zhihao Yuan, participants of
+Thiago Macieira, Titus Winters, Tomasz Kamiński, Zach Laine, Zhihao Yuan,
+participants of
 the Library Evolution Working Group and the Library Working Group for their
 feedback, support, constructive criticism and contributions to
 the proposal. Special thanks to Howard E. Hinnant who encouraged me to write the
