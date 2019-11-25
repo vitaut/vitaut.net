@@ -19,18 +19,17 @@ date: 2013-09-07
 In this post I compare the performance of several methods
 of integer to string conversion in C++:
 
-1. [sprintf](http://en.cppreference.com/w/cpp/io/c/fprintf)
-2. [std::stringstream](http://en.cppreference.com/w/cpp/io/basic_stringstream)
-3. [std::to_string](http://en.cppreference.com/w/cpp/string/basic_string/to_string) from C++11
-4. boost::format from the [Boost Format library](http://www.boost.org/doc/libs/1_54_0/libs/format/)
-4. [boost::lexical_cast](http://www.boost.org/doc/libs/1_54_0/doc/html/boost_lexical_cast.html)
-5. karma::generate from the [Boost Spirit Parser framework](http://www.boost.org/doc/libs/1_54_0/libs/spirit/doc/html/index.html)
-6. [fmt::Writer](http://fmtlib.net/latest/api.html#write-api) from the [fmt library](https://github.com/fmtlib/fmt)
-7. [fmt::format](http://zverovich.net/format/#fmt::Format__StringRef) from the [fmt library](https://github.com/fmtlib/fmt)
-8. [Public-domain ltoa](http://www8.cs.umu.se/~isak/snippets/ltoa.c) implementation
-9. [decimal_from](http://ideone.com/nrQfA8) function suggested by Alf P. Steinbach
-10. `fmt::format_int` from the [fmt library](https://github.com/fmtlib/fmt)
-11. `strtk::type_to_string` from the [strtk library](https://code.google.com/p/strtk/)
+* [`sprintf`](http://en.cppreference.com/w/cpp/io/c/fprintf)
+* [`std::stringstream`](http://en.cppreference.com/w/cpp/io/basic_stringstream)
+* [`std::to_string`](http://en.cppreference.com/w/cpp/string/basic_string/to_string) from C++11
+* `boost::format` from the [Boost Format library](http://www.boost.org/doc/libs/1_54_0/libs/format/)
+* [`boost::lexical_cast`](http://www.boost.org/doc/libs/1_54_0/doc/html/boost_lexical_cast.html)
+* `karma::generate` from the [Boost Spirit Parser framework](http://www.boost.org/doc/libs/1_54_0/libs/spirit/doc/html/index.html)
+* `fmt::format_int`, `fmt::format`, `fmt::format_to` and `fmt::compile` from
+  the [fmt library](https://github.com/fmtlib/fmt)
+* [Public-domain `ltoa`](http://www8.cs.umu.se/~isak/snippets/ltoa.c) implementation
+* [`decimal_from`](http://ideone.com/nrQfA8) function suggested by Alf P. Steinbach
+* `strtk::type_to_string` from the [strtk library](https://code.google.com/p/strtk/)
 
 To measure the performance I used a
 [benchmark from Boost Karma](http://www.boost.org/doc/libs/1_52_0/libs/spirit/doc/html/spirit/karma/performance_measurements/numeric_performance/int_performance.html).
@@ -56,48 +55,48 @@ conversion time to the best time:
 </div>
 <script type="text/javascript" src="/files/2013-09-stats.js"></script>
 
-I consider these results pretty exciting. First they show that `fmt::Writer` is the
-fastest (was the fastest, see the updates at the bottom of the post) of the tested
-methods, almost 40% faster than `karma::generate`, the next contender. Here's the
-code used to convert an integer `n` to a string using `fmt::Writer`:
+I consider these results pretty exciting. First they show that `fmt::format_int`
+is the fastest of the tested methods, about 24% faster than
+`cppx::decimal_from`, the next contender. Here's the code used to convert an
+integer to a string using `fmt::format_int`:
 
 {% highlight c++ %}
-fmt::Writer w;
-w << n;
+fmt::format_int f(42);
 // The result can be converted to std::string using w.str() or
 // accessed as a C string using w.c_str().
+auto s = f.c_str(); // s == "42"
 {% endhighlight %}
 
-Note that `fmt::Writer` automatically allocates enough space to hold the formatted output
-unlike `sprintf` and `karma::generate` which use a preallocated buffer. In case of
-`karma::generate` you can probably use another output iterator, but the performance
-is likely to be lower.
+Note that `fmt::format_int` automatically allocates enough space to hold the
+formatted output unlike `sprintf` and `karma::generate` which use a provided
+buffer managed by the user. In case of `karma::generate` you can probably use
+an output iterator such as `back_insert_iterator` for automatic memory
+management but the performance is likely to be lower.
 
 Another remarkable and surprising (to me) thing about the results is that `sprintf` is
-not particularly fast for integer formatting. It has about the same performance as
-`std::stringstream`, about 6 times slower than `fmt::Writer`. One possible reason for
-this is that `sprintf` parses the format string, but so does `fmt::format` which is two
-times faster than `sprintf`. Anyway, the good thing is that you don't have to
-use `sprintf` even for performance reasons. There are much faster or at least equally
-slow but safer methods even in the standard library.
+not particularly fast for integer formatting. It is more than 6 times slower
+than `fmt::format_int`. One possible reason for this is that `sprintf` parses
+the format string, but so do `fmt::format` and `fmt::format_to` which are
+1.8 - 2.6 times faster than `sprintf`. The good thing is that you don't have to
+use `sprintf` even for performance reasons. There are much faster or at least
+equally slow but safer methods.
 
-The benchmark results were obtained on Ubuntu 13.04 with GCC 4.7.3 and the following
-compiler flags: `-O3 -DNDEBUG -std=c++11`.
+The benchmark results were obtained on macOS Mojave with Apple LLVM version
+10.0.1 (clang-1001.0.46.4) and the following compiler flags: `-O3 -DNDEBUG`.
 
 Running the benchmark:
 
 {% highlight text %}
-$ git clone --recursive https://github.com/vitaut/format.git
-$ cd format
+$ git clone --recursive https://github.com/vitaut/format-benchmark.git
+$ cd format-benchmark
 $ cmake .
 $ make
-$ cd format-benchmark
 $ ./int-generator-test.py
 {% endhighlight %}
 
-You can find out more about `fmt::Writer` and `fmt::format` in the [fmt
+You can find out more about `fmt::format_int` and `fmt::format` in the [fmt
 library repository](https://github.com/fmtlib/fmt) on GitHub and in the
-[documentation](http://fmtlib.net/).
+[documentation](http://fmt.dev/).
 
 **Update:**
 Since I don't have `ltoa` on my platform, I've added a basic
@@ -156,4 +155,10 @@ penalized more.
 
 **Update 6:**
 
-Fixed links to the fmt library (formerly C++ Format).
+Fixed links to the fmt library.
+
+**Update 7 (25 Nov 2019):**
+
+Added `fmt::compile` which does constexpr format string compilation and updated
+the test results.
+
