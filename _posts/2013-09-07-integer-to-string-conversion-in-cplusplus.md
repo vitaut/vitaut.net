@@ -61,8 +61,8 @@ integer to a string using `fmt::format_int`:
 
 {% highlight c++ %}
 fmt::format_int f(42);
-// The result can be converted to std::string using w.str() or
-// accessed as a C string using w.c_str().
+// The result can be converted to std::string using s.str() or
+// accessed as a C string using s.c_str().
 auto s = f.c_str(); // s == "42"
 {% endhighlight %}
 
