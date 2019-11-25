@@ -33,17 +33,16 @@ of integer to string conversion in C++:
 
 To measure the performance I used a
 [benchmark from Boost Karma](http://www.boost.org/doc/libs/1_52_0/libs/spirit/doc/html/spirit/karma/performance_measurements/numeric_performance/int_performance.html).
-This benchmark generates 10,000,000 random integers and converts them to strings using
-different methods measuring conversion time. I've replaced nonportable `itoa` with
-`sprintf` and added `std::to_string`, `boost::lexical_cast`, `fmt::Writer` and `fmt::format`
-methods.
+This benchmark generates 10,000,000 random integers and converts them to strings
+using different methods measuring conversion time. I've replaced nonportable
+`itoa` with `sprintf` and added several other methods.
 
 Apart from adding new conversion methods, I've also noticed that the benchmark
-used unnecessary conversion to `std::string` in `sprintf` and `karma::generate` tests
-to compensate for string operations in other tests. To get more useful results,
+used unnecessary conversion to `std::string` in some tests
+to compensate for string operations in the other tests. To get more useful results,
 I've split every such test in two, one that does conversion to `std::string` and
 one that doesn't. Tests that do unnecessary conversion to `std::string` have suffix
-`+std::string`. They are suboptimal, but I've included them for reference.
+`+std::string`. They are suboptimal, but I've included them for completeness.
 
 Here are the results ordered by the time it took a method to convert 10,000,000
 integers to strings (obviously smaller is better); time ratio is the ratio of
