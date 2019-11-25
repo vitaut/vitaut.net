@@ -66,19 +66,19 @@ fmt::format_int f(42);
 auto s = f.c_str(); // s == "42"
 {% endhighlight %}
 
-Note that `fmt::format_int` automatically manages the buffer to hold the
-formatted output unlike `sprintf` and `karma::generate` which require manual
-memory management. In case of `karma::generate` you can probably use
-an output iterator such as `back_insert_iterator` for automatic memory
-management but the performance will likely suffer.
+Note that `fmt::format_int` automatically manages the output buffer unlike
+`sprintf` and `karma::generate` which require an error-prone manual memory
+management. In the case of `karma::generate` you can probably use an output
+iterator such as `back_insert_iterator` for automatic memory management but the
+performance will likely suffer.
 
-Another remarkable and surprising (to me) thing about the results is that
-`sprintf` is not particularly fast for integer formatting. It is more than 6
+Another remarkable and surprising (to me) observation is that
+`sprintf` is not particularly good for integer formatting. It is more than 6
 times slower than `fmt::format_int`. One possible reason for this is that
 `sprintf` parses the format string, but so do `fmt::format` and `fmt::format_to`
 which are 1.8 - 2.6 times faster than `sprintf`. The good thing is that you
-don't have to use `sprintf` even for performance reasons. There are much faster
-or at least equally slow but safer methods.
+don't have to use `sprintf` in an attempt to sacrifice safety for performance.
+There are much faster or at least equally slow but safer methods.
 
 One recent addition to the benchmark is `fmt::compile` which does `constexpr`
 format string compilation. As can be seen from the results `fmt::compile` +
