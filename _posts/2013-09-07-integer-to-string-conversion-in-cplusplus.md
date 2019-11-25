@@ -26,10 +26,9 @@ of integer to string conversion in C++:
 * [`boost::lexical_cast`](http://www.boost.org/doc/libs/1_54_0/doc/html/boost_lexical_cast.html)
 * `karma::generate` from the [Boost Spirit Parser framework](http://www.boost.org/doc/libs/1_54_0/libs/spirit/doc/html/index.html)
 * `fmt::format_int`, `fmt::format`, `fmt::format_to` and `fmt::compile` from
-  the [fmt library](https://github.com/fmtlib/fmt)
+  the [{fmt} library](https://github.com/fmtlib/fmt)
 * [Public-domain `ltoa`](http://www8.cs.umu.se/~isak/snippets/ltoa.c) implementation
 * [`decimal_from`](http://ideone.com/nrQfA8) function suggested by Alf P. Steinbach
-* `strtk::type_to_string` from the [strtk library](https://code.google.com/p/strtk/)
 
 To measure the performance I used a
 [benchmark from Boost Karma](http://www.boost.org/doc/libs/1_52_0/libs/spirit/doc/html/spirit/karma/performance_measurements/numeric_performance/int_performance.html).
@@ -140,10 +139,6 @@ previous winner, `fmt::Writer`.
 
 **Update 4:**
 
-Added `strtk::type_to_string` as suggested in the comments.
-
-**Update 5:**
-
 Added side effects to make sure that the code being tested is not optimized
 away by a super clever compiler (I wish there existed one). This is implemented
 by computing a sum of lengths of all formatted strings using strlen. 
@@ -152,11 +147,11 @@ to make sure the same extra computation is done for all methods. Note that since
 this adds a more or less constant factor to all the methods, high performers are
 penalized more.
 
-**Update 6:**
+**Update 5:**
 
 Fixed links to the fmt library.
 
-**Update 7 (25 Nov 2019):**
+**Update 6 (25 Nov 2019):**
 
 Added `fmt::compile` which does constexpr format string compilation and updated
 the test results.
