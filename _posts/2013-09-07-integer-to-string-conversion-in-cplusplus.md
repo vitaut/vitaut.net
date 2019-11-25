@@ -82,8 +82,10 @@ There are much faster or at least equally slow but safer methods.
 
 One recent addition to the benchmark is `fmt::compile` which does `constexpr`
 format string compilation. As can be seen from the results `fmt::compile` +
-`fmt::format_to` give the performance almost as good a that of an artisanal
-integer-to-string converter optimized by hand (`cppx::decimal_from`).
+`fmt::format_to` are almost as fast as an artisanal integer-to-string converter
+optimized by hand (`cppx::decimal_from`). Thanks Louis Dionne for the idea and
+Hana Dusíková for the proof-of-concept implementation of format string
+compilation.
 
 The benchmark results were obtained on macOS Mojave with Apple LLVM version
 10.0.1 (clang-1001.0.46.4) and the following compiler flags: `-O3 -DNDEBUG`.
@@ -109,56 +111,46 @@ public-domain implementation of this function from
 comment section if there is a better version available somewhere.
 
 **Update 2:**
-Added [decimal_from](http://ideone.com/nrQfA8) function suggested by Alf P. Steinbach.
-It has approximately the same performance as `fmt::Writer`, the difference of 0.5% is
-probably less than the measurement error. In some runs it is even marginally faster.
-As `sprintf` and `ltoa` and unlike `fmt::Writer` it requires preallocated buffer.
+Added [decimal_from](http://ideone.com/nrQfA8) function suggested by Alf P.
+Steinbach. As `sprintf` and `ltoa` it requires a user-provided buffer.
 
 **Update 3:**
-Inspired by a lesson learned from Alexandrescu's talk that "no work is less work than
-some work" I've come up with a faster method of integer to string conversion. Unlike
-other methods it does one pass over the digits. All other methods I know do two passes
-and can be divided into two categories:
+Inspired by a lesson learned from Alexandrescu's talk that "no work is less
+work than some work" I've come up with a faster method of integer to string
+conversion. Unlike other methods it does one pass over the digits. All other
+methods I know do two passes and can be divided into two categories:
 
-1. Count digits (pass 1), then convert digits to chars writing from the end of the
-   buffer (pass 2).
+1. Count digits (pass 1), then convert digits to chars writing from the end of
+   the buffer (pass 2).
 2. Convert digits to chars writing from the beginning of the buffer (pass 1).
    Reverse the string in the buffer (pass 2).
 
-Instead of doing this, I just convert digits to chars writing from the end of the
-buffer and return the pointer to the start of the converted string. In most cases
-there is some space left in the beginning of the buffer, but that's fine because
-the same is true for the second category of methods above, they just have this
-space at the end of the buffer. This avoids unnecessary copying within a buffer
-that is discarded anyway.
+Instead of doing this, I just convert digits to chars writing from the end ofi
+the buffer and return the pointer to the start of the converted string. In most
+cases there is some space left in the beginning of the buffer, but that's fine
+because the same is true for the second category of methods above, they just
+have this space at the end of the buffer. This avoids unnecessary copying within
+a buffer that is often discarded anyway.
 
-I've implemented this method in the `fmt::format_int` class which can be used as follows:
-
-{% highlight c++ %}
-fmt::format_int(42).str();   // convert to std::string
-fmt::format_int(42).c_str(); // convert and get as a C string
-                             // (mind the lifetime, same as std::string::c_str())
-{% endhighlight %}
-
-I've updated the test results and as you can see it is about 30% faster than the
-previous winner, `fmt::Writer`.
+I've implemented this method in the `fmt::format_int` class available in the
+{fmt} library.
 
 **Update 4:**
 
 Added side effects to make sure that the code being tested is not optimized
 away by a super clever compiler (I wish there existed one). This is implemented
-by computing a sum of lengths of all formatted strings using strlen. 
-The strlen function is used even in cases where std::string::size could be used
-to make sure the same extra computation is done for all methods. Note that since
-this adds a more or less constant factor to all the methods, high performers are
-penalized more.
+by computing a sum of lengths of all formatted strings using `strlen`. 
+The `strlen` function is used even in cases where `std::string::size` could be
+used to make sure the same extra computation is done for all methods. Note that
+since this adds a more or less constant factor to all the methods, high
+performers are penalized more.
 
 **Update 5:**
 
-Fixed links to the fmt library.
+Fixed links to the {fmt} library.
 
 **Update 6 (25 Nov 2019):**
 
-Added `fmt::compile` which does constexpr format string compilation and updated
-the test results.
+Added `fmt::compile` which does `constexpr` format string compilation and
+updated the test results.
 
