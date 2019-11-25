@@ -61,8 +61,8 @@ boost::format. Here's the code to convert an integer to a string with
 
 {% highlight c++ %}
 fmt::format_int f(42);
-// The result can be converted to std::string using s.str() or
-// accessed as a C string using s.c_str().
+// The result can be converted to std::string using f.str() or
+// accessed as a C string using f.c_str().
 auto s = f.c_str(); // s == "42"
 {% endhighlight %}
 
