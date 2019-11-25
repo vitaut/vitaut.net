@@ -93,7 +93,7 @@ The benchmark results were obtained on macOS Mojave with Apple LLVM version
 Running the benchmark:
 
 {% highlight text %}
-$ git clone --recursive https://github.com/vitaut/format-benchmark.git
+$ git clone --recursive https://github.com/fmtlib/format-benchmark.git
 $ cd format-benchmark
 $ cmake .
 $ make
