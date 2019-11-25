@@ -55,8 +55,9 @@ conversion time to the best time:
 
 I consider these results pretty exciting. First they show that `fmt::format_int`
 is the fastest of the tested methods, about 24% faster than
-`cppx::decimal_from`, the next contender. Here's the code used to convert an
-integer to a string using `fmt::format_int`:
+`cppx::decimal_from`, the next contender, and whopping 30x (not 30%) faster than
+boost::format. Here's the code to convert an integer to a string with
+`fmt::format_int`:
 
 {% highlight c++ %}
 fmt::format_int f(42);
@@ -69,15 +70,20 @@ Note that `fmt::format_int` automatically manages the buffer to hold the
 formatted output unlike `sprintf` and `karma::generate` which require manual
 memory management. In case of `karma::generate` you can probably use
 an output iterator such as `back_insert_iterator` for automatic memory
-management but the performance is likely to be lower.
+management but the performance will likely suffer.
 
-Another remarkable and surprising (to me) thing about the results is that `sprintf` is
-not particularly fast for integer formatting. It is more than 6 times slower
-than `fmt::format_int`. One possible reason for this is that `sprintf` parses
-the format string, but so do `fmt::format` and `fmt::format_to` which are
-1.8 - 2.6 times faster than `sprintf`. The good thing is that you don't have to
-use `sprintf` even for performance reasons. There are much faster or at least
-equally slow but safer methods.
+Another remarkable and surprising (to me) thing about the results is that
+`sprintf` is not particularly fast for integer formatting. It is more than 6
+times slower than `fmt::format_int`. One possible reason for this is that
+`sprintf` parses the format string, but so do `fmt::format` and `fmt::format_to`
+which are 1.8 - 2.6 times faster than `sprintf`. The good thing is that you
+don't have to use `sprintf` even for performance reasons. There are much faster
+or at least equally slow but safer methods.
+
+One recent addition to the benchmark is `fmt::compile` which does `constexpr`
+format string compilation. As can be seen from the results `fmt::compile` +
+`fmt::format_to` give the performance almost as good a that of an artisanal
+integer-to-string converter optimized by hand (`cppx::decimal_from`).
 
 The benchmark results were obtained on macOS Mojave with Apple LLVM version
 10.0.1 (clang-1001.0.46.4) and the following compiler flags: `-O3 -DNDEBUG`.
@@ -92,7 +98,7 @@ $ make
 $ ./int-generator-test.py
 {% endhighlight %}
 
-You can find out more about `fmt::format_int` and `fmt::format` in the [fmt
+You can find out more about `fmt::format_int` and `fmt::format` in the [{fmt}
 library repository](https://github.com/fmtlib/fmt) on GitHub and in the
 [documentation](http://fmt.dev/).
 
