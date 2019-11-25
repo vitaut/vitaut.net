@@ -38,7 +38,7 @@ using different methods measuring conversion time. I've replaced nonportable
 
 Apart from adding new conversion methods, I've also noticed that the benchmark
 used unnecessary conversion to `std::string` in some tests
-to compensate for string operations in the other tests. To get more useful results,
+to compensate for string operations in the other. To get more useful results,
 I've split every such test in two, one that does conversion to `std::string` and
 one that doesn't. Tests that do unnecessary conversion to `std::string` have suffix
 `+std::string`. They are suboptimal, but I've included them for completeness.
@@ -65,9 +65,9 @@ fmt::format_int f(42);
 auto s = f.c_str(); // s == "42"
 {% endhighlight %}
 
-Note that `fmt::format_int` automatically allocates enough space to hold the
-formatted output unlike `sprintf` and `karma::generate` which use a provided
-buffer managed by the user. In case of `karma::generate` you can probably use
+Note that `fmt::format_int` automatically manages the buffer to hold the
+formatted output unlike `sprintf` and `karma::generate` which require manual
+memory management. In case of `karma::generate` you can probably use
 an output iterator such as `back_insert_iterator` for automatic memory
 management but the performance is likely to be lower.
 
