@@ -7,9 +7,9 @@ date: 2020-05-21
 {{ page.title }}
 ================
 
-<div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
+<div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em; width: 40%">
 <a href="/img/puffer.jpg">
-  <img border="0" src="/img/puffer.jpg" width="300"
+  <img border="0" src="/img/puffer.jpg" width="100%"
        title="Use templates they said...">
 </a>
 </div>
