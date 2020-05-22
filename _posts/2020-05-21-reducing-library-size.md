@@ -15,10 +15,10 @@ date: 2020-05-21
 </div>
 
 When it comes to comparing different software solutions, speed is often the main
-if not the only factor considered. This is not the case in the {fmt} library
-which tries to find a good balance between speed, binary size and compile times
-by default and give you an option to get maximum performance in cases that
-matter.
+if not the only factor considered. This is not the case in [the {fmt} library](
+https://github.com/fmtlib/fmt) which tries to find a good balance between speed,
+binary size and compile times by default and give you an option to get maximum
+performance in cases that matter.
 
 A lot of effort has been put into making binary code at the usage site very
 compact, comparable to that of `printf`. For example
