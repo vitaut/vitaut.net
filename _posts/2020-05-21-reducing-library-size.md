@@ -453,8 +453,8 @@ This reduces the binary size to ~92k. We can go even further by compiling with
 ## Summary
 
 With the help of Bloaty McBloatface and a few simple transformations we managed
-to reduce library size 4x, from 368k to just 92k. These improvements have been
-achieved by
+to reduce library size 4x, from 368k to just 92k without affecting performance.
+These improvements have been achieved by
 
 * reducing the number of template instantiations,
 * reducing inlining,
