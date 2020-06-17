@@ -182,7 +182,7 @@ you need, so you often have to overallocate and then do an extra copy anyway.
 For example, here's how to format into a `std::string` using `std::to_chars`:
 
 ```c++
-std::array<char, std::numeric_limits<int>::digits10 + 1> buffer;
+std::array<char, std::numeric_limits<int>::digits10 + 2> buffer;
 auto result = std::to_chars(buffer.data(),
                             buffer.data() + buffer.size(), number);
 if (result.ec == std::errc()) {
