@@ -211,3 +211,9 @@ than their standard counterparts.
 Benchmarking remains to be a tricky business and extra care should be taken to
 ensure reproducibility of results, particularly in view of recent hardware bugs
 and mitigations and increasingly advanced compiler optimizations.
+
+**Update**:
+
+As [pointed out](https://twitter.com/ivafanas/status/1273246162708037633) by
+Иван Афанасьев, libc++'s implementation of `to_string` ignores the locale for
+integer formatting (but not for floating point).
