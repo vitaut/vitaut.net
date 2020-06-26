@@ -247,6 +247,10 @@ function drawChart() {
         "cpu_time": 4.1694166666666716e+07,
         "time_unit": "ns",
         "items_per_second": 2.3984170447504621e+07
+      },
+      {
+        "name": "u2985907",
+        "items_per_second": 1.06076e+08
       }
     ]
   };

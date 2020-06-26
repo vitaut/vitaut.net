@@ -98,7 +98,7 @@ compiled with Apple clang version 11.0.3 (clang-1103.0.32.62) and libc++:
 
 <div id="table_div_mac">
 </div>
-<div style="height: 400px" id="chart_div_mac">
+<div style="height: 420px" id="chart_div_mac">
 </div>
 <script type="text/javascript" src="/files/2020-06-stats-mac.js"></script>
 
@@ -217,3 +217,19 @@ and mitigations and increasingly advanced compiler optimizations.
 As [pointed out](https://twitter.com/ivafanas/status/1273246162708037633) by
 Иван Афанасьев, libc++'s implementation of `to_string` ignores the locale for
 integer formatting (but not for floating point).
+
+**Update 2**:
+
+Added [u2985907](
+https://github.com/fmtlib/format-benchmark/blob/master/src/u2985907.h), an
+integer to string conversion method from
+[https://stackoverflow.com/a/19944488/471164](
+https://stackoverflow.com/a/19944488/471164) with [fixes](
+https://gist.github.com/cpei-avalara/8aedf14f5618852be2cff4de267d497c).
+This method by StackOverflow user [user2985907](
+https://stackoverflow.com/users/2985907/user2985907), sometimes incorrectly
+attributed to jiaendu, shows good results. Unfortunately it uses a whopping
+90k of data tables which is a bit excessive. For comparison, the whole {fmt}
+library compiled with LTO is ~57k after [recent optimizations](
+http://www.zverovich.net/2020/05/21/reducing-library-size.html) which includes
+implementations of integer and floating-point formatting algorithms.
