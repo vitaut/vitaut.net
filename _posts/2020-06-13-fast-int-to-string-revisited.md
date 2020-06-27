@@ -154,8 +154,8 @@ is only ~21% faster than `std::to_chars`.
 Interestingly, `std::ostringstream` is faster than `sprintf` on this platform
 (if you reuse the same stream object).
 
-Runtime format string processing is not as great on gcc as on clang so it
-might be somethin worth looking into. In the meantime it's possible to use
+Runtime format string processing is not as good on gcc as on clang so it
+might be something worth looking into. In the meantime it's possible to use
 compile-time format string processing in rare cases when formatting is a
 performance bottleneck.
 
