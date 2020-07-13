@@ -16,6 +16,10 @@ date: 2013-09-07
     width="240">
   </div>
 
+An updated version of this post is available here:
+[Converting a hundred million integers to strings per second](
+http://www.zverovich.net/2020/06/13/fast-int-to-string-revisited.html).
+
 In this post I compare the performance of several methods
 of integer to string conversion in C++:
 
