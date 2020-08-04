@@ -114,7 +114,7 @@ on a medium-spec laptop.
 
 Alf P. Steinbach's elegantly simple `decimal_from` which does formatting in
 reverse to avoid size computation and then calls `std::reverse` is in the third
-place.
+place (fourth after adding `u2985907`).
 
 [`std::to_chars`](https://en.cppreference.com/w/cpp/utility/to_chars) is a new
 addition to the benchmark. It is a low-level numeric formatting function
