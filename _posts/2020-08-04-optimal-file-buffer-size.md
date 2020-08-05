@@ -85,7 +85,7 @@ BENCHMARK(fmt_print_compile)->RangeMultiplier(2)->Range(BUFSIZ, 1 << 20);
 BENCHMARK_MAIN();
 ```
 The full benchmark is available [here](
-https://github.com/fmtlib/format-benchmark/blob/cf7e8ad45745142b3de56cca92af1977afd5f932/src/file-benchmark.cc).
+https://github.com/fmtlib/format-benchmark/blob/d5c10ce75c2b9bb9885100907be49093da519389/src/file-benchmark.cc).
 
 Running it on macOS with an AP1024M SSD shows that `BUFSIZ` which is equal to
 1024 on this system is suboptimal to put it mildly. By switching to a larger
