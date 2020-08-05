@@ -89,7 +89,7 @@ https://github.com/fmtlib/format-benchmark/blob/d5c10ce75c2b9bb9885100907be49093
 
 Running it on macOS with an AP1024M SSD shows that `BUFSIZ` which is equal to
 1024 on this system is suboptimal to put it mildly. By switching to a larger
-buffer we can make {fmt}'s `print` more than 9 times faster than `printf`:
+buffer we can make {fmt}'s `print` more than 9 times faster than `fprintf`:
 
 ```
 Run on (8 X 2800 MHz CPU s)
@@ -258,8 +258,8 @@ shown.
 Based on this findings the default file buffer size in {fmt} has been increased
 to `max(BUFSIZ, 32768)` which gives 3.5x improvement on macOS and ~7%
 improvement on Linux on the above benchmark. As mentioned earlier, it's possible
-to pass a different size when opening a file which, unlike stdio, avoids
-reallocation.
+to pass a different size when opening a file which, unlike a similar stdio API,
+avoids reallocation.
 
 ## Summary
 
