@@ -192,7 +192,6 @@ Load Average: 0.44, 0.27, 0.15
 Benchmark                          Time             CPU   Iterations
 --------------------------------------------------------------------
 fprintf                     40097543 ns     40098696 ns           18
-std_ofstream                26450312 ns     26451390 ns           26
 fmt_print_compile/8192       7661507 ns      7661109 ns           90
 fmt_print_compile/16384      7326631 ns      7326616 ns           95
 fmt_print_compile/32768      7153550 ns      7152801 ns           97
