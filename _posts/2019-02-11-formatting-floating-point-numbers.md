@@ -52,8 +52,8 @@ Let's look at the π constant as an example:
 #include <fmt/format.h>
 
 int main() {
-  // fmt::internal::bit_cast is a portable version of std::bit_cast.
-  fmt::print("{:064b}\n", fmt::internal::bit_cast<uint64_t>(M_PI));
+  // fmt::detail::bit_cast is a portable version of std::bit_cast.
+  fmt::print("{:064b}\n", fmt::detail::bit_cast<uint64_t>(M_PI));
 }
 {% endhighlight %}
 
@@ -78,7 +78,7 @@ struct ieee754 {
   int exponent() const { return biased_exponent - 1023; }
 
   explicit ieee754(double value) {
-    auto bits = fmt::internal::bit_cast<uint64_t>(value);
+    auto bits = fmt::detail::bit_cast<uint64_t>(value);
     sign = bits >> 63;
     biased_exponent = static_cast<int>(bits >> 52) & 0x7ff;
     fraction = bits & 0xf'ffff'ffff'ffff;
@@ -223,7 +223,7 @@ struct fp {
   fp(double value) {
     auto n = ieee754(value);
     f = n.significand();
-    e = n.exponent() - 53;
+    e = n.exponent() - 52;
   }
 };
 
@@ -232,7 +232,7 @@ struct fmt::formatter<fp> {
   auto parse(format_parse_context& ctx) { return ctx.begin(); }
 
   auto format(fp n, format_context& ctx) {
-    return format_to(ctx.out(), "fp({}, {})", n.f, n.e);
+    return format_to(ctx.out(), "fp({:#b}, {})", n.f, n.e);
   }
 };
 {% endhighlight %}
@@ -251,7 +251,7 @@ fmt::print("{}\n", n);
 Output:
 
 ```
-fp(0b0000000000010101011110111011111000000111000111010110000011100001, -168)
+fp(0b10101011110111011111000000111000111010110000011100001, -168)
 ```
 
 This is great but if we make use of the extra bits we should normalize the
