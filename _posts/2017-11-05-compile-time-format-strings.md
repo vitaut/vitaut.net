@@ -14,7 +14,8 @@ date: 2017-11-05
 </div>
 
 **Note**: the API described in this post is outdated, please use the one
-documented in https://fmt.dev/latest/api.html#compile-api instead.
+documented in [Format string compilation](
+https://fmt.dev/latest/api.html#compile-api) instead.
 
 Compile-time validation of format strings in various forms is one of the most
 requested features in the [fmt project](https://github.com/fmtlib/fmt) on GitHub
