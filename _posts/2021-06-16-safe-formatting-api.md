@@ -208,7 +208,8 @@ fmt::print(FMT_STRING("{:d}"), "I am not a number");
 ```
 It works but is an opt-in with an obviously suboptimal API.
 
-The solution came from a somewhat unexpected (to me) place: [C++20 `consteval`].
+The solution came from a somewhat unexpected (to me) place: [C++20 `consteval`](
+https://en.cppreference.com/w/cpp/language/consteval).
 With C++20 it is now possible to write just ([godbolt](
 https://godbolt.org/z/aWEhsTMPW))
 
@@ -316,7 +317,7 @@ was very small, close to the natural variation between different builds.
 Compile-time checks are cool but it's occasionally useful to have runtime format
 strings e.g. when translating messages with [gettext](
 https://www.gnu.org/software/gettext/). It is still supported as an opt-in
-(the correct default in C++, shocking!) by wrapping a format function in
+(the correct default in C++, shocking!) by wrapping a format string in
 `fmt::runtime` or using type-erased overloads like `vformat`:
 
 ```c++
@@ -326,7 +327,8 @@ fmt::print(fmt::runtime("{:d}"), "I am not a number");
 This makes runtime format strings clearly visible in code and misuses easy to
 catch with a code review or tools.
 
-It is possible to do compile time checks of format strings that are keys into
-a translation database but that's a topic for another post.
+It is possible to do compile-time checks of format strings that are keys into
+a translation database which eliminates the main use case for runtime ones but
+that's a topic for another post.
 
 Happy type-safe formatting!
