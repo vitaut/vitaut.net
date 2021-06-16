@@ -327,7 +327,8 @@ fmt::print(fmt::runtime("{:d}"), "I am not a number");
 This makes runtime format strings clearly visible in code and misuses easy to
 catch with a code review or tools.
 
-It is possible to do compile time checks of format strings that are keys into
-a translation database but that's a topic for another post.
+It is possible to do compile-time checks of format strings that are keys into
+a translation database which eliminates the main use case for runtime ones but
+that's a topic for another post.
 
 Happy type-safe formatting!
