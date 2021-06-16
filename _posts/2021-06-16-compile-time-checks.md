@@ -317,7 +317,7 @@ was very small, close to the natural variation between different builds.
 Compile-time checks are cool but it's occasionally useful to have runtime format
 strings e.g. when translating messages with [gettext](
 https://www.gnu.org/software/gettext/). It is still supported as an opt-in
-(the correct default in C++, shocking!) by wrapping a format function in
+(the correct default in C++, shocking!) by wrapping a format string in
 `fmt::runtime` or using type-erased overloads like `vformat`:
 
 ```c++
