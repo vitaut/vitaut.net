@@ -5,10 +5,10 @@ layout: nil
 <feed xmlns="http://www.w3.org/2005/Atom">
  
  <title>zverovich.net</title>
- <link href="http://vitaut.github.com/atom.xml" rel="self"/>
- <link href="http://vitaut.github.com/"/>
+ <link href="http://zverovich.net/atom.xml" rel="self"/>
+ <link href="http://zverovich.net/"/>
  <updated>{{ site.time | date_to_xmlschema }}</updated>
- <id>http://vitaut.github.com/</id>
+ <id>http://zverovich.net/</id>
  <author>
    <name>Victor Zverovich</name>
    <email>victor@zverovich.net</email>
@@ -17,9 +17,9 @@ layout: nil
  {% for post in site.posts %}
  <entry>
    <title>{{ post.title }}</title>
-   <link href="http://vitaut.github.com{{ post.url }}"/>
+   <link href="http://zverovich.net{{ post.url }}"/>
    <updated>{{ post.date | date_to_xmlschema }}</updated>
-   <id>http://vitaut.github.com{{ post.id }}</id>
+   <id>http://zverovich.net{{ post.id }}</id>
    <content type="html">{{ post.content | xml_escape }}</content>
  </entry>
  {% endfor %}
