@@ -8,8 +8,8 @@ date: 2021-06-16
 ================
 
 <div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em; width: 50%">
-<a href="/img/dude.jpg">
-  <img border="0" src="/img/safety.jpeg" width="100%"
+<a href="/img/safety.jpg">
+  <img border="0" src="/img/safety.jpg" width="100%"
        title="printf safety">
 </a>
 </div>
