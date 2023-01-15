@@ -121,7 +121,7 @@ std::string format_error(std::uint_least8_t squishiness) {
 ```
 
 This is not only cleaner but also safer and faster. The generated code becomes
-much simpler too ([codebolt](https://godbolt.org/z/jKfv83Th5)):
+much simpler too ([godbolt](https://godbolt.org/z/jKfv83Th5)):
 
 ```asm
 .LC0:
