@@ -15,7 +15,7 @@ date: 2023-04-10
 </div>
 
 Out of three headline C++20 features (modules, coroutines and the third one),
-modules are, in my opinion, are by far the most important for the daily use.
+modules are, in my opinion, by far the most important for the daily use.
 Modules aim to replace the legacy header system inherited from C and based on
 primitive textual inclusion with a more scalable, hermetic and fine-grained
 system.
