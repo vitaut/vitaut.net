@@ -127,7 +127,7 @@ But there is almost no code in `example.cc`! It looks like clang is ignoring the
 instantiations from `fmt.o`.
 
 To confirm this I put together a simple repro ([godbolt](
-https://godbolt.org/z/6vGo87r5M)). It consists of two files, `foo.cxx` which
+https://godbolt.org/z/PdT6E7jMo)). It consists of two files, `foo.cxx` which
 defines a module with a function template and its explicit instantiation and
 `main.cxx` which calls this instantiation.
 
@@ -143,6 +143,7 @@ void hello_world(T val) {
   std::cout << val;
 }
 
+extern template void hello_world(char);
 template void hello_world(char);
 ```
 
