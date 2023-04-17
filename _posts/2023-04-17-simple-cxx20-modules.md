@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Simple usage of C++20 modules
-date: 2023-04-13
+date: 2023-04-17
 ---
 
 {{ page.title }}
