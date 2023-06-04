@@ -14,10 +14,10 @@ date: 2023-06-04
 </a>
 </div>
 
-A few year ago I discovered this StackOverflow question:
+A few years ago I discovered this StackOverflow question:
 [How do I print a double value with full precision using cout?](
 https://stackoverflow.com/q/554063/471164) I was shocked to see how wrong
-most of the asnwers were so I [answered it myself](
+most of the answers were so I [answered it myself](
 https://stackoverflow.com/a/65329803/471164) back then. Recently I stumbled
 upon it again and decided to write this blog post explaining the problems with
 some of the top answers.
@@ -154,7 +154,7 @@ and is available from Wikipedia:
 > representation, the final result must match the original number.
 
 This time we can have our π and print it too because it so happens that
-16 digits is enough to rount trip it. But not enough to round trip
+16 digits is enough to round trip it. But not enough to round trip
 1.2345678901234567 ([godbolt](https://godbolt.org/z/EK7sd4Wz4)):
 
 ```c++
@@ -170,7 +170,7 @@ This prints
 
 If you stare long enough you can see that it's wrong. To convince yourself that
 this is not just a rounding issue you can print both 1.2345678901234567 and
-1.234567890123457 with precision of 17 and see that this give different results.
+1.234567890123457 with precision of 17 and see that this gives different results.
 
 **Conclusion**: 2/10 because it gets the most important part wrong but at least
 does it in a fancy and slightly less wrong way than the previous answer.
@@ -186,7 +186,7 @@ std::cout << std::scientific <<  1.0/7.0 << '\n';
 1.4285714285714285e-01
 ```
 
-This is the first correct answer which is why it onlly has measly 17 votes.
+This is the first correct answer which is why it only has measly 17 votes.
 Subtracting one looks counter-intuitive but it accounts for the fact that the
 `scientific` format only counts digits **after** the decimal point. It is not
 affected by the global state because it always sets the format. The only small
@@ -204,7 +204,7 @@ hexfloat: 0x1.a8c1f14e2af5dp-145
 hexfloat: 0x1.3494a9b171bf5p+144
 ```
 
-**Conclusion**: 8/10 because it is gives currect but suboptimal result
+**Conclusion**: 8/10 because it is gives correct but suboptimal result
 
 [The method that I'd recommend](https://stackoverflow.com/a/65329803/471164) is,
 of course, using C++20 [`std::format`](
@@ -216,9 +216,9 @@ which implements all of the standard features and more:
 std::cout << std::format("{}", M_PI);
 ```
 
-It gives you the shortest decimal representation with the round trip gurantee
+It gives you the shortest decimal representation with the round trip guarantee
 and the correct rounding. It is not affected by global state and, unlike the
-previous answer, won't print unnecessary digits. You aslo don't need to manually
+previous answer, won't print unnecessary digits. And you don't need to manually
 specify the precision.
 
 P.S. The question doesn't actually define what it means by "full precision".
