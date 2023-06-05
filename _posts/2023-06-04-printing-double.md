@@ -213,7 +213,7 @@ not yet available on your system, [`fmt::format`](https://github.com/fmtlib/fmt)
 which implements all of the standard features and more:
 
 ```c++
-std::cout << std::format("{}", M_PI);
+std::cout << std::format("{}", std::numbers::pi_v<double>);
 ```
 
 It gives you the shortest decimal representation with the round trip guarantee
