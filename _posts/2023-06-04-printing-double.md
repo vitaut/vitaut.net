@@ -22,7 +22,7 @@ https://stackoverflow.com/a/65329803/471164) back then. Recently I stumbled
 upon it again and decided to write this blog post explaining the problems with
 some of the top answers.
 
-Consider the accepted answer with almost 500 upvotes. The first part of it gives
+Consider the (now removed) top answer with almost 500 upvotes. The first part of it gives
 us this method:
 
 ```c++
