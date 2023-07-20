@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Printing double aka the most difficult problem in computer sciences
+title: Printing double aka the most difficult problem in computer science
 date: 2023-06-04
 ---
 
