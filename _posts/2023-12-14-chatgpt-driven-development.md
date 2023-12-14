@@ -132,7 +132,6 @@ explained in my feedback:
 Amazingly, ChatGPT had no problem in fixing this issue:
 
 ```c++
-
 #include <benchmark/benchmark.h>
 #include <fmt/format.h>
 
@@ -237,7 +236,7 @@ BENCHMARK(BM_FormatAs);
 BENCHMARK_MAIN();
 ```
 
-There is still room for improvements but it's a reasonable start and only
+There is still room for improvement but it's a reasonable start and only
 required 5 iterations in total. Interestingly, it completely forgot about the
 conflict issue when switching from strings to integers so I had to remind it.
 
