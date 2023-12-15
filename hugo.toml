@@ -1,6 +1,6 @@
-baseURL = 'https://zverovich.net/'
+baseURL = 'https://vitaut.net/'
 languageCode = 'en-us'
-title = 'zverovich.net'
+title = 'vitaut.net'
 theme = 'diary'
 ignoreFiles = 'static/slides'
 
@@ -11,19 +11,23 @@ ignoreFiles = 'static/slides'
 [markup.goldmark.renderer]
   unsafe= true
 
-[menus]
-[[menus.main]]
-    name = 'Posts'
-    pageRef = '/posts'
-    weight = 10
-[[menus.main]]
-    name = 'Papers'
-    pageRef = '/papers'
-    weight = 20
-
 [params]
   disqusShortname = 'zverovich'
 
 [services]
   [services.googleAnalytics]
     ID = 'G-0XZ98BDDTK'
+
+[menus]
+[[menus.main]]
+    name = 'Posts'
+    pageRef = '/posts'
+    weight = 10
+[[menus.main]]
+    name = 'Talks'
+    pageRef = '/talks'
+    weight = 20
+[[menus.main]]
+    name = 'Papers'
+    pageRef = '/papers'
+    weight = 30
