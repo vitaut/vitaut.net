@@ -4,11 +4,9 @@ date: 2020-06-13
 aliases: ['/2020/06/13/fast-int-to-string-revisited.html']
 ---
 
-<div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em; width: 50%">
-<a href="/img/dude.jpg">
-  <img border="0" src="/img/dude.jpg" width="100%"
-       title="New shit has come to light.">
-</a>
+<div class="separator"
+     style="clear:right; float:right; margin-left:1em; margin-bottom:1em; width: 50%">
+  <img src="/img/dude.jpg" width="100%" title="New shit has come to light.">
 </div>
 
 Almost 7 years ago I wrote a [blog post](

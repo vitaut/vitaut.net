@@ -5,7 +5,7 @@ aliases: ['/2018/06/15/iso-cpp-meeting-rapperswil.html']
 ---
 
 <div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
-  <img border="0" src="/img/evolution.jpg" width="300"
+  <img src="/img/evolution.jpg" width="300"
        title="Hopefully C++ evolution process has more tools at its disposal">
 </div>
 

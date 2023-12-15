@@ -5,7 +5,7 @@ aliases: ['/2015/03/13/reliable-detection-of-strerror-variants.html']
 ---
 
 <div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
-  <img border="0" src="/img/tanenbaum.jpg" width="280"
+  <img src="/img/tanenbaum.jpg" width="280"
        title="The nice thing about standards is that you have so many to choose from.">
 </div>
 

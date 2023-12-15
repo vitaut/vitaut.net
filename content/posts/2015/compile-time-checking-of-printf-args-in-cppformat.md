@@ -9,8 +9,7 @@ http://www.zverovich.net/2017/11/05/compile-time-format-strings.html) for a
 better solution that doesn't involve macros.
 
 <div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
-  <img border="0" src="/img/safety.jpg" width="200"
-       title="Safety first!">
+  <img src="/img/safety.jpg" width="200" title="Safety first!">
 </div>
 
 As an author of [C++ Format](https://github.com/cppformat/cppformat), a library that

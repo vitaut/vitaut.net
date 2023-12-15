@@ -4,8 +4,9 @@ date: 2016-03-07
 aliases: ['/2016/03/07/working-with-optimization-problems-in-nl-files.html']
 ---
 
-<div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
-  <img border="0" src="/img/api.jpg" width="320" title="The truth is out there, in the code comments.">
+<div class="separator"
+     style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
+  <img src="/img/api.jpg" width="320" title="The truth is out there, in the code comments.">
 </div>
 
 In [one of the previous posts](http://zverovich.net/2014/09/19/reading-nl-files.html)

@@ -5,10 +5,7 @@ aliases: ['/2014/07/11/connecting-solver-to-ampl.html']
 ---
 
 <div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
-  <img border=
-  "0" src=
-  "/img/connect.jpg"
-  width="320">
+  <img src="/img/connect.jpg" width="320">
 </div>
 
 I've been planning to write this post for a while, but it was hard to choose

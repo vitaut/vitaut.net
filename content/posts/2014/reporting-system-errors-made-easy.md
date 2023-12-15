@@ -5,12 +5,9 @@ aliases: ['/2014/04/30/reporting-system-errors-made-easy.html']
 ---
 
 <div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
-  <img border=
-  "0" src=
-  "/img/error.png"
-  title=
-  "Error messages help you quickly pinpoint the source of the problem."
-  width="240">
+  <img src="/img/error.png"
+       title="Error messages help you quickly pinpoint the source of the problem."
+       width="240">
 </div>
 
 Reporting system errors in C++ is a daunting task. By system errors I mean

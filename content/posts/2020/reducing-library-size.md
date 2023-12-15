@@ -5,10 +5,7 @@ aliases: ['/2020/05/21/reducing-library-size.html']
 ---
 
 <div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em; width: 40%">
-<a href="/img/puffer.jpg">
-  <img border="0" src="/img/puffer.jpg" width="100%"
-       title="Use templates they said...">
-</a>
+  <img src="/img/puffer.jpg" width="100%" title="Use templates they said...">
 </div>
 
 When it comes to comparing different software solutions, speed is often the main

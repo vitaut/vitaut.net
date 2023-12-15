@@ -6,7 +6,7 @@ aliases: ['/2015/02/26/comparison-of-cppformat-and-printf.html']
 
 <div class="separator"
      style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
-  <img border="0" src="/img/printf.jpg" width="280">
+  <img src="/img/printf.jpg" width="280">
 </div>
 
 I was recently asked on GitHub why would someone use [`fmt::printf`](

@@ -5,8 +5,8 @@ aliases: ['/2014/09/19/reading-nl-files.html']
 ---
 
 <div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
-  <img border="0" src="/img/dragon.png" width="320" 
-  title="&quot;What does dragon have to do with parsing?&quot; you might ask.">
+  <img src="/img/dragon.png" width="320" 
+       title="&quot;What does dragon have to do with parsing?&quot; you might ask.">
 </div>
 
 The [.nl format][1] is possibly the

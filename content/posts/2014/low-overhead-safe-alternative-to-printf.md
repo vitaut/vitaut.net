@@ -5,12 +5,8 @@ aliases: ['/2014/05/22/low-overhead-safe-alternative-to-printf.html']
 ---
 
 <div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
-  <img border=
-  "0" src=
-  "/img/code-bloat.gif"
-  title=
-  "Do you want to talk about code bloat?"
-  width="240">
+  <img src="/img/code-bloat.gif"
+       title="Do you want to talk about code bloat?" width="240">
 </div>
 
 In posts [Making string formatting fast](http://zverovich.net/2012/12/15/making-string-formatting-fast.html)

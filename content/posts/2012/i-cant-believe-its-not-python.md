@@ -5,12 +5,9 @@ aliases: ['/2012/12/17/i-cant-believe-its-not-python.html']
 ---
 
 <div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
-    <img border=
-    "0" src=
-    "/img/python.png"
-    title=
-    "If it looks like Python and behaves like Python, then it probably is Python."
-    width="240">
+    <img src="/img/python.png"
+         title="If it looks like Python and behaves like Python, then it probably is Python."
+         width="240">
   </div>
 
 I've been recently experimenting with a [new string formatting

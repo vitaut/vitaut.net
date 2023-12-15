@@ -5,8 +5,7 @@ aliases: ['/2017/08/20/format-api-improvements.html']
 ---
 
 <div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
-  <img border="0" src="/img/untangle.jpg" width="300"
-       title="Untangling the API">
+  <img src="/img/untangle.jpg" width="300" title="Untangling the API">
 </div>
 
 It's been a while since my last post. Two important things happened

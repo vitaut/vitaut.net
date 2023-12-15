@@ -6,7 +6,7 @@ aliases: ['/2017/12/09/improving-compile-times.html']
 
 <div class="separator"
      style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
-  <img border="0" src="/img/wait.jpg" width="250"
+  <img src="/img/wait.jpg" width="250"
        title="I'll just wait here until the compilation is complete."><br>
 </div>
 

@@ -6,8 +6,7 @@ aliases: ['/2014/12/30/using-cppformat-with-biicode.html']
 
 <div class="separator"
      style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
-  <img border="0" src="/img/bee.jpg" width="320" 
-  title="A mandatory image of a bee.">
+  <img src="/img/bee.jpg" width="320"  title="A mandatory image of a bee.">
 </div>
 
 As a first experiment with [Biicode](http://www.biicode.com/), a C/C++ dependency manager,

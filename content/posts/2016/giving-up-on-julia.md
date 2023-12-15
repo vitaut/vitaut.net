@@ -5,7 +5,7 @@ aliases: ['/2016/05/13/giving-up-on-julia.html']
 ---
 
 <div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
-  <img border="0" src="/img/optional-ts.jpg" width="240" title="Optional type system">
+  <img src="/img/optional-ts.jpg" width="240" title="Optional type system">
 </div>
 
 When I first learned about the Julia programming language, I became very

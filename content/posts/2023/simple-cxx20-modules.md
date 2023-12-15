@@ -4,11 +4,9 @@ date: 2023-04-17
 aliases: ['/2023/04/17/simple-cxx20-modules.html']
 ---
 
-<div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em; width: 50%">
-<a href="/img/easy.jpg">
-  <img border="0" src="/img/easy.jpg" width="100%"
-       title="Easiest thing in the world">
-</a>
+<div class="separator"
+     style="clear:right; float:right; margin-left:1em; margin-bottom:1em; width: 50%">
+  <img src="/img/easy.jpg" width="100%" title="Easiest thing in the world">
 </div>
 
 In my [previous post](

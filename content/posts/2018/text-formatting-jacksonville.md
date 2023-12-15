@@ -5,8 +5,7 @@ aliases: ['/2018/03/17/text-formatting-jacksonville.html']
 ---
 
 <div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
-  <img border="0" src="/img/committee.jpeg" width="300"
-       title="Design by committee">
+  <img src="/img/committee.jpeg" width="300" title="Design by committee">
 </div>
 
 This week I attended the ISO C++ standards committee meeting to present the

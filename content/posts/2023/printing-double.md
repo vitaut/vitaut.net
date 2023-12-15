@@ -5,10 +5,8 @@ aliases: ['/2023/06/04/printing-double.html']
 ---
 
 <div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em; width: 50%">
-<a href="/img/stackoverflow.png">
   <img border="0" src="/img/stackoverflow.png" width="100%"
        title="StackOverflow in a nutshell">
-</a>
 </div>
 
 A few years ago I discovered this StackOverflow question:
@@ -99,7 +97,7 @@ cout.precision(dbl::max_digits10);
 cout << "Smol: " << 1e-20 << endl;
 ```
 
-**Conclusion**: 3/10 because of the completely wrong first part of the answer
+**Score**: 3/10 because of the completely wrong first part of the answer
 and subtly wrong second part and no explanation how these two relate to each
 other.
 
@@ -129,7 +127,7 @@ This prints:
 On a positive note it namespace qualifies names and uses a fancy
 `std::setprecision` I/O manipulator.
 
-**Conclusion**: 1/10 because it gets the most important part wrong.
+**Score**: 1/10 because it gets the most important part wrong.
 
 The next answer with 28 votes gives us this code:
 
@@ -169,7 +167,7 @@ If you stare long enough you can see that it's wrong. To convince yourself that
 this is not just a rounding issue you can print both 1.2345678901234567 and
 1.234567890123457 with precision of 17 and see that this gives different results.
 
-**Conclusion**: 2/10 because it gets the most important part wrong but at least
+**Score**: 2/10 because it gets the most important part wrong but at least
 does it in a fancy and slightly less wrong way than the previous answer.
 
 I'll leave my own answer to the end so let's look at the one with approximately
@@ -201,7 +199,7 @@ hexfloat: 0x1.a8c1f14e2af5dp-145
 hexfloat: 0x1.3494a9b171bf5p+144
 ```
 
-**Conclusion**: 8/10 because it is gives correct but suboptimal result
+**Score**: 8/10 because it is gives correct but suboptimal result
 
 [The method that I'd recommend](https://stackoverflow.com/a/65329803/471164) is,
 of course, using C++20 [`std::format`](

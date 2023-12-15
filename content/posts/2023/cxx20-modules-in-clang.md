@@ -4,11 +4,10 @@ date: 2023-04-10
 aliases: ['/2023/04/10/cxx20-modules-in-clang.html']
 ---
 
-<div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em; width: 50%">
-<a href="/img/its-alive.jpg">
+<div class="separator"
+     style="clear:right; float:right; margin-left:1em; margin-bottom:1em; width: 50%">
   <img border="0" src="/img/its-alive.jpg" width="100%"
        title="The reports of modules death are greatly exaggerated.">
-</a>
 </div>
 
 Out of three headline C++20 features (modules, coroutines and the third one),

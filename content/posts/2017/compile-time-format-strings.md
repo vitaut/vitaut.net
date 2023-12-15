@@ -5,7 +5,7 @@ aliases: ['/2017/11/05/compile-time-format-strings.html']
 ---
 
 <div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
-  <img border="0" src="/img/compiling.png" width="300"
+  <img src="/img/compiling.png" width="300"
        title="Now even more time to slack off"><br>
   <a href="https://xkcd.com/303/">https://xkcd.com/303/</a>
 </div>

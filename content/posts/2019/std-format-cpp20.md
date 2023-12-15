@@ -8,7 +8,7 @@ aliases: ['/2019/07/23/std-format-cpp20.html']
 
 <div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
 <a href="/img/standardization.png">
-  <img border="0" src="/img/standardization.png" width="400"
+  <img src="/img/standardization.png" width="400"
        title="Path of standardization">
 </a>
 </div>

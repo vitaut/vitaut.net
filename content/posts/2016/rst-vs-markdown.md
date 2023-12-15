@@ -5,7 +5,7 @@ aliases: ['/2016/06/16/rst-vs-markdown.html']
 ---
 
 <div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
-  <img border="0" src="/img/our-their.jpg" width="320"
+  <img src="/img/our-their.jpg" width="320"
        title="Let the holy markup language war begin!">
 </div>
 
