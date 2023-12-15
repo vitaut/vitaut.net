@@ -1,7 +1,7 @@
 baseURL = 'https://zverovich.net/'
 languageCode = 'en-us'
 title = 'zverovich.net'
-theme = 'diary'
+#theme = 'diary'
 ignoreFiles = 'static/slides'
 
 [markup]
