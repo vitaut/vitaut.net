@@ -1,7 +1,7 @@
 baseURL = 'https://zverovich.net/'
 languageCode = 'en-us'
 title = 'zverovich.net'
-#theme = 'diary'
+theme = 'diary'
 ignoreFiles = 'static/slides'
 
 [markup]
@@ -16,11 +16,7 @@ ignoreFiles = 'static/slides'
     name = 'Posts'
     pageRef = '/posts'
     weight = 10
-#[[menus.main]]
-#    name = 'Talks'
-#    pageRef = '/talks'
-#    weight = 20
 [[menus.main]]
     name = 'Papers'
     pageRef = '/papers'
-    weight = 30
+    weight = 20
