@@ -25,4 +25,4 @@ ignoreFiles = 'static/slides'
   [services.googleAnalytics]
     ID = 'G-0XZ98BDDTK'
   [services.disqus]
-    shortname = 'zverovich.net'
+    shortname = 'zverovich'
