@@ -1,6 +1,6 @@
-baseURL = 'https://vitaut.net/'
+baseURL = 'https://zverovich.net/'
 languageCode = 'en-us'
-title = 'vitaut.net'
+title = 'zverovich.net'
 theme = 'diary'
 ignoreFiles = 'static/slides'
 
