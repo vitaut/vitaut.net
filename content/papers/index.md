@@ -25,7 +25,7 @@ title: Papers
 * [P2216](https://wg21.link/p2216) std::format improvements
 * [P2093](https://wg21.link/p2093) Formatted output
 * [P1868](https://wg21.link/p1868) 🦄 width: clarifying units of width and
-  precision instd::format
+  precision in std::format
 * [P1361](https://wg21.link/p1361) Integration of chrono with text formatting
 * [P0645](https://wg21.link/p0645) Text Formatting
 

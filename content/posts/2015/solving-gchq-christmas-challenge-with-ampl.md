@@ -18,9 +18,7 @@ Here are the rules of the puzzle:
 > appear in that line. For example, a label "2 1 6" indicates sets of two, one and six
 > black squares, each of which will have at least one white square separating them.
 
-<div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
-  <img border="0" src="/img/grid-shading-puzzle-lowres.jpg">
-</div>
+![](/img/grid-shading-puzzle-lowres.jpg)
 
 The first step is declaring parameters and sets to represent the input data:
 
@@ -208,7 +206,7 @@ This worked pretty well and scanned with Barcode Scanner app on my phone althoug
 fancier way would be to use something like [iampl](https://github.com/vitaut/iampl) or
 [AMPL API](http://ampl.com/products/api/) to render a proper image instead of using ASCII "art".
 
-<img border="0" src="/img/barcode.png">
+![](/img/barcode.png)
 
 And this post would be incomplete without mentioning related approaches to solving this puzzle,
 [Solving The GCHQ Christmas Puzzle As A MIP With Python](https://www.ibm.com/developerworks/community/blogs/jfp/entry/Solving_The_GCHQ_Christmas_Puzzle_As_A_MIP_With_Python?lang=en)

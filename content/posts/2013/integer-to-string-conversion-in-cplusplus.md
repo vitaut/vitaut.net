@@ -50,7 +50,7 @@ conversion time to the best time:
 <div style="height: 400px" id="chart_div">
 </div>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-<script type="text/javascript" src="/2013-09-stats.js"></script>
+<script type="text/javascript" src="/files/2013-09-stats.js"></script>
 
 I consider these results pretty exciting. First they show that `fmt::format_int`
 is the fastest of the tested methods, about 24% faster than

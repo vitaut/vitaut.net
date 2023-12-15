@@ -35,7 +35,7 @@ So here are the benchmark results, obviously smaller is better:
 <div style="height: 400px" id="chart_div">
 </div>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-<script type="text/javascript" src="/2014-05-stats.js"></script>
+<script type="text/javascript" src="/files/2014-05-stats.js"></script>
 
 These results where obtained with GCC 4.8.1 on Ubuntu 13.10 x86_64.
 I'm only showing the results for the optimized version (compiled with `-O3`)

@@ -41,13 +41,13 @@ can add Eclipse to the Launcher by dragging the `Eclipse.desktop` file
 there or running it and choosing "Lock to Launcher" in the context menu.
 And voilà: you have a shiny blue Eclipse icon in the Launcher.
 
-<img border="0" src="/img/eclipse-launcher.png" title="Eclipse in the Unity Launcher"/>
+<img src="/img/eclipse-launcher.png" title="Eclipse in the Unity Launcher"/>
 
 Now from trivial stuff to something more interesting. If you have ever worked with
 Eclipse project generated with [CMake](http://cmake.org/), you have probably noticed
 that there are a few annoying errors that are not cleared between the builds:
 
-<img border="0" src="/img/eclipse-errors.png" title="Eclipse Errors"/>
+<img src="/img/eclipse-errors.png" title="Eclipse Errors"/>
 
 [The fix for this problem](https://github.com/Kitware/CMake/pull/38), the idea of which
 I borrowed from [this blog post](http://www.jazzbee.com/blog/?p=76), has been accepted
@@ -56,7 +56,7 @@ use the [developement version of CMake](https://github.com/Kitware/CMake) or
 manually change the error parser from "GNU gmake Error Parser 6.0 (Deprecated)"
 to "GNU gmake Error Parser 7.0" in Project Properties:
 
-<img border="0" src="/img/eclipse-error-parser.png" title="Eclipse error parser" width="640"/>
+<img src="/img/eclipse-error-parser.png" title="Eclipse error parser" width="640"/>
 
 Another problem that I had recently is a very slow debugging experience.
 For example, it took more than 30 seconds to populate the Debug view showing
@@ -86,8 +86,7 @@ If Eclipse complains about some C++11 library feature add `__GXX_EXPERIMENTAL_CX
 to Preprocessor Symbols in Project Properties -> C++ Include Paths and Symbols
 and rebuild the index:
 
-<img border="0" src="/img/eclipse-cxx0x-macro.png"
- title="Eclipse Preprocessor Symbols" width="640"/>
-
+<img src="/img/eclipse-cxx0x-macro.png"
+     title="Eclipse Preprocessor Symbols" width="640"/>
 
 Happy coding!

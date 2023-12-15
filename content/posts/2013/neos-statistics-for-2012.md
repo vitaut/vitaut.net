@@ -35,4 +35,4 @@ The IPython notebook which I used to extract statistics from NEOS
 is available [here](https://github.com/vitaut/neos-stats).
 
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-<script type="text/javascript" src="/2013-01-stats.js"></script>
+<script type="text/javascript" src="/files/2013-01-stats.js"></script>

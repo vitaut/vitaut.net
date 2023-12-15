@@ -36,5 +36,5 @@ is available [here](https://github.com/vitaut/neos-stats).
 I have updated it to make the start and end date configurable.
 
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-<script type="text/javascript" src="/2014-01-stats.js">
+<script type="text/javascript" src="/files/2014-01-stats.js">
 </script>

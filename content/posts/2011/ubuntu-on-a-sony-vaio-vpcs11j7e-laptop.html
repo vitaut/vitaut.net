@@ -38,8 +38,9 @@ add the following line to <code>/etc/modprobe.d/alsa-base.conf</code>:</p>
 options snd-hda-intel position_fix=2
 </pre>
 
-<p>Now restart the system and enjoy the clear sound of your voice. <strong>
-Brightness control</strong></p>
+<p>Now restart the system and enjoy the clear sound of your voice.</p>
+
+<strong>Brightness control</strong>
 
 <p>Download the latest version of the <a href=
 "https://github.com/guillaumezin/nvidiabl">nvidiabl</a> driver (version 0.72
@@ -61,25 +62,25 @@ $ sudo cp -R nvidiabl/scripts/etc/* /etc
 
 <p><strong>External monitor</strong></p>
 
-  <p>To enable external monitor with proprietary NVIDIA drivers:</p>
+<p>To enable external monitor with proprietary NVIDIA drivers:</p>
 
-  <ol>
-    <li>Open NVIDIA X Server Settings.</li>
-    <li>Go to "X Server Display Configuration".</li>
-    <li>Click "Detect Displays".</li>
-    <li>Select the external display and choose TwinView in
-    "Configuration".</li>
-    <li>Click Apply.</li>
-    <li>Click "Save to X Configuration File" if you want to make this
-    configuration permanent.</li>
-  </ol>
+<ol>
+  <li>Open NVIDIA X Server Settings.</li>
+  <li>Go to "X Server Display Configuration".</li>
+  <li>Click "Detect Displays".</li>
+  <li>Select the external display and choose TwinView in
+  "Configuration".</li>
+  <li>Click Apply.</li>
+  <li>Click "Save to X Configuration File" if you want to make this
+  configuration permanent.</li>
+</ol>
 
-  <div class="separator" style="clear: both; text-align: center;">
-    <a href="/img/twin-view.png"
-    style=""><img border="0" height="400" src="/img/TwinView.png"
-    width="392"></a>
-  </div>Alternatively set the following options in the Screen section of
-  <code>/etc/X11/xorg.conf</code> and restart the X server:
+<div class="separator" style="clear: both; text-align: center;">
+  <img height="400" src="/img/twin-view.png" width="392">
+</div>
+
+Alternatively set the following options in the Screen section of
+<code>/etc/X11/xorg.conf</code> and restart the X server:
 
 <pre>
 Section "Screen"

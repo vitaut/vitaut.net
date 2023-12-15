@@ -97,7 +97,7 @@ compiled with Apple clang version 11.0.3 (clang-1103.0.32.62) and libc++:
 <div style="height: 420px" id="chart_div_mac">
 </div>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-<script type="text/javascript" src="/2020-06-stats-mac.js"></script>
+<script type="text/javascript" src="/files/2020-06-stats-mac.js"></script>
 
 Speed ratio, as the name suggests, is the fastest method's speed divided by the
 current method speed or how much slower this method is compared to the leader.
@@ -143,7 +143,7 @@ libstdc++:
 </div>
 <div style="height: 400px" id="chart_div_linux">
 </div>
-<script type="text/javascript" src="/2020-06-stats-linux.js"></script>
+<script type="text/javascript" src="/files/2020-06-stats-linux.js"></script>
 
 Here the results are more balanced. `fmt::format_int` is still the leader but it
 is only ~21% faster than `std::to_chars`.

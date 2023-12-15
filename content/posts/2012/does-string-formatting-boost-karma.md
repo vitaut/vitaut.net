@@ -97,7 +97,7 @@ So here are the results:
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <div style="width: 500px; height: 300px" id="chart_div">
 </div>
-<script type="text/javascript" src="/2012-12-stats.js"></script>
+<script type="text/javascript" src="/files/2012-12-stats.js"></script>
 
 As you can see Karma is indeed the fastest among the tested methods.
 However, the difference between C++ Format and Karma is only about 7% which
