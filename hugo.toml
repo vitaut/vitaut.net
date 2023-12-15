@@ -21,8 +21,9 @@ ignoreFiles = 'static/slides'
     pageRef = '/papers'
     weight = 20
 
+[params]
+  disqusShortname = 'zverovich'
+
 [services]
   [services.googleAnalytics]
     ID = 'G-0XZ98BDDTK'
-  [services.disqus]
-    shortname = 'zverovich'
