@@ -1,0 +1,183 @@
+---
+title: Visualizing geographical AMPL data using IPython and Google Charts
+date: 2013-06-27
+aliases: ['/2013/06/27/visualizing-geographical-ampl-data-using-ipython-and-google-charts.html']
+---
+
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In this post I'll describe how to get geographical data from <a href="http://www.ampl.com">AMPL</a> and display it in <a href="http://ipython.org">IPython</a> using an interactive <a href="https://developers.google.com/chart/">Google Chart</a>. I'll use a simple map coloring problem implemented with <a href="http://www.ampl.com/NEW/LOGIC/">AMPL constraint programming extensions</a>.</p>
+<p>First install the <code>ampl</code> extension for IPython also known as <a href="https://github.com/vitaut/iampl">iampl</a> if you haven't done this already. The extension is now available in the <a href="https://pypi.python.org/pypi/ampl/0.1">Python Package Index</a> so you can use standard Python tools such as <code>pip</code> or <code>easy_install</code> to install it. See the <a href="https://github.com/vitaut/iampl#installation">installation instructions</a> for details.</p>
+<p>Once the extension is installed you can load it in IPython:</p>
+</div>
+<div class="cell border-box-sizing code_cell vbox">
+<div class="input hbox">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="input_area box-flex1">
+<div class="highlight"><pre><span class="o">%</span><span class="k">load_ext</span> <span class="n">ampl</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<p>Now it is possible to write AMPL code directly in an IPython notebook using the <code>%%ampl</code> magic. The followng code declares a small map coloring model, provides some data and solves it with <a href="http://www.gecode.org/">Gecode</a> (you can download the AMPL driver for Gecode from the <a href="https://code.google.com/p/ampl/downloads/list?q=gecode">AMPL repository on Google Code</a>):</p>
+</div>
+<div class="cell border-box-sizing code_cell vbox">
+<div class="input hbox">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="input_area box-flex1">
+<div class="highlight"><pre><span class="o">%%</span><span class="k">ampl</span>
+<span class="n">param</span> <span class="n">NumColors</span><span class="p">;</span>
+
+<span class="nb">set</span> <span class="n">Countries</span><span class="p">;</span>
+<span class="nb">set</span> <span class="n">Neighbors</span> <span class="n">within</span> <span class="p">{</span><span class="n">Countries</span><span class="p">,</span> <span class="n">Countries</span><span class="p">};</span>
+
+<span class="n">var</span> <span class="n">color</span><span class="p">{</span><span class="n">Countries</span><span class="p">}</span> <span class="n">integer</span> <span class="o">&gt;=</span> <span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">NumColors</span><span class="p">;</span>
+
+<span class="n">s</span><span class="o">.</span><span class="n">t</span><span class="o">.</span> <span class="n">different_colors</span><span class="p">{(</span><span class="n">c1</span><span class="p">,</span> <span class="n">c2</span><span class="p">)</span> <span class="ow">in</span> <span class="n">Neighbors</span><span class="p">}:</span>
+  <span class="p">(</span><span class="n">color</span><span class="p">[</span><span class="n">c1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">color</span><span class="p">[</span><span class="n">c2</span><span class="p">]);</span>
+
+<span class="n">data</span><span class="p">;</span>
+
+<span class="n">param</span> <span class="n">NumColors</span> <span class="p">:</span><span class="o">=</span> <span class="mi">4</span><span class="p">;</span>
+
+<span class="nb">set</span> <span class="n">Countries</span> <span class="p">:</span><span class="o">=</span> <span class="n">Belgium</span> <span class="n">Denmark</span> <span class="n">France</span> <span class="n">Germany</span> <span class="n">Luxembourg</span> <span class="n">Netherlands</span><span class="p">;</span>
+
+<span class="nb">set</span> <span class="n">Neighbors</span> <span class="p">:</span><span class="o">=</span>
+  <span class="n">Belgium</span> <span class="n">France</span> 
+  <span class="n">Belgium</span> <span class="n">Germany</span> 
+  <span class="n">Belgium</span> <span class="n">Netherlands</span>
+  <span class="n">Belgium</span> <span class="n">Luxembourg</span>
+  <span class="n">Denmark</span> <span class="n">Germany</span> 
+  <span class="n">France</span>  <span class="n">Germany</span> 
+  <span class="n">France</span>  <span class="n">Luxembourg</span>
+  <span class="n">Germany</span> <span class="n">Luxembourg</span>
+  <span class="n">Germany</span> <span class="n">Netherlands</span><span class="p">;</span>
+
+<span class="n">option</span> <span class="n">solver</span> <span class="n">gecode</span><span class="p">;</span>
+<span class="n">solve</span><span class="p">;</span>
+</pre></div>
+
+</div>
+</div>
+
+<div class="vbox output_wrapper">
+<div class="output vbox">
+
+
+<div class="hbox output_area"><div class="prompt"></div>
+<div class="box-flex1 output_subarea output_stream output_stdout">
+<pre>gecode 4.0.0: feasible solution
+6 nodes, 0 fails
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>After evaluating the above code, AMPL objects become available in IPython and can be used as regular Python objects. For example, a collection of variables <code>color</code>, which maps country names to their colors can be accessed similarly to Python's <a href="http://docs.python.org/3/library/stdtypes.html#mapping-types-dict"><code>dict</code></a>:</p>
+</div>
+<div class="cell border-box-sizing code_cell vbox">
+<div class="input hbox">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="input_area box-flex1">
+<div class="highlight"><pre><span class="k">print</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+
+<div class="vbox output_wrapper">
+<div class="output vbox">
+
+
+<div class="hbox output_area"><div class="prompt"></div>
+<div class="box-flex1 output_subarea output_stream output_stdout">
+<pre>{&apos;Netherlands&apos;: 2.0, &apos;Denmark&apos;: 1.0, &apos;Luxembourg&apos;: 4.0, &apos;France&apos;: 2.0, &apos;Germany&apos;: 3.0, &apos;Belgium&apos;: 1.0}
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now let's use Google Charts to display a colored map. <code>GeoChart</code> is a simple helper function which takes two positional arguments, a list of column names for the data table and a dictionary containing the data itself. It also takes arbitrary keyword arguments which are mapped to chart options. See the <a href="https://developers.google.com/chart/interactive/docs/gallery/geochart">GeoChart documentation</a> for the list of available options.</p>
+</div>
+<div class="cell border-box-sizing code_cell vbox">
+<div class="input hbox">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="input_area box-flex1">
+<div class="highlight"><pre><span class="kn">from</span> <span class="nn">ampl.gchart</span> <span class="kn">import</span> <span class="n">GeoChart</span>
+<span class="n">GeoChart</span><span class="p">([</span><span class="s">&#39;Country&#39;</span><span class="p">,</span> <span class="s">&#39;Color&#39;</span><span class="p">],</span> <span class="n">color</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+         <span class="n">colorAxis</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;colors&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s">&#39;#ff9900&#39;</span><span class="p">,</span> <span class="s">&#39;#3366cc&#39;</span><span class="p">,</span> <span class="s">&#39;#109618&#39;</span><span class="p">,</span> <span class="s">&#39;#dc3912&#39;</span><span class="p">]})</span>
+</pre></div>
+
+</div>
+</div>
+
+<div class="vbox output_wrapper">
+<div class="output vbox">
+
+
+<div class="hbox output_area"><div class="prompt output_prompt">
+Out[4]:</div>
+<div class="box-flex1 output_subarea output_pyout">
+<div id="chart_div"></div>
+<script type='text/javascript' src='https://www.google.com/jsapi'></script>
+<script type='text/javascript' >
+        function draw() {
+          var chart = new google.visualization.GeoChart(document.getElementById('chart_div'));
+          chart.draw(google.visualization.arrayToDataTable([['Country', 'Color'],
+['Netherlands', 2.0],
+['Denmark', 1.0],
+['Luxembourg', 4.0],
+['France', 2.0],
+['Germany', 3.0],
+['Belgium', 1.0],
+]), {region:150,
+colorAxis:{colors: ['#ff9900', '#3366cc', '#109618', '#dc3912'],},
+legend:false,
+height:500,
+});
+        }
+        google.load('visualization', '1.0', {'callback': draw, 'packages':['geochart']});
+</script>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Here's the full implementation of the <code>GeoChart</code> function from the <code>ampl.gchart</code> package included in the distribution:</p>
+
+<pre>
+def GeoChart(keys, data, **kwargs):
+    table = "{},\n".format(keys)
+    for i in data:
+        table += "['{}', {}],\n".format(i, data[i])
+    options = ""
+    for arg, value in kwargs.iteritems():
+        if isinstance(value, bool):
+            value = 'true' if value else 'false'
+        elif isinstance(value, dict):
+            items = ""
+            for k, v in value.iteritems():
+                items += "{}: {},".format(k, v)
+            value = "{{{}}}".format(items)
+        options += "{}:{},\n".format(arg, value)
+    return Javascript("""
+        container.show();
+        function draw() {{
+          var chart = new google.visualization.GeoChart(element[0]);
+          chart.draw(google.visualization.arrayToDataTable([{}]), {{{}}});
+        }}
+        google.load('visualization', '1.0',
+          {{'callback': draw, 'packages':['geochart']}});
+        """.format(table, options), lib="https://www.google.com/jsapi")
+</pre>
+
+<p>As you can see the implementation is very simple, all it does is converting the data and options passed as arguments into JavaScript and returning the result as a Javascript object that is processed by IPython. In fact, you could construct the Javascript object directly but it would be much less convenient.</p>
+<p>With little effort it is possible to create similar wrappers for other types of charts from the Google Chart library or even different Javascript libraries.</p>

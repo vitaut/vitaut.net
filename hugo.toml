@@ -1,0 +1,26 @@
+baseURL = 'https://vitaut.net/'
+languageCode = 'en-us'
+title = 'vitaut.net'
+theme = 'diary'
+ignoreFiles = 'static/slides'
+
+[markup]
+  [markup.highlight]
+    style = 'monokailight'
+
+[markup.goldmark.renderer]
+  unsafe= true
+
+[menus]
+[[menus.main]]
+    name = 'Posts'
+    pageRef = '/posts'
+    weight = 10
+#[[menus.main]]
+#    name = 'Talks'
+#    pageRef = '/talks'
+#    weight = 20
+[[menus.main]]
+    name = 'Papers'
+    pageRef = '/papers'
+    weight = 30
