@@ -1,4 +1,6 @@
-# Papers
+---
+title: Papers
+---
 
 ## ISO C++
 
