@@ -20,3 +20,7 @@ ignoreFiles = 'static/slides'
     name = 'Papers'
     pageRef = '/papers'
     weight = 20
+
+[services]
+  [services.googleAnalytics]
+    ID = 'G-0XZ98BDDTK'
