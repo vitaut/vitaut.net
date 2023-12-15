@@ -1,5 +1,6 @@
 ---
 title: Papers
+hidden: true
 ---
 
 ## ISO C++
