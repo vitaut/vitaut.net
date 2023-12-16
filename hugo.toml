@@ -19,19 +19,23 @@ ignoreFiles = 'static/slides'
     ID = 'G-0XZ98BDDTK'
 
 [menus]
-[[menus.main]]
+  [[menus.main]]
     name = 'Posts'
     pageRef = '/posts'
     weight = 10
-[[menus.main]]
+  [[menus.main]]
     name = 'Talks'
     pageRef = '/talks'
     weight = 20
-[[menus.main]]
+  [[menus.main]]
     name = 'Papers'
     pageRef = '/papers'
     weight = 30
-[[menus.main]]
+  [[menus.main]]
     name = 'Projects'
     pageRef = '/projects'
     weight = 40
+
+[[params.socialIcons]]
+  name = 'github'
+  url = 'https://github.com/vitaut'
