@@ -15,3 +15,5 @@ noComment: true
 
 * [Breathe](https://github.com/michaeljones/breathe): reStructuredText and
   Sphinx bridge to Doxygen (a former co-maintainer)
+
+Open-source contributions on [GitHub](https://github.com/vitaut).
