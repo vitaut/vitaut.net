@@ -77,7 +77,7 @@ sys 0m2.512s
   google.load("visualization", "1", {packages:["corechart"]});       google.setOnLoadCallback(drawChart);       function drawChart() {         var data = google.visualization.arrayToDataTable([           ['Method', 'Time, seconds'],           ['FTP recursive',  608.855],           ['HTTP',  118.986],           ['FTP tar.gz',  49.365],           ['rsync',  53.467],           ['FileZilla', 348]         ]);          var options = {           title: 'Comparison of Download Methods',           vAxis: {title: 'Method',  titleTextStyle: {color: 'red'}}         };          var chart = new google.visualization.BarChart(document.getElementById('chart_div'));         chart.draw(data, options);       }     
 </script></p>
 
-<div id="chart_div" style="width: 500px; height: 300px;"></div>
+<div id="chart_div"></div>
 
 <p>The conclusion is simple: using rsync or retrieving compressed directories
 by FTP are by far the fastest methods of downloading from Netlib. Recursive
