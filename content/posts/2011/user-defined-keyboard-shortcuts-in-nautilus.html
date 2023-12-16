@@ -15,8 +15,8 @@ simple keyboard shorcut. Recently there appeared an extension called <a href=
 "http://software.flogisoft.com/nautilus-terminal/en/">Nautilus Terminal</a>
 that provides exactly this. It is quite good and I highly recommend to give
 it a try. However I was not entirely satisfied with it because of inability
-to use some usual shortcuts such as <kbd>Ctrl+L</kbd>, although you can use
-<kbd>Ctrl+Shift+L</kbd> instead. Also if you change a directory in Nautilus
+to use some usual shortcuts such as <code>Ctrl+L</code>, although you can use
+<code>Ctrl+Shift+L</code> instead. Also if you change a directory in Nautilus
 the embedded terminal is closed and a new one is opened in a new location. So
 you can't really have anything running in a terminal and at the same time
 browse the directories.</p>
@@ -67,12 +67,12 @@ class ShortcutProvider(nautilus.LocationWidgetProvider):
 (<code>sudo apt-get install python-nautilus</code> in Ubuntu), then copy the
 script to the extensions install path, e.g.
 <code>~/.nautilus/python-extensions/</code> and restart nautilus with the
-<code>nautilus -q</code> command. This script redefines the <kbd>Ctrl+O</kbd>
+<code>nautilus -q</code> command. This script redefines the <code>Ctrl+O</code>
 shortcut to open a terminal. It can be easily adjusted to use a different key
 combination or to define several shortcuts with different actions. For
 example <a href=
 "https://github.com/vitaut/captain-nemo/raw/master/misc/shortcut.py">this
-script</a> defines <kbd>Ctrl+O</kbd> to open a terminal and <kbd>Ctrl-G</kbd>
+script</a> defines <code>Ctrl+O</code> to open a terminal and <code>Ctrl-G</code>
 to open gitg in the current directory of Nautilus. It also adds Compare… to
 the context menu when two files are selected.
 </p>
