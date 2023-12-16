@@ -1,6 +1,7 @@
 ---
 title: Talks
 hidden: true
+noComment: true
 ---
 
 * {fmt} - The Cool Parts. C++ Türkiye (virtual).
