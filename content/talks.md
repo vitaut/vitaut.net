@@ -4,35 +4,25 @@ hidden: true
 noComment: true
 ---
 
-* {fmt} - The Cool Parts. C++ Türkiye (virtual).
-  <iframe width="560" height="315"
-          src="https://www.youtube.com/embed/i_EIOviy4y4" frameborder="0"
-          allowfullscreen></iframe>
+* {fmt} - The Cool Parts. C++ Türkiye (virtual). 18 May 2022.
+  {{< youtube i_EIOviy4y4 >}}
 
 * [For you in\<format>ion](/slides/2020-cpp-russia.pdf).
   C++ Russia, 2 July 2020.
 
 * Cpp.chat Episode #58. 14 August 2019.
-  <iframe width="560" height="315"
-          src="https://www.youtube.com/embed/PIeLO-H9ZZE" frameborder="0"
-          allowfullscreen></iframe>
+  {{< youtube PIeLO-H9ZZE >}}
 
 * CppCast Episode 195. 19 April 2019.
-  <iframe width="560" height="315"
-          src="https://www.youtube.com/embed/WgVoRPox-UA" frameborder="0"
-          allowfullscreen></iframe>
+  {{< youtube WgVoRPox-UA >}}
 
 * [Formatting floating-point numbers](/slides/2019-04-fp.pdf).
   Association of C/C++ Users - San Francisco Bay Area, 3 April 2019.
-  <iframe width="560" height="315"
-          src="https://www.youtube.com/embed/_frCGEC23zo" frameborder="0"
-          allowfullscreen></iframe>
+  {{< youtube _frCGEC23zo >}}
 
 * [A modern formatting library for C++](/slides/2017-cppcon.pdf).
   CppCon, Bellevue, WA, USA, 24 - 29 Sep 2017.
-  <iframe width="560" height="315"
-          src="https://www.youtube.com/embed/ptba_AqFYCM" frameborder="0"
-          allowfullscreen></iframe>
+  {{< youtube ptba_AqFYCM >}}
 
 * [New Solver Interface Approaches for Stochastic Programming in AMPL](
   /slides/2016-06-30-icsp/). ICSP 2016, Búzios, Brazil, 25 Jun - 1 Jul 2016.
