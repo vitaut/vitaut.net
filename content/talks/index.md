@@ -3,11 +3,29 @@ title: Talks
 hidden: true
 ---
 
+* {fmt} - The Cool Parts. C++ Türkiye (virtual).
+  <iframe width="560" height="315"
+          src="https://www.youtube.com/embed/i_EIOviy4y4" frameborder="0"
+          allowfullscreen></iframe>
+
 * [For you in\<format>ion](/slides/2020-cpp-russia.pdf).
   C++ Russia, 2 July 2020.
 
+* Cpp.chat Episode #58. 14 August 2019.
+  <iframe width="560" height="315"
+          src="https://www.youtube.com/embed/PIeLO-H9ZZE" frameborder="0"
+          allowfullscreen></iframe>
+
+* CppCast Episode 195. 19 April 2019.
+  <iframe width="560" height="315"
+          src="https://www.youtube.com/embed/WgVoRPox-UA" frameborder="0"
+          allowfullscreen></iframe>
+
 * [Formatting floating-point numbers](/slides/2019-04-fp.pdf).
   Association of C/C++ Users - San Francisco Bay Area, 3 April 2019.
+  <iframe width="560" height="315"
+          src="https://www.youtube.com/embed/_frCGEC23zo" frameborder="0"
+          allowfullscreen></iframe>
 
 * [A modern formatting library for C++](/slides/2017-cppcon.pdf).
   CppCon, Bellevue, WA, USA, 24 - 29 Sep 2017.
