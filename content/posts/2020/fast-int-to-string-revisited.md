@@ -196,7 +196,7 @@ in a more user-friendly API. For example numeric formatting in [`std::format`](
 https://en.cppreference.com/w/cpp/utility/format/format) is defined in terms of
 `std::to_chars`.
 
-## Summary
+**Summary**
 
 There have been big improvements to standard library implementations in
 terms of performance (e.g. `std::to_string` is much faster now) and the

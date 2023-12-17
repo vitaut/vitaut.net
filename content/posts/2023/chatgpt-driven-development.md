@@ -20,9 +20,10 @@ solitary. I had a companion, an AI of improbable intelligence and wit: ChatGPT.
 (As you might have guessed I got some help from ChatGPT in writing a catchy
 introductory paragraph as well.)
 
-First, some background: [the open-source {fmt} library](
-https://github.com/fmtlib/fmt) provides two extension APIs to make a type
-formattable.
+First, some background: [the open-source {fmt} library][1] provides two
+extension APIs to make a type formattable.
+
+[1]: https://github.com/fmtlib/fmt
 
 Let's say you want to make the following enum formattable as the underlying type
 (`int`) with `fmt::format`:
