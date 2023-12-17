@@ -9,9 +9,9 @@ book BTW, and one of the questions in the TLB section is
 [1]: https://pages.cs.wisc.edu/~remzi/OSTEP/
 
 > For timing, you’ll need to use a timer (e.g., `gettimeofday()`).
-> How precise is such a timer? How long does an operation have to tak
+> How precise is such a timer? How long does an operation have to take
 > in order for you to time it precisely? (this will help determine how
-> many times, in a loopp, you’ll have to repeat a page access
+> many times, in a loop, you’ll have to repeat a page access
 > in order to time it successfully)
 
 [`gettimeofday`][2] is obviously not a suitable API for this because
@@ -25,7 +25,7 @@ the real resolution is a multiple of that.
 [2]: https://man7.org/linux/man-pages/man2/gettimeofday.2.html
 [3]: https://en.cppreference.com/w/cpp/chrono/steady_clock
 
-On POSIX `steady_clock` is normally implemented as using [`clock_gettime`][4]
+On POSIX `steady_clock` is normally implemented using [`clock_gettime`][4]
 and the resolution can be as high as 1ns as reported by `clock_getres`.
 
 [4]: https://pubs.opengroup.org/onlinepubs/000095399/functions/clock_gettime.html
@@ -69,7 +69,7 @@ On my M1 MacBook Pro with libc++ it gives ~41ns:
 
 And on godbolt's Linux machine with libstdc++ it gives ~20ns.
 
-I also posted as shorter version of this as a [StackOverflow answer][6].
+I also posted a shorter version of this as a [StackOverflow answer][6].
 
 [6]: https://stackoverflow.com/a/77675880/471164
 
