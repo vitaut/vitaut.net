@@ -38,12 +38,12 @@ solution is to time our timer.
 
 This can be accomplished with the following simple program ([godbolt][5]):
 
-[5]: https://www.godbolt.org/z/7YG9v9r1K
+[5]: https://www.godbolt.org/z/Kz54shnE4
 
 ```c++
 #include <fmt/chrono.h>
 
-int main(int argc, char *argv[]) {
+int main() {
   const int num_measurements = 100;
   using clock = std::chrono::steady_clock;
   clock::time_point measurements[num_measurements];
