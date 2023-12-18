@@ -14,13 +14,12 @@ book BTW, and one of the questions in the TLB section is
 > many times, in a loop, you’ll have to repeat a page access
 > in order to time it successfully)
 
-[`gettimeofday`][2] is obviously not a suitable API for this because
-it has only microsecond resolution so I was considering using
-[`std::chrono::steady_clock`][3] instead. Unfortunately the standard
-doesn't give a way to determine the actual clock resolution. We only know
-that it is at least `clock::time_point::period` seconds. For `steady_clock`
-the period is normally `std::ratio<1, 1000000000>` which gives us 1ns but
-the real resolution is a multiple of that.
+[`gettimeofday`][2] is not a good fit for this because it has only microsecond
+resolution so I was considering using [`std::chrono::steady_clock`][3] instead.
+Unfortunately the standard doesn't give a way to determine the actual clock
+resolution. We only know that it is at least `clock::time_point::period`
+seconds. For `steady_clock` the period is normally `std::ratio<1, 1000000000>`
+which gives us 1ns but the real resolution is a multiple of that.
 
 [2]: https://man7.org/linux/man-pages/man2/gettimeofday.2.html
 [3]: https://en.cppreference.com/w/cpp/chrono/steady_clock
