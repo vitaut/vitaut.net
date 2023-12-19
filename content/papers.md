@@ -14,6 +14,8 @@ noComment: true
 * [P2733](https://wg21.link/p2733) Fix handling of empty specifiers in
   std::format
 * [P2713](https://wg21.link/p2713) Escaping improvements in std::format
+* [P2693](https://wg21.link/p2693) Formatting thread::id and stacktrace
+  (coauthor)
 * [P2587](https://wg21.link/p2587) to_string or not to_string
 * [P2539](https://wg21.link/p2539) Should the output of std::print to a terminal
   be synchronized with the underlying stream?
@@ -28,6 +30,7 @@ noComment: true
 * [P2093](https://wg21.link/p2093) Formatted output
 * [P1868](https://wg21.link/p1868) 🦄 width: clarifying units of width and
   precision in std::format
+* [P1729](https://wg21.link/p1729) Text Parsing (coauthor)
 * [P1361](https://wg21.link/p1361) Integration of chrono with text formatting
 * [P0645](https://wg21.link/p0645) Text Formatting
 
