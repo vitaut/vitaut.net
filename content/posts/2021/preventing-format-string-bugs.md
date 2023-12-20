@@ -4,9 +4,7 @@ date: 2021-06-22
 aliases: ['/2021/06/22/preventing-format-string-bugs.html']
 ---
 
-<div style="clear:right; float:right; margin-left:1em; margin-bottom:1em; width: 40%">
-<blockquote class="twitter-tweet"><p lang="en" dir="ltr">After joining my personal WiFi with the SSID “%p%s%s%s%s%n”, my iPhone permanently disabled it’s WiFi functionality. Neither rebooting nor changing SSID fixes it :~)</p>&mdash; Carl Schou (@vm_call) <a href="https://twitter.com/vm_call/status/1405937492642123782?ref_src=twsrc%5Etfw">June 18, 2021</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-</div>
+![](/img/ssid.png#floatright)
 
 The SSID format string bug in iOS WiFi service has been making rounds on social
 media.
