@@ -4,9 +4,7 @@ date: 2020-06-13
 aliases: ['/2020/06/13/fast-int-to-string-revisited.html']
 ---
 
-<div style="clear:right; float:right; margin-left:1em; margin-bottom:1em; width: 50%">
-  <img src="/img/dude.jpg" width="100%" title="New shit has come to light.">
-</div>
+![](/img/dude.jpg#floatright "New shit has come to light.")
 
 Almost 7 years ago I wrote a [blog post](
 http://www.zverovich.net/2013/09/07/integer-to-string-conversion-in-cplusplus.html)

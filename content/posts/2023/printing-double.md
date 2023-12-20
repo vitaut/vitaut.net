@@ -4,7 +4,7 @@ date: 2023-06-04
 aliases: ['/2023/06/04/printing-double.html']
 ---
 
-![](/img/stackoverflow.jpg#floatright "StackOverflow in a nutshell")
+![](/img/stackoverflow.png#floatright "StackOverflow in a nutshell")
 
 A few years ago I discovered this StackOverflow question:
 [How do I print a double value with full precision using cout?](
