@@ -4,10 +4,8 @@ date: 2023-12-14
 aliases: ['/2023/12/14/chatgpt-driven-development.html']
 ---
 
-<div style="clear:right; float:right; margin-left:1em; margin-bottom:1em; width: 40%">
-  <img src="/img/chatgpt.jpg" width="100%"
-       title="Computers are useless. They can only give answers - Pablo Picasso">
-</div>
+![](/img/chatgpt.jpg#floatright
+"Computers are useless. They can only give answers - Pablo Picasso")
 
 In the vast, often inexplicable universe of C++ programming, I found myself
 staring into the digital abyss of a peculiar problem: how does one effectively
