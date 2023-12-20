@@ -4,10 +4,8 @@ date: 2023-04-10
 aliases: ['/2023/04/10/cxx20-modules-in-clang.html']
 ---
 
-<div style="clear:right; float:right; margin-left:1em; margin-bottom:1em; width: 50%">
-  <img src="/img/its-alive.jpg" width="100%"
-       title="The reports of modules death are greatly exaggerated.">
-</div>
+![](/img/its-alive.jpg#floatright
+"The reports of modules death are greatly exaggerated.")
 
 Out of three headline C++20 features (modules, coroutines and the third one),
 modules are, in my opinion, by far the most important for the daily use.

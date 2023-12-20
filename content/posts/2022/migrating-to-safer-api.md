@@ -4,10 +4,6 @@ date: 2022-01-29
 aliases: ['/2022/01/29/migrating-to-safer-api.html']
 ---
 
-<div style="clear:right; float:right; margin-left:1em; margin-bottom:1em; width: 50%">
-  <img src="/img/cateyes.jpg" width="100%" title="I can see your bugs">
-</div>
-
 We recently migrated a large codebase from {fmt} 7.x to 8.1.1 and in this
 blog post I'll show some of the fun issues discovered thanks to improved
 diagnostics in the new version of this library.
