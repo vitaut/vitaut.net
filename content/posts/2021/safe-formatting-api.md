@@ -4,9 +4,7 @@ date: 2021-06-16
 aliases: ['/2021/06/16/safe-formatting-api.html']
 ---
 
-<div style="clear:right; float:right; margin-left:1em; margin-bottom:1em; width: 50%">
-  <img src="/img/safety.jpg" width="100%" title="printf safety">
-</div>
+![](/img/safety.jpg#floatright)
 
 Since the introduction of format strings in Fortran in the 50s pretty much all
 major programming languages used them in their text formatting and I/O APIs:
