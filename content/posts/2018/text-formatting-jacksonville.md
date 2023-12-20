@@ -4,7 +4,7 @@ date: 2018-03-17
 aliases: ['/2018/03/17/text-formatting-jacksonville.html']
 ---
 
-<div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
+<div style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
   <img src="/img/committee.jpeg" width="300" title="Design by committee">
 </div>
 

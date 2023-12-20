@@ -4,7 +4,7 @@ date: 2014-05-22
 aliases: ['/2014/05/22/low-overhead-safe-alternative-to-printf.html']
 ---
 
-<div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
+<div style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
   <img src="/img/code-bloat.gif"
        title="Do you want to talk about code bloat?" width="240">
 </div>

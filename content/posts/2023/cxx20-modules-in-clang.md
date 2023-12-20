@@ -4,9 +4,8 @@ date: 2023-04-10
 aliases: ['/2023/04/10/cxx20-modules-in-clang.html']
 ---
 
-<div class="separator"
-     style="clear:right; float:right; margin-left:1em; margin-bottom:1em; width: 50%">
-  <img border="0" src="/img/its-alive.jpg" width="100%"
+<div style="clear:right; float:right; margin-left:1em; margin-bottom:1em; width: 50%">
+  <img src="/img/its-alive.jpg" width="100%"
        title="The reports of modules death are greatly exaggerated.">
 </div>
 
@@ -116,7 +115,7 @@ Unfortunately, it doesn't give a measurable build speed up compared to using
 the lightweight core API. Looking at the compilation time trace we can see that
 much time is spent generating and optimizing code:
 
-<img border="0" src="/img/time-trace.png" width="100%">
+<img src="/img/time-trace.png" width="100%">
 
 But there is almost no code in `example.cc`! It looks like clang is ignoring the
 `extern template` and recompiles templates instead of using explicit

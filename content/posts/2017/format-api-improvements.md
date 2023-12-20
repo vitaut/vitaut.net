@@ -4,7 +4,7 @@ date: 2017-08-20
 aliases: ['/2017/08/20/format-api-improvements.html']
 ---
 
-<div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
+<div style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
   <img src="/img/untangle.jpg" width="300" title="Untangling the API">
 </div>
 

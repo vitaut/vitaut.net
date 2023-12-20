@@ -4,7 +4,7 @@ date: 2016-06-16
 aliases: ['/2016/06/16/rst-vs-markdown.html']
 ---
 
-<div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
+<div style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
   <img src="/img/our-their.jpg" width="320"
        title="Let the holy markup language war begin!">
 </div>
@@ -73,9 +73,8 @@ like overload resolution for languages that support overloading and simplifies
 documentation of heterogeneous projects. And you can use the default roles to
 avoid writing them manually most of the time.
 
-<div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
-  <img border="0" src="/img/flavor.jpg" width="240"
-       title="Sometimes less is more.">
+<div style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
+  <img src="/img/flavor.jpg" width="240" title="Sometimes less is more.">
 </div>
 
 Although Markdown itself doesn't seem to provide similar standard extension

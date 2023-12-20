@@ -4,8 +4,7 @@ date: 2014-12-30
 aliases: ['/2014/12/30/using-cppformat-with-biicode.html']
 ---
 
-<div class="separator"
-     style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
+<div style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
   <img src="/img/bee.jpg" width="320"  title="A mandatory image of a bee.">
 </div>
 

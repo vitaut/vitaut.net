@@ -4,7 +4,7 @@ date: 2013-09-07
 aliases: ['/2013/09/07/integer-to-string-conversion-in-cplusplus.html']
 ---
 
-<div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
+<div style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
   <img src="/img/knuth.jpg"
        title="Warning: the information from this post can be used for premature optimization."
        width="240">

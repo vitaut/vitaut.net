@@ -8,7 +8,7 @@ aliases: ['/2015/04/22/compile-time-checking-of-printf-args-in-cppformat.html']
 http://www.zverovich.net/2017/11/05/compile-time-format-strings.html) for a
 better solution that doesn't involve macros.
 
-<div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
+<div style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
   <img src="/img/safety.jpg" width="200" title="Safety first!">
 </div>
 

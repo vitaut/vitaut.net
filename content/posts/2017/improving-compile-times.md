@@ -4,10 +4,9 @@ date: 2017-12-09
 aliases: ['/2017/12/09/improving-compile-times.html']
 ---
 
-<div class="separator"
-     style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
+<div style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
   <img src="/img/wait.jpg" width="250"
-       title="I'll just wait here until the compilation is complete."><br>
+       title="I'll just wait here until the compilation is complete.">
 </div>
 
 In the previous blog post I described how to catch errors early at the cost of

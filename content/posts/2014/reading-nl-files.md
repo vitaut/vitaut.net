@@ -4,7 +4,7 @@ date: 2014-09-19
 aliases: ['/2014/09/19/reading-nl-files.html']
 ---
 
-<div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
+<div style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
   <img src="/img/dragon.png" width="320" 
        title="&quot;What does dragon have to do with parsing?&quot; you might ask.">
 </div>

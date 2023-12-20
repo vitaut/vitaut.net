@@ -4,8 +4,7 @@ date: 2020-06-13
 aliases: ['/2020/06/13/fast-int-to-string-revisited.html']
 ---
 
-<div class="separator"
-     style="clear:right; float:right; margin-left:1em; margin-bottom:1em; width: 50%">
+<div style="clear:right; float:right; margin-left:1em; margin-bottom:1em; width: 50%">
   <img src="/img/dude.jpg" width="100%" title="New shit has come to light.">
 </div>
 

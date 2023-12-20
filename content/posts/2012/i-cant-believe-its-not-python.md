@@ -4,11 +4,11 @@ date: 2012-12-17
 aliases: ['/2012/12/17/i-cant-believe-its-not-python.html']
 ---
 
-<div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
-    <img src="/img/python.png"
-         title="If it looks like Python and behaves like Python, then it probably is Python."
-         width="240">
-  </div>
+<div style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
+  <img src="/img/python.png"
+       title="If it looks like Python and behaves like Python, then it probably is Python."
+       width="240">
+</div>
 
 I've been recently experimenting with a [new string formatting
 library for C++](https://github.com/cppformat/cppformat) and realized

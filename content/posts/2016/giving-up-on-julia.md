@@ -4,7 +4,7 @@ date: 2016-05-13
 aliases: ['/2016/05/13/giving-up-on-julia.html']
 ---
 
-<div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
+<div style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
   <img src="/img/optional-ts.jpg" width="240" title="Optional type system">
 </div>
 
@@ -35,8 +35,8 @@ I because increasingly disenchanted with it, and I'll explain why in this post.
 
 ## Performance
 
-<div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
-  <img border="0" src="/img/jit.jpg" width="240">
+<div style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
+  <img src="/img/jit.jpg" width="240">
 </div>
 
 The first disappointment came when I looked at the microbenchmarks, results of which are

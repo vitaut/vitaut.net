@@ -6,7 +6,7 @@ aliases: ['/2019/02/11/formatting-floating-point-numbers.html']
 
 <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
-<div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
+<div style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
   <img src="/img/dragon.png" width="300" title="Here be dragons">
 </div>
 
@@ -37,7 +37,7 @@ floating-point format](https://en.wikipedia.org/wiki/Double-precision_floating-p
 which has the following bit layout
 ([source](https://en.wikipedia.org/wiki/Double-precision_floating-point_format#/media/File:IEEE_754_Double_Floating_Point_Format.svg))
 
-<img border="0" src="/img/double.png" width="100%">
+<img src="/img/double.png" width="100%">
 
 Let's look at the π constant as an example:
 

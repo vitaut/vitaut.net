@@ -4,8 +4,7 @@ date: 2022-01-29
 aliases: ['/2022/01/29/migrating-to-safer-api.html']
 ---
 
-<div class="separator"
-     style="clear:right; float:right; margin-left:1em; margin-bottom:1em; width: 50%">
+<div style="clear:right; float:right; margin-left:1em; margin-bottom:1em; width: 50%">
   <img src="/img/cateyes.jpg" width="100%" title="I can see your bugs">
 </div>
 

@@ -4,7 +4,7 @@ date: 2016-11-05
 aliases: ['/2016/11/05/reducing-printf-call-overhead.html']
 ---
 
-<div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
+<div style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
   <img src="/img/performance.jpg" width="200"
        title="printf, I'm looking at you">
 </div>

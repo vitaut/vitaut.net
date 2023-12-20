@@ -4,7 +4,7 @@ date: 2015-10-26
 aliases: ['/2015/10/26/cppformat-packages-for-linux-and-osx.html']
 ---
 
-<div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
+<div style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
   <img src="/img/packaging.jpg" width="300" title="Packagin iz hard">
 </div>
 

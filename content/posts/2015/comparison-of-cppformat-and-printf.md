@@ -4,8 +4,7 @@ date: 2015-02-26
 aliases: ['/2015/02/26/comparison-of-cppformat-and-printf.html']
 ---
 
-<div class="separator"
-     style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
+<div style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
   <img src="/img/printf.jpg" width="280">
 </div>
 

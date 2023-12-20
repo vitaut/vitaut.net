@@ -4,7 +4,7 @@ date: 2020-05-21
 aliases: ['/2020/05/21/reducing-library-size.html']
 ---
 
-<div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em; width: 40%">
+<div style="clear:right; float:right; margin-left:1em; margin-bottom:1em; width: 40%">
   <img src="/img/puffer.jpg" width="100%" title="Use templates they said...">
 </div>
 

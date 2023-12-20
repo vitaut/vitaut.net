@@ -4,8 +4,8 @@ date: 2023-06-04
 aliases: ['/2023/06/04/printing-double.html']
 ---
 
-<div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em; width: 50%">
-  <img border="0" src="/img/stackoverflow.png" width="100%"
+<div style="clear:right; float:right; margin-left:1em; margin-bottom:1em; width: 50%">
+  <img src="/img/stackoverflow.png" width="100%"
        title="StackOverflow in a nutshell">
 </div>
 

@@ -4,8 +4,7 @@ date: 2023-12-14
 aliases: ['/2023/12/14/chatgpt-driven-development.html']
 ---
 
-<div class="separator"
-     style="clear:right; float:right; margin-left:1em; margin-bottom:1em; width: 40%">
+<div style="clear:right; float:right; margin-left:1em; margin-bottom:1em; width: 40%">
   <img src="/img/chatgpt.jpg" width="100%"
        title="Computers are useless. They can only give answers - Pablo Picasso">
 </div>

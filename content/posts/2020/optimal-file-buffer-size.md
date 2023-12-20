@@ -4,7 +4,7 @@ date: 2020-08-04
 aliases: ['/2020/08/04/optimal-file-buffer-size.html']
 ---
 
-<div class="separator" style="clear:right; float:right; margin-left:1em; margin-bottom:1em; width: 40%">
+<div style="clear:right; float:right; margin-left:1em; margin-bottom:1em; width: 40%">
 <blockquote class="twitter-tweet" data-conversation="none"><p lang="en" dir="ltr">&quot;The value of BUFSIZ has been chosen at random in 1989 and can no longer be changed because that would break ABI.&quot;</p>&mdash; Peter Dimov (@pdimov2) <a href="https://twitter.com/pdimov2/status/1289649603218829313?ref_src=twsrc%5Etfw">August 1, 2020</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 </div>
 
