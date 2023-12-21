@@ -4,9 +4,7 @@ date: 2020-05-21
 aliases: ['/2020/05/21/reducing-library-size.html']
 ---
 
-<div style="clear:right; float:right; margin-left:1em; margin-bottom:1em; width: 40%">
-  <img src="/img/puffer.jpg" width="100%" title="Use templates they said...">
-</div>
+![](/img/puffer.jpg#floatright "Use templates they said...")
 
 When it comes to comparing different software solutions, speed is often the main
 if not the only factor considered. This is not the case in [the {fmt} library](
@@ -181,6 +179,7 @@ template <typename F> void write_padded(const format_specs& specs, F&& f) {
   }
 }
 ```
+
 Here `f.size()` returns the data size in code units, `f.width()` returns
 width in user-perceived characters and `f(it)` writes the data.
 
@@ -196,9 +195,11 @@ __attribute__((noinline)) OutputIt fill(
   ...
 }
 ```
+
 This trivial change reduced the binary size from ~368k to ~245k which is better
 but still not perfect. Let's look at full symbols to see why we have so many
 instantiations:
+
 ```
 % bloaty a.out -d fullsymbols
      VM SIZE                                                                  FILE SIZE
@@ -214,18 +215,23 @@ instantiations:
 
 Many of the instantiations are for `wchar_t` which we don't even need. A simple
 way to get rid of those is by using link-time optimization (LTO):
+
 ```
 clang++ test.cc -O2 -I include -std=c++17 src/format.cc -DNDEBUG -flto
 ```
+
 This reduces the binary size to ~164k. To get the same reduction without LTO
 let's remove the `wchar_t` `vformat` instantiation:
+
 ```c++
 template FMT_API std::wstring internal::vformat<wchar_t>(
     wstring_view, basic_format_args<wformat_context>);
 ```
+
 This way users don't pay for what they don't use.
 
 While at it I also noticed and nuked a few deprecated functions such as
+
 ```
      VM SIZE                                                                    FILE SIZE
  --------------                                                              --------------
@@ -235,6 +241,7 @@ While at it I also noticed and nuked a few deprecated functions such as
 
 and another interesting thing - we get `type_info` for `std::allocator`
 which is not even a polymorphic type:
+
 ```
    0.0%      65 typeinfo name for std::__1::allocator<char>                      65   0.0%
    0.0%      65 typeinfo name for std::__1::allocator<unsigned int>              65   0.0%
@@ -243,13 +250,16 @@ which is not even a polymorphic type:
 
 The type info is generated because we use the empty base class optimization in
 `memory_buffer`, which is a polymorphic class, inheriting from `std::allocator`:
+
 ```c++
 template <typename T, std::size_t SIZE = inline_buffer_size,
           typename Allocator = std::allocator<T>>
 class basic_memory_buffer : private Allocator ...
 ```
+
 The type info is tiny but let's nuke it too replacing inheritance with
 composition to reduce symbol noise:
+
 ```c++
 template <typename T, std::size_t SIZE = inline_buffer_size,
           typename Allocator = std::allocator<T>>
@@ -258,6 +268,7 @@ class basic_memory_buffer : ... {
   ...
 };
 ```
+
 In C++20 we'll be able to use [`[[no_unique_address]]`](
 https://en.cppreference.com/w/cpp/language/attributes/no_unique_address) to get
 the same optimization without the unwanted side-effects.
@@ -277,6 +288,7 @@ takes way too much space:
 
 Let's improve it by doing all the padding computation first and reducing the
 number of calls to `fill`:
+
 ```c++
 template <typename F> void write_padded(const format_specs& specs, F&& f) {
   unsigned width = to_unsigned(specs.width);
@@ -339,6 +351,7 @@ Let's look into `write_int` which is an internal function used for fancy
 integer formatting. It writes an integer in the format
 `<left-padding><prefix><numeric-padding><digits><right-padding>` per
 format specs:
+
 ```c++
 template <typename F>
 void write_int(int num_digits, string_view prefix, format_specs specs, F f) {
@@ -362,6 +375,7 @@ void write_int(int num_digits, string_view prefix, format_specs specs, F f) {
   });
 }
 ```
+
 Here `prefix` is a base prefix such as "0x" and `f` is a callable that writes
 digits through the output iterator. We can optimize this by moving the part that
 doesn't depend on `F` to a separate function only parameterized by the character
@@ -406,6 +420,7 @@ void write_int(int num_digits, string_view prefix, format_specs specs, F f) {
 
 Bloaty also shows some suspicious instantiations of `int_writer` for signed
 integral types:
+
 ```
      VM SIZE                                                          FILE SIZE
  --------------                                                    --------------
@@ -413,6 +428,7 @@ integral types:
    0.7%     863 fmt::...basic_writer<...>::int_writer<int...       863   0.7%
    0.7%     863 fmt::...basic_writer<...>::int_writer<long...      863   0.7%
 ```
+
 Why are these suspicious? {fmt} tries to reduce the number of instantiations of
 internal templates by mapping integral types into a smaller subset which still
 covers all possible bit sizes. On most platforms it's just 3 unsigned types:
@@ -428,9 +444,11 @@ template <typename Int> struct int_writer {
              const basic_format_specs<char_type>& s)
       : abs_value(static_cast<unsigned_type>(value)), ...
 ```
+
 The fix is to move type mapping (`uint32_or_64_or_128_t<Int>`) from the
 `int_writer` class to its constructor and add a static assert so that it doesn't
 happen again:
+
 ```c++
  template <typename UInt> struct int_writer {
   template <typename Int>

@@ -4,15 +4,18 @@ date: 2020-08-04
 aliases: ['/2020/08/04/optimal-file-buffer-size.html']
 ---
 
-<div style="clear:right; float:right; margin-left:1em; margin-bottom:1em; width: 40%">
-<blockquote class="twitter-tweet" data-conversation="none"><p lang="en" dir="ltr">&quot;The value of BUFSIZ has been chosen at random in 1989 and can no longer be changed because that would break ABI.&quot;</p>&mdash; Peter Dimov (@pdimov2) <a href="https://twitter.com/pdimov2/status/1289649603218829313?ref_src=twsrc%5Etfw">August 1, 2020</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-</div>
+> The value of BUFSIZ has been chosen at random in 1989 and can no longer be
+> changed because that would break ABI.
+>
+> — eter Dimov (@pdimov2) on Twitter
 
-I recently added a new unsynchronized file output API to
-[the {fmt} library](https://github.com/fmtlib/fmt). Together with [format
-string compilation](https://fmt.dev/latest/api.html#compile-api), zero memory
-allocations and locale-independent formatting by default this gives you a high
-performance file output from a single thread.
+I recently added a new unsynchronized file output API to [the {fmt} library][1].
+Together with [format string compilation][2], zero memory allocations and
+locale-independent formatting by default this gives you a high performance file
+output from a single thread.
+
+[1]: https://github.com/fmtlib/fmt
+[2]: https://fmt.dev/latest/api.html#compile-api
 
 Here's a small example demonstrating the new API:
 
@@ -26,11 +29,13 @@ int main() {
 ```
 
 Initially I picked `BUFSIZ` as the default buffer size because according to
-[the glibc manual](
-https://www.gnu.org/software/libc/manual/html_node/Controlling-Buffering.html):
+[the glibc manual][3]:
 
 > The value of BUFSIZ is chosen on each system so as to make stream I/O
 > efficient.
+
+[3]:
+https://www.gnu.org/software/libc/manual/html_node/Controlling-Buffering.html
 
 Later I added the ability to pass a buffer size
 
@@ -81,8 +86,8 @@ BENCHMARK(fmt_print_compile)->RangeMultiplier(2)->Range(BUFSIZ, 1 << 20);
 
 BENCHMARK_MAIN();
 ```
-The full benchmark is available [here](
-https://github.com/fmtlib/format-benchmark/blob/d5c10ce75c2b9bb9885100907be49093da519389/src/file-benchmark.cc).
+
+The full benchmark is available [here](https://github.com/fmtlib/format-benchmark/blob/d5c10ce75c2b9bb9885100907be49093da519389/src/file-benchmark.cc).
 
 Running it on macOS with an AP1024M SSD shows that `BUFSIZ` which is equal to
 1024 on this system is suboptimal to put it mildly. By switching to a larger
@@ -113,7 +118,9 @@ fmt_print_compile/524288    16649142 ns     10812969 ns           64
 fmt_print_compile/1048576   16610093 ns     10747453 ns           64
 ```
 
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript"
+        src="https://www.gstatic.com/charts/loader.js"></script>
+
 <script type="text/javascript">
   google.charts.load('current', {'packages':['corechart']});
   google.charts.setOnLoadCallback(drawChart);
@@ -199,7 +206,6 @@ fmt_print_compile/524288     7033374 ns      7033412 ns           98
 fmt_print_compile/1048576    7028619 ns      7028467 ns           98
 ```
 
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
   google.charts.load('current', {'packages':['corechart']});
   google.charts.setOnLoadCallback(drawChart);
@@ -262,5 +268,6 @@ avoids reallocation.
 
 With an increased default buffer size {fmt} now provides a simple and efficient
 file output API which is up to 5-9 times faster than `fprintf` (possibly more on
-[numeric formatting](
-http://www.zverovich.net/2020/06/13/fast-int-to-string-revisited.html)).
+[numeric formatting][4]).
+
+[4]: http://www.zverovich.net/2020/06/13/fast-int-to-string-revisited.html

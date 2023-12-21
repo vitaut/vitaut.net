@@ -6,23 +6,27 @@ aliases: ['/2020/06/13/fast-int-to-string-revisited.html']
 
 ![](/img/dude.jpg#floatright "New shit has come to light.")
 
-Almost 7 years ago I wrote a [blog post](
-http://www.zverovich.net/2013/09/07/integer-to-string-conversion-in-cplusplus.html)
-comparing performance of different methods of converting an integer into a
-string. A lot of things have changed since then so I decided to write a
-follow-up post and see how much progress has been made over the years.
+Almost 7 years ago I wrote a [blog post][1] comparing performance of different
+methods of converting an integer into a string. A lot of things have changed
+since then so I decided to write a follow-up post and see how much progress has
+been made over the years.
 
-First of all let's look at the [benchmark itself](
-https://github.com/fmtlib/format-benchmark/blob/d0d5e141df6a8f2e60d4ba3ea718415a00ca3e5b/src/int-benchmark.cc).
-It is based on Boost Karma [int_performance](
-http://www.boost.org/doc/libs/1_52_0/libs/spirit/doc/html/spirit/karma/performance_measurements/numeric_performance/int_performance.html)
-benchmark ported to [Google Benchmark](https://github.com/google/benchmark) to
-make the results more reproducible. It reports the time taken to convert ten
-million integers into strings. This is a somewhat weird metric so I changed it
-into a more intuitive conversion speed in integers per second.
+[1]: /posts/2013/integer-to-string-conversion-in-cplusplus/
 
-One problem with the benchmark was that it used `rand` to generate input
-data in a non-portable way (thanks Travis Downs for [reporting this issue](
+First of all let's look at the [benchmark itself][2]. It is based on Boost
+Karma [int_performance][3] benchmark ported to [Google Benchmark][4] to make
+the results more reproducible. It reports the time taken to convert ten million
+integers into strings. This is a somewhat weird metric so I changed it into a
+more intuitive conversion speed in integers per second.
+
+[2]: https://github.com/fmtlib/format-benchmark/blob/d0d5e141df6a8f2e60d4ba3ea718415a00ca3e5b/src/int-benchmark.cc
+
+[3]: http://www.boost.org/doc/libs/1_52_0/libs/spirit/doc/html/spirit/karma/performance_measurements/numeric_performance/int_performance.html
+
+[4]: https://github.com/google/benchmark
+
+One problem with the benchmark was that it used `rand` to generate input data in
+a non-portable way (thanks Travis Downs for [reporting this issue](
 https://github.com/fmtlib/format-benchmark/issues/12)). This was fixed by
 replacing `rand` with a [proper pseudo-random number generator](
 https://en.cppreference.com/w/cpp/numeric/random) so now the input distribution
@@ -93,7 +97,8 @@ compiled with Apple clang version 11.0.3 (clang-1103.0.32.62) and libc++:
 </div>
 <div style="height: 420px" id="chart_div_mac">
 </div>
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript"
+        src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript" src="/files/2020-06-stats-mac.js"></script>
 
 Speed ratio, as the name suggests, is the fastest method's speed divided by the

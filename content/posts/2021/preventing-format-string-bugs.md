@@ -4,7 +4,11 @@ date: 2021-06-22
 aliases: ['/2021/06/22/preventing-format-string-bugs.html']
 ---
 
-![](/img/ssid.png#floatright)
+> After joining my personal WiFi with the SSID “%p%s%s%s%s%n”, my iPhone
+> permanently disabled it’s WiFi functionality. Neither rebooting nor changing
+> SSID fixes it :~)
+>
+> — Carl Schou (@vm_call) on Twitter
 
 The SSID format string bug in iOS WiFi service has been making rounds on social
 media.

@@ -10,7 +10,8 @@ aliases: ['/2019/02/11/formatting-floating-point-numbers.html']
   <img src="/img/dragon.png" width="300" title="Here be dragons">
 </div>
 
-> Is&nbsp;floating point math broken? <br>
+> Is loating point math broken?
+>
 > -- Cato Johnston ([Stack Overflow](https://stackoverflow.com/questions/588004/is-floating-point-math-broken))
 
 Formatting floating-point (FP) numbers is a surprisingly complicated task.

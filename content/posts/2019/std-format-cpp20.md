@@ -4,14 +4,7 @@ date: 2019-07-23
 aliases: ['/2019/07/23/std-format-cpp20.html']
 ---
 
-<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-<div style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
-<a href="/img/standardization.png">
-  <img src="/img/standardization.png" width="400"
-       title="Path of standardization">
-</a>
-</div>
+![](/img/standardization.png "Perilous path of standardization")
 
 I'm happy to announce that the [Text Formatting proposal (`std::format`)](
 https://fmt.dev/Text%20Formatting.html) made it into the C++20 Committee
