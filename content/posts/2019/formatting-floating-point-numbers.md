@@ -6,9 +6,7 @@ aliases: ['/2019/02/11/formatting-floating-point-numbers.html']
 
 <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
-<div style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
-  <img src="/img/dragon.png" width="300" title="Here be dragons">
-</div>
+![](/img/dragon.png#floatright "Here be dragons")
 
 > Is loating point math broken?
 >

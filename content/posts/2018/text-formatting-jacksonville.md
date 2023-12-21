@@ -4,9 +4,7 @@ date: 2018-03-17
 aliases: ['/2018/03/17/text-formatting-jacksonville.html']
 ---
 
-<div style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
-  <img src="/img/committee.jpeg" width="300" title="Design by committee">
-</div>
+![](/img/committee.jpeg#floatright "Design by committee")
 
 This week I attended the ISO C++ standards committee meeting to present the
 second revision of my paper [P0645R1 Text

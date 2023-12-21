@@ -4,9 +4,7 @@ date: 2017-08-20
 aliases: ['/2017/08/20/format-api-improvements.html']
 ---
 
-<div style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
-  <img src="/img/untangle.jpg" width="300" title="Untangling the API">
-</div>
+![](/img/untangle.jpg#floatright "Untangling the API")
 
 It's been a while since my last post. Two important things happened
 in the meantime to the [fmt project](https://github.com/fmtlib/fmt):

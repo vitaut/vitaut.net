@@ -4,11 +4,7 @@ date: 2017-11-05
 aliases: ['/2017/11/05/compile-time-format-strings.html']
 ---
 
-<div style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
-  <img src="/img/compiling.png" width="300"
-       title="Now even more time to slack off"><br>
-  <a href="https://xkcd.com/303/">https://xkcd.com/303/</a>
-</div>
+![](/img/compiling.png#floatright)
 
 **Note**: the API described in this post is outdated, please use the one
 documented in [Format string compilation](

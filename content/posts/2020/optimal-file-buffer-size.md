@@ -7,7 +7,7 @@ aliases: ['/2020/08/04/optimal-file-buffer-size.html']
 > The value of BUFSIZ has been chosen at random in 1989 and can no longer be
 > changed because that would break ABI.
 >
-> — eter Dimov (@pdimov2) on Twitter
+> — Peter Dimov (@pdimov2) on Twitter
 
 I recently added a new unsynchronized file output API to [the {fmt} library][1].
 Together with [format string compilation][2], zero memory allocations and

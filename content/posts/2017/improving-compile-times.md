@@ -4,10 +4,8 @@ date: 2017-12-09
 aliases: ['/2017/12/09/improving-compile-times.html']
 ---
 
-<div style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
-  <img src="/img/wait.jpg" width="250"
-       title="I'll just wait here until the compilation is complete.">
-</div>
+![](/img/wait.jpg#floatright
+    "I'll just wait here until the compilation is complete.")
 
 In the previous blog post I described how to catch errors early at the cost of
 somewhat increased compile times. In this one, I'll explore the other direction
@@ -167,6 +165,8 @@ Apple LLVM version 9.0.0 (clang-900.0.39.2) on OS X, optimized mode:
 
 <div style="height: 300px" id="chart2_div">
 </div>
+<script type="text/javascript"
+        src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript" src="/files/2017-12-stats.js"></script>
 
 With the techniques described above, the compile time of the benchmark project
