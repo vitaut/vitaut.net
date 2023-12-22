@@ -12,7 +12,7 @@ aliases: ['/2013/09/07/integer-to-string-conversion-in-cplusplus.html']
 
 An updated version of this post is available here:
 [Converting a hundred million integers to strings per second](
-http://www.zverovich.net/2020/06/13/fast-int-to-string-revisited.html).
+/posts/2020/fast-int-to-string-revisited/).
 
 In this post I compare the performance of several methods
 of integer to string conversion in C++:
