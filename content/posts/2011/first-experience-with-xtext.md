@@ -4,85 +4,81 @@ date: 2011-12-03
 aliases: ['/2011/12/03/first-experience-with-xtext.html']
 ---
 
-<p>In this post I describe my experience with the recent version (2.1) of
-<a href="http://www.eclipse.org/Xtext/">Xtext</a>, a framework for developing
-domain specific languages (DSLs).</p>The main input for Xtext is a grammar
-file written in an elegant little
-<a href="http://git.eclipse.org/c/tmf/org.eclipse.xtext.git/tree/plugins/org.eclipse.xtext/src/org/eclipse/xtext/Xtext.xtext">
-language</a>. The grammar language uses a variation of 
-<a href="http://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_Form">Extended
-Backus-Naur Form</a> to define rules for both terminals and nonterminals. So
-far this is very similar to parser generators like
-<a href="http://www.gnu.org/s/bison/">GNU bison</a> or
-<a href="http://www.antlr.org/">ANTLR</a> which can create parsers out of similar
-grammar definitions. I have a lot of experience with parser generators and
-have become a bit sceptical about them. A hand-written parser is often easier
-to debug and maintain compared to a generated one. From my experience other
-parts of the language development process like semantic analysis or code
-generation are usually more complicated and at the same time these receive
-much less attention from the developers of automated tools. What makes Xtext
+In this post I describe my experience with the recent version (2.1) of
+[Xtext](http://www.eclipse.org/Xtext/), a framework for developing
+domain specific languages (DSLs).
+
+The main input for Xtext is a grammar file written in an elegant little
+[language](http://git.eclipse.org/c/tmf/org.eclipse.xtext.git/tree/plugins/org.eclipse.xtext/src/org/eclipse/xtext/Xtext.xtext).
+The grammar language uses a variation of [Extended Backus-Naur
+Form](http://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_Form) to
+define rules for both terminals and nonterminals. So far this is very
+similar to parser generators like [GNU
+bison](http://www.gnu.org/s/bison/) or [ANTLR](http://www.antlr.org/)
+which can create parsers out of similar grammar definitions. I have a
+lot of experience with parser generators and have become a bit sceptical
+about them. A hand-written parser is often easier to debug and maintain
+compared to a generated one. From my experience other parts of the
+language development process like semantic analysis or code generation
+are usually more complicated and at the same time these receive much
+less attention from the developers of automated tools. What makes Xtext
 different is that it not only generates a parser and a lexer but also a
-full-blown Eclipse IDE tailored for your language. So I decided to give Xtext
-a try and develop a toy language with it. I take a shortcut and start from
-one of the examples that come with Xtext. Choosing <code>File -&gt; New -&gt;
-Example...&nbsp;</code>and selecting&nbsp;<code>Xtext Simple Arithmetic
-Example</code> under the <code>Xtext Examples</code> category creates three
-projects:
+full-blown Eclipse IDE tailored for your language. So I decided to give
+Xtext a try and develop a toy language with it. I take a shortcut and
+start from one of the examples that come with Xtext. Choosing
+`File -> New -> Example... `and
+selecting `Xtext Simple Arithmetic Example` under the `Xtext Examples`
+category creates three projects:
 
-<ul>
-<li>org.eclipse.xtext.example.arithmetics (main)</li>
-<li>org.eclipse.xtext.example.arithmetics.tests (tests)</li>
-<li>org.eclipse.xtext.example.arithmetics.ui (ui)</li>
-</ul>
+-   org.eclipse.xtext.example.arithmetics (main)
+-   org.eclipse.xtext.example.arithmetics.tests (tests)
+-   org.eclipse.xtext.example.arithmetics.ui (ui)
 
-The main project contains the grammar file <code>Arithmetic.xtext</code>
-for the language. Following is an example of input that it accepts:
+The main project contains the grammar file `Arithmetic.xtext` for the
+language. Following is an example of input that it accepts:
 
-<pre>
+```
 module simple
 def pi: 3.14159265;
 pi * 4;
-</pre>
+```
 
-<p>Here is how it looks in Eclipse:</p>
+Here is how it looks in Eclipse:
 
-<a href="/img/eclipse-calc.png"><img height="237" src="/img/eclipse-calc.png"
-width="400"></a>
+![](/img/eclipse-calc.png)
 
-<p>
 Syntax colouring, content assist, the Outline and Problems views - all
-work nicely. Let's now extend this language. First I add support
-for&nbsp;<a href=
-"http://en.wikipedia.org/wiki/Scientific_notation">scientific notation</a>,
-like <code>6.02e23,</code>&nbsp;in floating-point literals. The following
-modification of the <code>NUMBER</code> terminal does the job:
-</p>
+work nicely. Let\'s now extend this language. First I add support
+for [scientific
+notation](http://en.wikipedia.org/wiki/Scientific_notation), like
+`6.02e23,` in floating-point literals. The following modification of the
+`NUMBER` terminal does the job:
 
-<pre>
+```
 terminal NUMBER returns ecore::EBigDecimal:
     (('0'..'9')+ ('.' ('0'..'9')*)? | '.' ('0'..'9')+)
     (('e' | 'E') ('+' | '-')? ('0'..'9')+)?;
-</pre>
+```
 
-<p>Next I add support for string expressions. To check for errors like
-trying to divide a string by a number I introduce a simple type system that
-consists of three types - <code>NUMBER</code>, <code>STRING</code> and
-<code>INVALID</code> with the latter used in case of errors. The type is
-represented by the following simple enum added to the main project:</p>
+Next I add support for string expressions. To check for errors like
+trying to divide a string by a number I introduce a simple type system
+that consists of three types - `NUMBER`, `STRING` and `INVALID` with the
+latter used in case of errors. The type is represented by the following
+simple enum added to the main project:
 
-<pre>
+```java
 public enum Type {
     INVALID,
     NUMBER,
     STRING
 }
-</pre>
+```
 
-<p>Then I add a string concatenation expression which uses the &amp;
-operator and replace multiple classes for binary expressions with a single
-class <code>BinaryExpr</code> to make writing validation checks easier:</p>
+Then I add a string concatenation expression which uses the & operator
+and replace multiple classes for binary expressions with a single class
+`BinaryExpr` to make writing validation checks easier:
 
-<pre>
+```
 ...
 Expression returns Expr:
     Concatenation;
@@ -106,22 +102,22 @@ PrimaryExpression returns Expr:
     {FunctionCall} func=[AbstractDefinition]
         ('(' args+=Expression (',' args+=Expression)* ')')?;
 ...
-</pre>
+```
 
-<p>The next step is to add the type checks to the validator. Unfortunately
-Xtext validator does pre-order traversal of the AST while to check expression
-types we need post-order, because the type of an expression depends on the
-types of its subexpressions. It is easy to implement such traversal
-manually:</p>
+The next step is to add the type checks to the validator. Unfortunately
+Xtext validator does pre-order traversal of the AST while to check
+expression types we need post-order, because the type of an expression
+depends on the types of its subexpressions. It is easy to implement such
+traversal manually:
 
-<pre>
+```java
 ...
 public class ArithmeticsJavaValidator
         extends AbstractArithmeticsJavaValidator {
     @Inject
     private Calculator calculator;
     
-    private Map&lt;Expr, Type> types = new HashMap&lt;Expr, Type>();
+    private Map<Expr, Type> types = new HashMap<Expr, Type>();
 
     private boolean checkNumeric(Expr parent, Expr e,
             EStructuralFeature feature, int index) {
@@ -136,7 +132,7 @@ public class ArithmeticsJavaValidator
     }
 
     private boolean checkString(Expr parent, Expr e,
-      EStructuralFeature feature) {
+        EStructuralFeature feature) {
         Type type = checkType(e);
         if (type == Type.STRING)
             return true;
@@ -148,7 +144,7 @@ public class ArithmeticsJavaValidator
     }
 
     private boolean checkNumeric(Expr parent, Expr e,
-      EStructuralFeature feature) {
+        EStructuralFeature feature) {
         return checkNumeric(parent, e, feature,
                 ValidationMessageAcceptor.INSIGNIFICANT_INDEX);
     }
@@ -168,7 +164,7 @@ public class ArithmeticsJavaValidator
             Expr left = be.getLeft(), right = be.getRight();
             if (!be.getOp().equals("&")) {
                 if (checkNumeric(expr, left,
-                  ArithmeticsPackage.Literals.BINARY_EXPR__LEFT)
+                    ArithmeticsPackage.Literals.BINARY_EXPR__LEFT)
                     && checkNumeric(expr, right,
                         ArithmeticsPackage.Literals.BINARY_EXPR__RIGHT))
                     type = Type.NUMBER;
@@ -181,7 +177,7 @@ public class ArithmeticsJavaValidator
             }
         } else if (expr instanceof FunctionCall) {
             FunctionCall call = (FunctionCall) expr;
-            EList&lt;Expr> args = call.getArgs();
+            EList<Expr> args = call.getArgs();
             AbstractDefinition func = ((FunctionCall) expr).getFunc();
             if (func instanceof Definition)
                 type = checkType(((Definition) func).getExpr());
@@ -218,7 +214,7 @@ public class ArithmeticsJavaValidator
         if (EcoreUtil2.getContainerOfType(expr, Evaluation.class)!=null)
             return;
         
-        TreeIterator&lt;EObject> contents = expr.eAllContents();
+        TreeIterator<EObject> contents = expr.eAllContents();
         while(contents.hasNext()) {
             EObject next = contents.next();
             if (next instanceof FunctionCall) {
@@ -237,32 +233,31 @@ public class ArithmeticsJavaValidator
         }
     }
 }
-</pre>
+```
 
-<p>As you can see from the above code the type checks aren't really pretty
-with all the <code>instanceof</code>s and casts. If I had more control over
-the generated AST classes I would apply the
-<a href="http://en.wikipedia.org/wiki/Visitor_pattern">Visitor pattern</a> and
-implemented the type checker as a visitor. However this can be mitigated with
-the help of the poorly documented
-<a href="http://download.eclipse.org/modeling/tmf/xtext/javadoc/2.0.0/org/eclipse/xtext/util/PolymorphicDispatcher.html">
-PolymorphicDispatcher</a>.</p>
+As you can see from the above code the type checks aren\'t really pretty
+with all the `instanceof`s and casts. If I had more control over the
+generated AST classes I would apply the [Visitor
+pattern](http://en.wikipedia.org/wiki/Visitor_pattern) and implemented
+the type checker as a visitor. However this can be mitigated with the
+help of the poorly documented
+[PolymorphicDispatcher](http://download.eclipse.org/modeling/tmf/xtext/javadoc/2.0.0/org/eclipse/xtext/util/PolymorphicDispatcher.html).
 
-<p>Next I modify the <code>Calculator</code> class that implements evaluation
-to handle string concatenation. Also the evaluation methods should return
-<code>Object</code> instead of <code>BigDecimal</code> because the value of
-an expression can be a string or a number:</p>
+Next I modify the `Calculator` class that implements evaluation to
+handle string concatenation. Also the evaluation methods should return
+`Object` instead of `BigDecimal` because the value of an expression can
+be a string or a number:
 
-<pre>
+```java
 ...
 public class Calculator {
     
-    private PolymorphicDispatcher&lt;Object> dispatcher =
+    private PolymorphicDispatcher<Object> dispatcher =
         PolymorphicDispatcher.createForSingleTarget(
             "internalEvaluate", 2, 2, this);
     
     public Object evaluate(Expr obj) {
-        return evaluate(obj, ImmutableMap.&lt;String,Object>of());
+        return evaluate(obj, ImmutableMap.<String,Object>of());
     }
 
     public BigDecimal evaluateNumeric(Expr obj) {
@@ -270,38 +265,38 @@ public class Calculator {
     }
 
     public Object evaluate(Expr obj,
-            ImmutableMap&lt;String, Object> values) {
+            ImmutableMap<String, Object> values) {
         Object invoke = dispatcher.invoke(obj, values);
         return invoke;
     }
 
     public BigDecimal evaluateNumeric(Expr obj,
-            ImmutableMap&lt;String, Object> values) {
+            ImmutableMap<String, Object> values) {
         return (BigDecimal)evaluate(obj, values);
     }
 
     protected Object internalEvaluate(Expr e,
-            ImmutableMap&lt;String, Object> values) { 
+            ImmutableMap<String, Object> values) { 
         throw new UnsupportedOperationException(e.toString());
     }
     
     protected Object internalEvaluate(NumberLiteral e,
-            ImmutableMap&lt;String, Object> values) { 
+            ImmutableMap<String, Object> values) { 
         return e.getValue();
     }
 
     protected Object internalEvaluate(StringLiteral e,
-            ImmutableMap&lt;String, Object> values) { 
+            ImmutableMap<String, Object> values) { 
         return e.getValue();
     }
 
     protected Object internalEvaluate(FunctionCall e,
-            ImmutableMap&lt;String, Object> values) {
+            ImmutableMap<String, Object> values) {
         if (e.getFunc() instanceof DeclaredParameter) {
             return values.get(e.getFunc().getName());
         } 
         Definition d = (Definition) e.getFunc();
-        Map&lt;String,Object> params = Maps.newHashMap();
+        Map<String,Object> params = Maps.newHashMap();
         for (int i = 0; i < e.getArgs().size(); i++) {
             DeclaredParameter declaredParameter = d.getArgs().get(i);
             Object evaluate = evaluate(e.getArgs().get(i), values);
@@ -311,7 +306,7 @@ public class Calculator {
     }
     
     protected Object internalEvaluate(BinaryExpr e,
-            ImmutableMap&lt;String, Object> values) {
+            ImmutableMap<String, Object> values) {
         Resource res = e.eResource();
         if (!res.getErrors().isEmpty())
             return null;
@@ -331,12 +326,12 @@ public class Calculator {
         throw new UnsupportedOperationException(e.getOp());
     }
 }
-</pre>
+```
 
-<p>And finally I change the <code>InterpreterAutoEdit</code> class in the
-ui project to check types before evaluation:</p>
+And finally I change the `InterpreterAutoEdit` class in the ui project
+to check types before evaluation:
 
-<pre>
+```java
 ...
 public class InterpreterAutoEdit implements IAutoEditStrategy {
 
@@ -367,7 +362,7 @@ public class InterpreterAutoEdit implements IAutoEditStrategy {
     private Object computeResult(IDocument document,
             final DocumentCommand command) {
         return ((IXtextDocument) document).readOnly(new
-            IUnitOfWork&lt;Object, XtextResource>() {
+            IUnitOfWork<Object, XtextResource>() {
                 public Object exec(XtextResource state)
                         throws Exception {
                     Evaluation stmt = findEvaluation(command, state);
@@ -382,52 +377,51 @@ public class InterpreterAutoEdit implements IAutoEditStrategy {
         ArithmeticsJavaValidator validator =
             new ArithmeticsJavaValidator();
         Expr expr = stmt.getExpression();
- 
+    
         // Ignore all messages.
         validator.setMessageAcceptor(new ValidationMessageAcceptor() {
- 
+    
             public void acceptError(String message, EObject object,
                 EStructuralFeature feature, int index, String code,
                 String... issueData) {
             }
- 
+    
             public void acceptError(String message, EObject object,
                 int offset, int length, String code,
                 String... issueData) {
             }
- 
+    
             public void acceptWarning(String message, EObject object,
                 EStructuralFeature feature, int index, String code,
                 String... issueData) {
             }
- 
+    
             public void acceptWarning(String message, EObject object,
                 int offset, int length, String code,
                 String... issueData) {
             }
- 
+    
             public void acceptInfo(String message, EObject object,
                 EStructuralFeature feature, int index, String code,
                 String... issueData) {
             }
- 
+    
             public void acceptInfo(String message, EObject object,
                 int offset, int length, String code,
                 String... issueData) {
             }
         });
- 
+    
         return validator.checkType(expr) != Type.INVALID ?
                 new Calculator().evaluate(expr) : "?";
     }
 
     ...
 }
-</pre>
+```
 
-<p>After implementing the above changes and re-generating Xtext artefacts, I
-get an Eclipse IDE for the language with simple string expressions and type
-checking:</p>
+After implementing the above changes and re-generating Xtext artefacts,
+I get an Eclipse IDE for the language with simple string expressions and
+type checking:
 
-<a href="/img/eclipse-calc-with-strings.png">
-<img height="245" src="/img/eclipse-calc-with-strings.png" width="400"/></a>
+![](/img/eclipse-calc-with-strings.png)
