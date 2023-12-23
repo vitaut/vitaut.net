@@ -6,7 +6,7 @@ ignoreFiles = 'static/slides'
 
 [markup]
   [markup.highlight]
-    style = 'monokailight'
+    noclasses = false
 
 [markup.goldmark.renderer]
   unsafe= true

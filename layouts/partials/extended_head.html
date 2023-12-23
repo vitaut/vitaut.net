@@ -5,4 +5,10 @@
   height: auto;
   float: right;
 }
+
+/* Styles: monokailight and monokai. */
+{{ partial "css/syntax-light.css" . | safeCSS }}
+.night {
+  {{ partial "css/syntax-dark.css" . | safeCSS }}
+}
 </style>
