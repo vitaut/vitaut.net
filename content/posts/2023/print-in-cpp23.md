@@ -215,7 +215,7 @@ for their work.
 
 ## What’s next?
 
-Now that we provide safe, extensible and efficient formatting output facility,
+Now that we provide a safe, extensible and efficient formatting output facility,
 the next obvious frontier is formatted input. It poses a completely different
 set of challenges but we could apply some of the lessons from the `std::format`
 and `std::print` work. If you are interested in formatted input, check out
