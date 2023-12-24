@@ -8,7 +8,9 @@ date: 2023-12-24
 I just realized that 2023 is almost over and I haven't posted about the most
 important feature of C++23. Which feature is that, you might ask? Unlike C++20
 which had a bunch of massive new features like modules, concepts and the third
-one, C++23 feels incremental. The C++23 feature I am referring to is, of course,
+one, C++23 feels incremental.
+
+The C++23 feature I am referring to is, of course,
 [`std::print`][1], modeled after `fmt::print` from [the {fmt} library][2].
 It feels deceptively small but it took ~3 years to get through the C++ committee
 and it changes the most important aspect of C++, the way we write Hello World:
