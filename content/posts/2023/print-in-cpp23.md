@@ -27,8 +27,8 @@ int main() {
 [2]: https://github.com/fmtlib/fmt
 
 `std::print` is fairly small in terms of the standard wording because it builds
-on the foundation of C++20 [`std::format`][3]. It is also easy to implement with
-libc++ already shipping it in version 17:
+on the foundation of C++20 [`std::format`][3]. It is also relatively easy to
+implement with libc++ already shipping it in version 17:
 [godbolt](https://www.godbolt.org/z/5M4be4Kcs).
 
 The API of `std::print` resembles that of `printf` but it has a number of
