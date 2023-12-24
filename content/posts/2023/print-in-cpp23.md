@@ -42,7 +42,7 @@ source of vulnerabilities][4].
 
 [3]: https://en.cppreference.com/w/cpp/utility/format/format
 [4]: https://en.wikipedia.org/wiki/Uncontrolled_format_string
-[5]: http://localhost:1313/posts/2021/safe-formatting-api/
+[5]: /posts/2021/safe-formatting-api/
 
 ```c++
 std::print("{:d}", "I am not a number"); // compile error
