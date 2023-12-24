@@ -77,7 +77,9 @@ Olá, Mundo!
 
 Neither stdio nor iostreams can be used to reliably print Unicode on Windows
 and in fact very few languages do it correctly. One of notable exceptions is
-Rust where `print!` works great with Unicode.
+Rust where [`print!`][6] works great with Unicode.
+
+[6]: https://doc.rust-lang.org/rust-by-example/hello/print.html
 
 ## Performance
 
@@ -85,14 +87,14 @@ Performance depends on the quality of implementation but there are important
 factors that make `std::print` faster than its stdio and iostreams counterparts
 by design:
 
-* [More efficient argument passing mechanism][6] which is particularly
+* [More efficient argument passing mechanism][7] which is particularly
   beneficial for positional arguments.
 * Locale-independent formatting by default. This has both reliability and
   performance implications.
 * `std::print` can write directly to a C stream (`FILE`) bypassing the
   inefficient iostream buffering and extra synchronization.
 
-Here are some [benchmark results][7] comparing {fmt}'s implementation of `print`
+Here are some [benchmark results][8] comparing {fmt}'s implementation of `print`
 with other libraries:
 
 | Library           | Method        | Run Time, s |
@@ -103,8 +105,8 @@ with other libraries:
 
 On this benchmark `fmt::print` is ~20% faster than `printf` from Apple's libc.
 
-[6]: https://vitaut.net/posts/2016/reducing-printf-call-overhead/
-[7]: https://github.com/fmtlib/fmt?tab=readme-ov-file#benchmarks
+[7]: https://vitaut.net/posts/2016/reducing-printf-call-overhead/
+[8]: https://github.com/fmtlib/fmt?tab=readme-ov-file#benchmarks
 
 ## Atomicity
 
@@ -208,10 +210,10 @@ Also thanks to my current and past managers at Facebook (now Meta) for
 supporting my standardization work and the company for paying for my trips to
 standards committee meetings.
 
-And, of course, thanks to hundreds of [contributors][8]] to the {fmt} library
+And, of course, thanks to hundreds of [contributors][9]] to the {fmt} library
 for their work.
 
-[8]: https://github.com/fmtlib/fmt/graphs/contributors
+[9]: https://github.com/fmtlib/fmt/graphs/contributors
 
 ## What’s next?
 
@@ -226,16 +228,16 @@ Elias Kosunen.
 
 > Why did they need 38 years for std::print?
 >
-> — celsheet on [Reddit][9]
+> — celsheet on [Reddit][10]
 
-[9]: https://www.reddit.com/r/cpp/comments/14vrqps/c23_the_next_c_standard/
+[10]: https://www.reddit.com/r/cpp/comments/14vrqps/c23_the_next_c_standard/
 
 I was too young to be involved with C++ 38 years ago so I don't have full
 context but the `print` function in almost its current form has been available
-in the {fmt} library (called C++ Format back then) since [version 0.10.0][10]
+in the {fmt} library (called C++ Format back then) since [version 0.10.0][11]
 released 9.5 years ago. I intentionally didn't include I/O in the `std::format`
 proposal to keep the scope manageable. It took extra 3 years for `std::print`
 mostly because Unicode on Windows is very broken due to layers of legacy
 codepages.
 
-[10]: https://github.com/fmtlib/fmt/releases/tag/0.10.0
+[11]: https://github.com/fmtlib/fmt/releases/tag/0.10.0
