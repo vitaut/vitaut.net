@@ -210,7 +210,7 @@ Also thanks to my current and past managers at Facebook (now Meta) for
 supporting my standardization work and the company for paying for my trips to
 standards committee meetings.
 
-And, of course, thanks to hundreds of [contributors][9]] to the {fmt} library
+And, of course, thanks to hundreds of [contributors][9] to the {fmt} library
 for their work.
 
 [9]: https://github.com/fmtlib/fmt/graphs/contributors
