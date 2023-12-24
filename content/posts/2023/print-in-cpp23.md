@@ -48,6 +48,29 @@ source of vulnerabilities][4].
 std::print("{:d}", "I am not a number"); // compile error
 ```
 
+## Extensibility
+
+`std::print` supports formatting of user-defined types via the same extension
+mechanism as `std::format`. Most standard types like containers, ranges, dates
+and times are formattable out-of-the-box. This is a major improvement compared
+to `printf` that doesn't provide a standard extension API. For example:
+
+```c++
+#include <vector>
+#include <print>
+
+int main() {
+  std::vector<int> v = {1, 2, 3};
+  std::print("{}\n", v);
+}
+```
+
+prints
+
+```
+[1, 2, 3]
+```
+
 ## Unicode
 
 `std::print` provides portable Unicode support. All you need to do is make
