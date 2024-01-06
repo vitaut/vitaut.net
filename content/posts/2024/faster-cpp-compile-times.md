@@ -182,7 +182,7 @@ a simple local replacement, `fmt::back_insert_iterator`. Without `<iterator>`
 the time was down to ~178ms.
 
 This would be the time to tackle `<string>` but as it turned out we also
-conditionally include `<string_view>` or `<experimental/string_view>` (sigh).
+conditionally included `<string_view>` or `<experimental/string_view>` (sigh).
 It doesn't add any overhead directly because it is pulled in from `<string>`
 anyway but we need to remove one in order to get rid of the other. We already
 have a trait in ranges to detect `std::string_view`-like API which we can
