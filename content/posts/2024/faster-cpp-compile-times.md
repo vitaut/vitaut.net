@@ -56,6 +56,10 @@ https://github.com/fmtlib/fmt/issues/1046#issuecomment-465855241):
 
 [io]: http://localhost:1313/posts/2020/optimal-file-buffer-size/
 
+And the most important use case of them all is, of course, Godbolt where people
+often use {fmt} to print things, especially the ones not supported by `printf`,
+and a few hundred milliseconds of overhead is noticeable.
+
 On the other hand, it is hard to avoid `<string>` in C++. If you are using any
 part of the library it will likely get pulled in transitively. Also compile
 times were not terrible and there were more important things to do so for a
