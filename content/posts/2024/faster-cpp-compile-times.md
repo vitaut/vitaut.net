@@ -54,7 +54,7 @@ https://github.com/fmtlib/fmt/issues/1046#issuecomment-465855241):
 {fmt} has become increasingly [used for I/O][io] and logging libraries where
 `std::string` objects only may appear as arguments at some call sites.
 
-[io]: http://localhost:1313/posts/2020/optimal-file-buffer-size/
+[io]: https://vitaut.net/posts/2020/optimal-file-buffer-size/
 
 And the most important use case of them all is, of course, Godbolt where people
 often use {fmt} to print things, especially the ones not supported by `printf`,
