@@ -32,7 +32,7 @@ already surpassed stdio in many areas:
 
 However, one area where stdio remained significantly better was compile times.
 
-We've put a lot of efforts into optimizing compile times in {fmt} by applying
+We've put a lot of effort into optimizing compile times in {fmt} by applying
 type erasure on both argument and output level, limiting templates to a small
 top-level API layer and introducing `fmt/core.h` with minimal dependencies.
 
@@ -104,7 +104,7 @@ and it takes only ~59ms:
 cc hello-stdio.c  0.05s user 0.02s system 121% cpu 0.059 total
 ```
 
-So due to uncotrolled standard library bloat between C++11 and C++20 we are now
+So due to uncontrolled standard library bloat between C++11 and C++20 we are now
 more than 5 times slower to compile than `printf`, all thanks to `<string>`
 include. Can we do something about it?
 
@@ -277,5 +277,5 @@ We are down from ~319ms to ~69ms and don't even need
 only ~17% difference in our test. I think this is a very low price to pay for
 improved safety, performance and extensibility.
 
-P.S. After the optimization `stdio.h` is now the second heaviest include adding
+P.S. After the optimization `stdio.h` is now the second heaviest include, adding
 whopping 5ms to compile times.
