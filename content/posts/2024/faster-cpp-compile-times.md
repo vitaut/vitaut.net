@@ -101,15 +101,15 @@ int main() {
 }
 ```
 
-and it takes only ~59ms:
+and it takes only ~33ms:
 
 ```
-% time cc hello-stdio.c
-cc hello-stdio.c  0.05s user 0.02s system 121% cpu 0.059 total
+% time cc -c hello-stdio.c
+cc -c hello-stdio.c  0.01s user 0.01s system 68% cpu 0.033 total
 ```
 
 So due to uncontrolled standard library bloat between C++11 and C++20 we are now
-more than 5 times slower to compile than `printf`, all thanks to `<string>`
+almost 10 times slower to compile than `printf`, all thanks to `<string>`
 include. Can we do something about it?
 
 It turned out that with type erasure the dependency on `std::string` in
@@ -278,8 +278,11 @@ c++ -c hello.cc -I include -std=c++20  0.04s user 0.02s system 81% cpu 0.069 tot
 We are down from ~319ms to ~69ms and don't even need
 `_LIBCPP_REMOVE_TRANSITIVE_INCLUDES` any more. With all the optimizations,
 `fmt/core.h` is now comparable to `stdio.h` in terms of compile times, with
-only ~17% difference in our test. I think this is a very low price to pay for
+only 2x difference in our test. I think this is a reasonable price to pay for
 improved safety, performance and extensibility.
 
 P.S. After the optimization `stdio.h` is now the second heaviest include, adding
 whopping 5ms to compile times.
+
+**Update**: An earlier version of this blog included linkage time for stdio by
+mistake which is fixed now. Thanks HN user stabbles for catching this.
