@@ -8,13 +8,13 @@ date: 2024-08-30
 
 [The {fmt} formatting library][fmt] is known for its small binary footprint,
 often producing code that is several times smaller per function call compared
-to alternatives like IOStreams, Boost Format, or tinyformat. This is mainly
-achieved through careful application of type erasure on various levels, which
-effectively minimizes template bloat.
+to alternatives like IOStreams, Boost Format, or, somewhat ironically,
+tinyformat. This is mainly achieved through careful application of type erasure
+on various levels, which effectively minimizes template bloat.
 
 [fmt]: https://github.com/fmtlib/fmt
 
-Formatting arguments are passed via type-erased `fmt::format_args`:
+Formatting arguments are passed via type-erased `format_args`:
 
 ```c++
 auto vformat(string_view fmt, format_args args) -> std::string;
