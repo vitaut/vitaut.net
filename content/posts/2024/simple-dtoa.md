@@ -1,5 +1,5 @@
 ---
-title: "double to string conversion in 100 lines of code"
+title: "double to string conversion in 150 lines of code"
 date: 2024-09-27
 ---
 
