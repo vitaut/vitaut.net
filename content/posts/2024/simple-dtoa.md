@@ -3,7 +3,8 @@ title: "double to string conversion in 150 lines of code"
 date: 2024-09-27
 ---
 
-My previous blog post gained some attention on Hacker News ([discussion](
+My [previous blog post](https://vitaut.net/posts/2024/binary-size/) gained some
+attention on Hacker News ([discussion](
 https://news.ycombinator.com/item?id=41415238)), and as someone deeply
 interested in floating-point formatting, I couldn't ignore the following
 comment:
