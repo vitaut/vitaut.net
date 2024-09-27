@@ -285,7 +285,7 @@ To differentiate this implementation from the numerous others, let's call it
 
 The full implementation is available here: https://www.godbolt.org/z/rYqnaW6bq.
 
-In addition to the obvious improvement of using larger "digits," Puff also
+In addition to the obvious improvement of using larger "digits", Puff also
 shifts by multiple bits per iteration — up to 29 bits for left shifts and up
 to 9 bits for right shifts.
 
