@@ -108,7 +108,7 @@ struct decimal {
   }
 };
 
-void dtoa(char* buf, double val, int precision) {
+void dtoa_puff(char* buf, double val, int precision) {
   decimal d(val);
 
   char* ptr = std::to_chars(buf, buf + precision, *d.bigits).ptr;
@@ -1167,12 +1167,12 @@ double data[] = {
 	-1.52750066741774462e-119,
 };
 
-void dtoa(benchmark::State &s) {
+void dtoa_puff(benchmark::State &s) {
   size_t i = 0;
   char buf[100];
   while (s.KeepRunning())
-    dtoa(buf, data[i++ % 1000], 17);
+    dtoa_puff(buf, data[i++ % 1000], 17);
 }
-BENCHMARK(dtoa);
+BENCHMARK(dtoa_puff);
 
 BENCHMARK_MAIN();
