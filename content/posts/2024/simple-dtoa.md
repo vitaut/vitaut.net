@@ -4,7 +4,7 @@ date: 2024-09-27
 ---
 
 My previous blog post gained some attention on Hacker News ([discussion](
-https://news.ycombinator.com/item?id=41416357)), and as someone deeply
+https://news.ycombinator.com/item?id=41415238)), and as someone deeply
 interested in floating-point formatting, I couldn't ignore the following
 comment:
 
