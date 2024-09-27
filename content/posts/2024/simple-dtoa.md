@@ -1,6 +1,6 @@
 ---
 title: "double to string conversion in 100 lines of code"
-date: 2024-09-23
+date: 2024-09-27
 ---
 
 My previous blog post gained some attention on Hacker News ([discussion](
