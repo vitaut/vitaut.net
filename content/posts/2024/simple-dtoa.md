@@ -325,8 +325,9 @@ dtoa              984 ns          984 ns       710992
 affect the results.)*
 
 Puff is approximately 3.5 times faster than its counterpart in the Go standard 
-ibrary. It’s also simpler, with completely different optimizations applied, and
-it doesn't rely on any data tables.
+ibrary or 200 times faster than the original unoptimized version. It’s also
+simpler, with completely different optimizations applied, and it doesn't rely on
+any data tables.
 
 But how does it stack up against other methods? To find out, I added it to a
 fork of [dtoa-benchmark](https://github.com/fmtlib/dtoa-benchmark), and here are
