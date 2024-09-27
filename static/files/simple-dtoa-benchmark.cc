@@ -1,4 +1,4 @@
-// Copyright (c) 2024, Victor Zverovich
+// Copyright (c) 2012 - present, Victor Zverovich
 // License: https://github.com/fmtlib/fmt/blob/master/LICENSE
 
 #include <charconv>
@@ -54,27 +54,26 @@ struct decimal {
     uint32_t mask = (1 << n) - 1;
     uint32_t borrow = 0;
     int offset = 0;
-    if ((*bigits >> n) == 0) {
+    if ((*bigits >> n) == 0 && *bigits != 0) {
       offset = 1;
-      borrow = uint64_t(*bigits) * bigit_bound >> n;
+	    --num_bigits;
       --fraction_start;
+      borrow = uint64_t(*bigits) * bigit_bound >> n;
     }
-    for (int i = offset; i != num_bigits; ++i) {
-      uint64_t bigit = bigits[i];
+    for (int i = 0; i != num_bigits; ++i) {
+      uint64_t bigit = bigits[i + offset];
       uint32_t new_borrow = (bigit & mask) * bigit_bound >> n;
-      bigits[i - offset] = borrow + (bigit >> n);
+      bigits[i] = borrow + (bigit >> n);
       borrow = new_borrow;
     }
-    if (borrow != 0) {
-      bigits[num_bigits - offset] = borrow;
-      if (offset == 0) ++num_bigits;
-    }
+    if (borrow != 0) bigits[num_bigits++] = borrow;
   }
 
   explicit decimal(double d) {
     int exp;
     int num_bits = std::numeric_limits<double>::digits;
-    uint64_t v = static_cast<uint64_t>(frexp(d, &exp) * (1ull << num_bits));
+    int64_t v = static_cast<int64_t>(frexp(d, &exp) * (1ull << num_bits));
+    if (v < 0) v = -v;
     exp -= num_bits;
 
     if (exp >= 0) {
@@ -111,9 +110,9 @@ struct decimal {
 void dtoa_puff(char* buf, double val, int precision) {
   decimal d(val);
 
-  char* ptr = std::to_chars(buf, buf + precision, *d.bigits).ptr;
+  int bigit_index = *d.bigits > 0 ? 0 : 1;
+  char* ptr = std::to_chars(buf, buf + precision, d.bigits[bigit_index++]).ptr;
   int count = ptr - buf;
-  int bigit_index = 1;
   int exp = (d.fraction_start - bigit_index) * 9 + count - 1;
   for (; bigit_index < d.num_bigits && count <= precision; ++bigit_index) {
     char* block = buf + count;
@@ -1169,9 +1168,11 @@ double data[] = {
 
 void dtoa_puff(benchmark::State &s) {
   size_t i = 0;
-  char buf[100];
-  while (s.KeepRunning())
+  while (s.KeepRunning()) {
+    char buf[100];
     dtoa_puff(buf, data[i++ % 1000], 17);
+	benchmark::DoNotOptimize(buf[16]);
+  }
 }
 BENCHMARK(dtoa_puff);
 

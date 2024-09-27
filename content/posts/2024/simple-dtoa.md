@@ -346,7 +346,7 @@ in a similar deep dive into Dragon4.
 
 Happy floating-point formatting!
 
-<script src="http://code.jquery.com/jquery-1.8.2.js"></script>
+<script src="https://code.jquery.com/jquery-1.8.2.js"></script>
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/0.8.12/jquery.csv.js"></script>
 <script>
