@@ -300,7 +300,7 @@ void dtoa_puff(benchmark::State &s) {
   while (s.KeepRunning())
     dtoa_puff(buf, data[i++ % 1000], 17);
 }
-BENCHMARK(dtoa);
+BENCHMARK(dtoa_puff);
 ```
 
 One caveat worth mentioning is that `to_chars` is not available on my system,
@@ -343,8 +343,6 @@ But hey, for a few hours of work (mostly spent debugging), it’s not too shabby
 
 I hope you found this useful! Let me know in the comments if you’d be interested
 in a similar deep dive into Dragon4.
-
-Happy floating-point formatting!
 
 <script src="https://code.jquery.com/jquery-1.8.2.js"></script>
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
