@@ -110,7 +110,7 @@ should be relatively straightforward.
 
 Here's an example of using {fmt} as a C++20 module with CMake.
 
-`example.cc`:
+`hello.cc`:
 ```c++
 import fmt;
 
