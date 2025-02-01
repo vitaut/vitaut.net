@@ -8,7 +8,7 @@ aliases: ['/2019/02/11/formatting-floating-point-numbers.html']
 
 ![](/img/dragon.png#floatright "Here be dragons")
 
-> Is loating point math broken?
+> Is floating-point math broken?
 >
 > -- Cato Johnston ([Stack Overflow](https://stackoverflow.com/questions/588004/is-floating-point-math-broken))
 
