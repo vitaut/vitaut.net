@@ -281,8 +281,8 @@ return write(buffer, under_closer ? dec_sig_under : dec_sig_over, dec_exp);
 
 Once the decimal significand is chosen we forward it together with the decimal
 exponent (`dec_exp`) to the `write` function that writes the number into the
-output in the exponential format. Writing integers is a much easier task and is
-left as an exercise for the reader.
+output in the exponential format. We all know how to [format integers quickly](
+https://vitaut.net/posts/2020/fast-int-to-string-revisited/).
 
 ## Performance
 
