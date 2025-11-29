@@ -297,7 +297,7 @@ performs on the dtoa-benchmark (https://github.com/fmtlib/dtoa-benchmark):
 
 <div id="main"></div>
  
-The performance is comparable to (or slightly better than) Ryu, ~60% worse than
+The performance is comparable to (or slightly better than) Ryu, ~70% worse than
 Dragonbox and whopping 21 times better than `sprintf`. This is great for the
 implementation which is only ~200 lines of code including comments and not
 including generated tables.
