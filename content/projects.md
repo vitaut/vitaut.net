@@ -17,6 +17,9 @@ noComment: true
   Schubfach algorithm - fast and accurate conversion of IEEE-754 double values
   to decimal strings
 
+* [modules](https://github.com/vitaut/modules): simple C++20 module support for
+  CMake
+
 * [Breathe](https://github.com/michaeljones/breathe): reStructuredText and
   Sphinx bridge to Doxygen (a former co-maintainer)
 
