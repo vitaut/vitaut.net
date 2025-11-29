@@ -27,7 +27,8 @@ the minimal C++ implementation in https://github.com/vitaut/schubfach.
 
 The Schubfach algorithm, introduced by Raffaello Giulietti, is a method to
 convert binary floating-point numbers into the shortest, correctly rounded
-decimal string representation. It is based on two key insights:
+decimal string representation with a round-trip guarantee. It is based on two
+key insights:
 
 ### 1. The non-iterative search guided by the pigeonhole principle
 
