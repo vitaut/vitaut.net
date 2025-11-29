@@ -12,4 +12,15 @@
 .night {
   {{ partial "css/syntax-dark.css" . | safeCSS }}
 }
+
+/* Render MathJAX formulas as white in the dark mode. */
+@media (prefers-color-scheme: dark) {
+  mjx-container,
+  mjx-container * {
+    color: #ffffff !important;
+    fill: #ffffff !important;
+    stroke: #ffffff !important;
+  }
+}
+
 </style>
