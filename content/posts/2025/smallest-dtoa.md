@@ -576,7 +576,7 @@ function sanitize(svg) {
 
 <style type="text/css">
 .tablechart {
-	width: 700px;
+	width: '100%';
 	margin: auto;
   margin-left: 100px;
 	padding-top: 20px;
