@@ -13,6 +13,10 @@ noComment: true
 * [AMPL/MP](https://github.com/ampl/mp): an open-source library for mathematical
   programming (a former maintainer)
 
+* [schubfach](https://github.com/vitatu/schubfach): a C++ implementation of the
+  Schubfach algorithm - fast and accurate conversion of IEEE-754 double values
+  to decimal strings
+
 * [Breathe](https://github.com/michaeljones/breathe): reStructuredText and
   Sphinx bridge to Doxygen (a former co-maintainer)
 
