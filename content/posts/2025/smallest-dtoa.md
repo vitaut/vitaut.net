@@ -486,7 +486,7 @@ function drawBarChart(type, timeData) {
 	var options = { 
 		title: type,
 		chartArea: {'width': '70%', 'height': '70%'},
-		width: 700,
+		width: '100%',
 		height: 300,
 		legend: { position: "none" },
 		hAxis: { title: "Time (ns)" }
@@ -518,8 +518,8 @@ function drawDigitChart(type, timeDigitData) {
 			minorGridlines: { count: 10 },
       baseline: 0
 		},
-		width: 700,
-		height: 500
+		width: '100%',
+		height: 400
 	};
 	var div = document.createElement("div");
 	div.className = "chart";
