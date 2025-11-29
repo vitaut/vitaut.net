@@ -117,9 +117,10 @@ Now let's look at the implementation from https://github.com/vitaut/schubfach.
 
 To begin the conversion, we first extract the IEEE-754 components: the sign
 bit, the exponent field (`bin_exp`), and the 52-bit significand (`bin_sig`).
-Using `std::bit_cast`](https://en.cppreference.com/w/cpp/numeric/bit_cast.html),
-we interpret the floating-point value as an unsigned integer and use bit
-manipulation to extract the components:
+Using [`std::bit_cast`](
+https://en.cppreference.com/w/cpp/numeric/bit_cast.html), we interpret the
+floating-point value as an unsigned integer and use bit manipulation to extract
+the components:
 
 ```c++
 uint64_t bits = std::bit_cast<uint64_t>(x);
