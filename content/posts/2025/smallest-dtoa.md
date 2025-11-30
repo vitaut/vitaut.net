@@ -123,7 +123,7 @@ floating-point value as an unsigned integer and use bit manipulation to extract
 the components:
 
 ```c++
-uint64_t bits = std::bit_cast<uint64_t>(x);
+uint64_t bits = std::bit_cast<uint64_t>(value);
 
 constexpr int precision = 52;
 constexpr int exp_mask = 0x7ff;
