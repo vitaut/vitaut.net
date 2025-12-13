@@ -248,7 +248,7 @@ fixed format should be straightforward.
 ## "Fun" fact
 
 My former colleague David Gay wrote an early `dtoa` implementation back at
-Bell Labs, and it remained state of the art for many years.
+Bell Labs, and it was widely used for many years.
 
 <script src="https://code.jquery.com/jquery-1.8.2.js"></script>
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
