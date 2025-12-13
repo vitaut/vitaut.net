@@ -204,11 +204,11 @@ write(buffer, (under_closer & under_in) ? dec_sig_under : dec_sig_over,
 ```
 
 There are also many improvements in significand and exponent output. The
-simplest one, which has been used for many years in {fmt} and which I learned
-from Alexandrescu’s talk "Three Optimization Tips for C++", is using a lookup
-table to output pairs of decimal digits. This alone halves the number of integer
-multiplications and is particularly important here, because the significand is
-often 16–17 digits long.
+simplest one, which has been used for many years in [{fmt}](
+https://github.com/fmtlib/fmt) and which I learned from Alexandrescu’s talk
+"Three Optimization Tips for C++", is using a lookup table to output pairs of
+decimal digits. This alone halves the number of integer multiplications and is
+particularly important here, because the significand is often 16–17 digits long.
 
 Another trick is branchless removal of trailing zeros using another small
 lookup table, which I believe comes from the excellent [Drachennest](
