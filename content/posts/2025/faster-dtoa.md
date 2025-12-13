@@ -123,30 +123,32 @@ intervals are symmetric, except when there is a jump in the exponent
 (the irregular case):
 
 <script type="text/tikz">
-  \begin{tikzpicture}
-  % Axis
-  \draw[-]      (0,0) -- (16.5,0);
-  \draw[-latex] (0,0) -- (16.5,0);
+\begin{tikzpicture}
+\fill[white] (-0.3,-1.0) rectangle (16.8,0.8);
 
-  % Major ticks (larger)
-  \foreach \x in {0,1,2,4,8,16}
-    \draw[thick, shift={(\x,0)}] (0pt,6pt) -- (0pt,-6pt);
+% Axis
+\draw[-]      (0,0) -- (16.5,0);
+\draw[-latex] (0,0) -- (16.5,0);
 
-  % Major labels
-  \foreach \x in {0,1,2,4,8,16}
-    \node[below] at (\x,-0.25) {$\x$};
+% Major ticks (larger)
+\foreach \x in {0,1,2,4,8,16}
+  \draw[thick, shift={(\x,0)}] (0pt,6pt) -- (0pt,-6pt);
 
-  % Minor ticks (smaller)
-  \foreach \a/\b in {1/2, 2/4, 4/8, 8/16} {
-    \foreach \i in {1,...,8} {
-      \pgfmathsetmacro\x{\a + (\b-\a)*\i/8}
-      \draw[line width=0.3pt] (\x,0.15) -- (\x,-0.15);
-    }
+% Major labels
+\foreach \x in {0,1,2,4,8,16}
+  \node[below] at (\x,-0.25) {$\x$};
+
+% Minor ticks (smaller)
+\foreach \a/\b in {1/2, 2/4, 4/8, 8/16} {
+  \foreach \i in {1,...,8} {
+    \pgfmathsetmacro\x{\a + (\b-\a)*\i/8}
+    \draw[line width=0.3pt] (\x,0.15) -- (\x,-0.15);
   }
+}
 
-  \draw[*-*] ({7.75-0.053},0) -- ({8.5+0.053},0);
-  \draw[very thick] ({7.75-0.053},0) -- ({8.5+0.053},0);
-  \end{tikzpicture}
+\draw[*-*] ({7.75-0.053},0) -- ({8.5+0.053},0);
+\draw[very thick] ({7.75-0.053},0) -- ({8.5+0.053},0);
+\end{tikzpicture}
 </script>
 
 Most algorithms handle irregular intervals via a completely separate path or at
