@@ -155,7 +155,7 @@ random floating-point numbers. However, it is possible to handle it cheaply and
 branchlessly, avoiding extra complexity, which is what I did.
 
 A more interesting improvement comes from a talk by Cassio Neri
-[Fast Conversion From Cpp Floating Point Numbers](
+[Fast Conversion From Floating Point Numbers](
 https://www.youtube.com/watch?v=w0WrRdW7eqg). In Schubfach, we look at four
 candidate numbers. The first two, of which at most one is in the rounding
 interval, correspond to a larger decimal exponent. The other two, of which at
