@@ -114,13 +114,13 @@ inline auto divmod100(uint32_t value) noexcept -> divmod_result {
 }
 ```
 
-Another optimization and simplification is branchless handling of
-irregular rounding intervals. I wrote about rounding intervals in my [earlier
-blog post](smallest-dtoa), but for the purposes of this post it is sufficient
-to know that a rounding interval for a floating-point number is an interval
-that contains all real numbers that round back to that number. Normally the
-intervals are symmetric, except when there is a jump in the exponent
-(the irregular case):
+Another optimization and simplification is branchless handling of irregular
+rounding intervals. I wrote about rounding intervals in my [earlier blog
+post]({{< relref "smallest-dtoa.md" >}}), but for the purposes of this post
+it is sufficient to know that a rounding interval for a floating-point number
+is an interval that contains all real numbers that round back to that number.
+Normally the intervals are symmetric, except when there is a jump in the
+exponent (the irregular case):
 
 <script type="text/tikz">
 \begin{tikzpicture}
@@ -141,12 +141,14 @@ intervals are symmetric, except when there is a jump in the exponent
 % Minor ticks (smaller)
 \foreach \a/\b in {1/2, 2/4, 4/8, 8/16} {
   \foreach \i in {1,...,8} {
-    \pgfmathsetmacro\x{\a + (\b-\a)*\i/8}
+    \pgfmathsetmacro\x{\a + (\b-\a)*\i/8};
     \draw[line width=0.3pt] (\x,0.15) -- (\x,-0.15);
   }
 }
 
-\draw[*-*] ({7.75-0.053},0) -- ({8.5+0.053},0);
+\draw ({7.75-0.053},0) -- ({8.5+0.053},0)
+      node[pos=0, circle, fill, inner sep=1pt] {}
+      node[pos=1, circle, fill, inner sep=1pt] {};
 \draw[very thick] ({7.75-0.053},0) -- ({8.5+0.053},0);
 \end{tikzpicture}
 </script>
@@ -545,6 +547,10 @@ function sanitize(svg) {
 }
 .dt-selected {
   background: #2a2a2a !important;
+}
+
+div.page svg  {
+  max-width: 75%;
 }
 </style>
 
