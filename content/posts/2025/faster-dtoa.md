@@ -550,7 +550,8 @@ function sanitize(svg) {
 }
 
 div.page svg  {
-  max-width: 75%;
+  max-width: clamp(360px, 95vw, 600px);
+  margin: 0 auto;
 }
 </style>
 
