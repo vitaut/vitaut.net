@@ -6,8 +6,6 @@ date: 2025-12-13
 ![](/img/dragons.jpg#floatright
 "Guess which dragon represents which algorithm")
 
-<img src="/img/pigeonhole.jpeg#floatright" class="floatright" width="40%" />
-
 There comes a time in every software engineer’s life when they come up with a
 new binary-to-decimal floating-point conversion method. I guess my time has
 come. I just wrote one, mostly over a weekend: https://github.com/vitaut/zmij.
