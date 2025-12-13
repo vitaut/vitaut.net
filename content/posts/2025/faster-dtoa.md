@@ -171,7 +171,7 @@ Unfortunately, this does not help in the longer case, but there are improvements
 to be made there as well. Classic Schubfach first checks whether there is only
 one candidate from the second set in the rounding interval and returns early in
 that case. We can combine this check with the closedness check. This seems
-counterintuitive (sorry, Andrei), because we do more work, but it eliminates a
+counterintuitive, because we do more work (sorry, Andrei), but it eliminates a
 poorly predicted conditional branch and also simplifies the code.
 
 So we go from this:
