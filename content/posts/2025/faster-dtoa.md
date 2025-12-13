@@ -391,7 +391,15 @@ function drawTable(type, timeData) {
         var formatter = new google.visualization.NumberFormat({suffix: 'x'});
         formatter.format(data, 2); // Apply formatter to second column
 
-        table.draw(data);
+        const dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        table.draw(data, {
+          backgroundColor: 'transparent',
+          cssClassNames: dark ? {
+            headerRow: 'dt-header',
+            tableRow: 'dt-row',
+            oddTableRow: 'dt-row-alt'
+          } : {}
+        });
     }
 
     google.visualization.events.addListener(table, 'select',
@@ -520,6 +528,21 @@ function sanitize(svg) {
 }
 .form-control {
   visibility: hidden;
+}
+
+.dt-header {
+  background: #1f1f1f !important;
+  color: #e0e0e0 !important;
+}
+.dt-row {
+  background: #121212 !important;
+  color: #e0e0e0 !important;
+}
+.dt-row-alt {
+  background: #181818 !important;
+}
+.dt-selected {
+  background: #2a2a2a !important;
 }
 </style>
 
