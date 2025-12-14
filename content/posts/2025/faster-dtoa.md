@@ -140,16 +140,16 @@ exponent (the irregular case):
 
 % Minor ticks (smaller)
 \foreach \a/\b in {1/2, 2/4, 4/8, 8/16} {
-  \foreach \i in {1,...,8} {
+  \foreach \i in {1,...,7} {
     \pgfmathsetmacro\x{\a + (\b-\a)*\i/8};
     \draw[line width=0.3pt] (\x,0.15) -- (\x,-0.15);
   }
 }
 
-\draw ({7.75-0.053},0) -- ({8.5+0.053},0)
+\draw ({7.75},0) -- ({8.5},0)
       node[pos=0, circle, fill, inner sep=1pt] {}
       node[pos=1, circle, fill, inner sep=1pt] {};
-\draw[very thick] ({7.75-0.053},0) -- ({8.5+0.053},0);
+\draw[very thick] ({7.75},0) -- ({8.5},0);
 \end{tikzpicture}
 </script>
 
