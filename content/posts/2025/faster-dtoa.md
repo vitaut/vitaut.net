@@ -122,36 +122,7 @@ is an interval that contains all real numbers that round back to that number.
 Normally the intervals are symmetric, except when there is a jump in the
 exponent (the irregular case):
 
-<script type="text/tikz">
-\begin{tikzpicture}
-\fill[white] (-0.3,-1.0) rectangle (16.8,0.8);
-
-% Axis
-\draw[-]      (0,0) -- (16.5,0);
-\draw[-latex] (0,0) -- (16.5,0);
-
-% Major ticks (larger)
-\foreach \x in {0,1,2,4,8,16}
-  \draw[thick, shift={(\x,0)}] (0pt,6pt) -- (0pt,-6pt);
-
-% Major labels
-\foreach \x in {0,1,2,4,8,16}
-  \node[below] at (\x,-0.25) {$\x$};
-
-% Minor ticks (smaller)
-\foreach \a/\b in {1/2, 2/4, 4/8, 8/16} {
-  \foreach \i in {1,...,7} {
-    \pgfmathsetmacro\x{\a + (\b-\a)*\i/8};
-    \draw[line width=0.3pt] (\x,0.15) -- (\x,-0.15);
-  }
-}
-
-\draw ({7.75},0) -- ({8.5},0)
-      node[pos=0, circle, fill, inner sep=1pt] {}
-      node[pos=1, circle, fill, inner sep=1pt] {};
-\draw[very thick] ({7.75},0) -- ({8.5},0);
-\end{tikzpicture}
-</script>
+<div id="drawing"></div>
 
 Most algorithms handle irregular intervals via a completely separate path or at
 least some branching. This is not terrible, because irregular cases are rare for
@@ -553,6 +524,13 @@ div.page svg  {
   max-width: clamp(360px, 95vw, 600px);
   margin: 0 auto;
 }
+
+#drawing svg {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+}
 </style>
 
 <textarea id="textInput" class="form-control" rows="5" readonly>
@@ -741,3 +719,98 @@ randomdigit,zmij,17,18.920000
 <script
   id="MathJax-script" async
   src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+<!-- Rounding interval illustration -->
+<script src="https://cdn.jsdelivr.net/npm/@svgdotjs/svg.js@3.0/dist/svg.min.js"></script>
+<script>
+const width  = 600;
+const height = 120;
+const margin = 40;
+
+const draw = SVG()
+  .addTo('#drawing')
+  .size('100%', 'auto')
+  .viewbox(0, 0, width, height);
+
+// Axis position
+const y = height / 2;
+
+// Number range
+const min = 0;
+const max = 16;
+const arrowExtension = 0.6;
+
+const majorTicks = [0, 1, 2, 4, 8, 16];
+const minorPerInterval = 8;
+
+// Linear mapping (kept explicit and simple)
+function xFor(v) {
+  return margin + (v - min) / (max - min) * (width - 2 * margin);
+}
+
+// ---- Axis with subtle arrow ----
+draw.line(
+    margin,
+    y,
+    xFor(max + arrowExtension),
+    y
+  )
+  .stroke({ width: 1, color: '#000' })
+  .marker('end', 4, 4, add => {
+    add.path('M0,0 L4,2 L0,4 Z').fill('#000');
+  });
+
+// ---- Major ticks and labels ----
+majorTicks.forEach(v => {
+  const x = xFor(v);
+
+  draw.line(x, y - 6, x, y + 6)
+      .stroke({ width: 1, color: '#000' });
+
+  draw.text(String(v))
+      .font({
+        size: 14,
+        family: 'serif',
+        anchor: 'middle'
+      })
+      .center(x, y + 22);
+});
+
+// ---- Minor ticks (skip 0–1) ----
+for (let i = 0; i < majorTicks.length - 1; ++i) {
+  const a = majorTicks[i];
+  const b = majorTicks[i + 1];
+
+  if (a === 0 && b === 1) continue;
+
+  const step = (b - a) / minorPerInterval;
+
+  for (let j = 1; j < minorPerInterval; ++j) {
+    const v = a + j * step;
+    const x = xFor(v);
+
+    draw.line(x, y - 3, x, y + 3)
+        .stroke({ width: 1, color: '#000' });
+  }
+}
+
+// ---- Interval [7.75, 8.5] with filled circles ----
+const intervalY = y;
+const r = 3;
+
+const xA = xFor(7.75);
+const xB = xFor(8.5);
+
+// interval line
+draw.line(xA, intervalY, xB, intervalY)
+    .stroke({ width: 2, color: '#000' });
+
+// filled circles at endpoints
+draw.circle(2 * r)
+    .center(xA, intervalY)
+    .fill('#000');
+
+draw.circle(2 * r)
+    .center(xB, intervalY)
+    .fill('#000');
+</script>
