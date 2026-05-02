@@ -3,6 +3,8 @@ title: Every float on one page
 date: 2026-05-02
 ---
 
+<img src="/img/all-floats.png#floatright" class="floatright" width="40%" />
+
 In my [previous post]({{< relref "faster-dtoa.md" >}}) about
 [Żmij](https://github.com/vitaut/zmij), a high-performance binary-to-decimal
 floating-point conversion library, I drew a small diagram of a rounding
