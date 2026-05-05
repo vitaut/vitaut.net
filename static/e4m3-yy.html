@@ -3261,10 +3261,8 @@ $("#showSub").addEventListener("change", e => {
 (function initTheme() {
   const THEME_KEY = "e4m3-theme";
   const root = document.documentElement;
-  const prefersLight = window.matchMedia &&
-    window.matchMedia("(prefers-color-scheme: light)").matches;
   const saved = localStorage.getItem(THEME_KEY);
-  const initial = saved || (prefersLight ? "light" : "dark");
+  const initial = saved || "dark";
   root.setAttribute("data-theme", initial);
 
   $("#themeBtn").addEventListener("click", () => {
