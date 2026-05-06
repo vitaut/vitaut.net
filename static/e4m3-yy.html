@@ -1821,15 +1821,18 @@ function renderCandDiag(o) {
   // "irregular" values (c = 8) the left half of the interval is halved,
   // so a plain "±δ" label next to the band would be misleading — spell
   // the asymmetry out explicitly instead.
+  //
+  // Rendered as plain Unicode (±, δ) inside <foreignObject> rather than
+  // KaTeX: the math part would otherwise size itself in CSS pixels
+  // independently of the surrounding text, which on mobile (where the
+  // SVG is scaled down) leaves the "±δ" span rendering at near-desktop
+  // size while the surrounding "rounding interval (" shrinks with the
+  // viewBox — causing the math fragment to break out of the inline
+  // flow and float far to the right of its label.
   const lx = margin, ly = 10;
   mk("rect", {
     x: lx, y: ly, width: 20, height: 10, class: "cd-band",
   }, svg);
-  // Wider + taller than one text line: KaTeX renders \tfrac as a
-  // stacked fraction which needs more vertical space than the 20px
-  // baseline box, and the full string runs ~500–600px at 11px text.
-  // overflow=visible keeps the last \tfrac from being clipped on the
-  // right edge in browsers that default to hidden.
   const lf = mk("foreignObject", {
     x: lx + 24, y: ly - 10, width: 900, height: 30,
     overflow: "visible",
@@ -1844,9 +1847,9 @@ function renderCandDiag(o) {
   ld.style.display = "flex";
   ld.style.alignItems = "center";
   lf.appendChild(ld);
-  mathText(ld, irregular
-    ? "rounding interval (asymmetric: $-\\delta/2$, $+\\delta$)"
-    : "rounding interval ($\\pm\\delta$)");
+  ld.textContent = irregular
+    ? "rounding interval (asymmetric: −δ/2, +δ)"
+    : "rounding interval (±δ)";
 
   // v̄ marker.
   const vx = xOf(vbar);
