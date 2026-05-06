@@ -1499,23 +1499,33 @@ function kx(el, tex) {
 // segments wrap *inside* the cell — every wrapped line starts at
 // the left edge of column 2, so the leading `\;=\;` of each segment
 // lines up vertically across rows (the classic LaTeX `aligned`
-// look, achieved without `\begin{aligned}`).  The desktop case is a
-// degenerate single-row grid: the chain stays on one visual line.
+// look, achieved without `\begin{aligned}`).
 //
-// `<wbr>` between segments is the only point the browser is allowed
-// to break — KaTeX's own inline-block math never wraps mid-formula
-// because each segment is `white-space: nowrap`.  Tooltip wiring
-// (`attachBinTooltip`, `attachP10Tooltip`) is unaffected: those
-// helpers find their target via `hostEl.querySelector('.' +
-// markerClass)`, which descends through however many child
-// segments / containers the host now contains.
+// `rows` is an array-of-arrays: each inner array is one *intended*
+// visual row of segments.  A `<br>` is inserted between rows, so
+// the row boundary is honoured on every viewport (including
+// desktop, where it's the only way to force a break the panel
+// would otherwise be wide enough to skip).  Within a row, `<wbr>`
+// between segments is the only point the browser is allowed to
+// add a wrap — KaTeX's own inline-block math never breaks
+// mid-formula because each segment is `white-space: nowrap`.
+// Single-row chains pass `[[…]]`; multi-row chains pass one inner
+// array per intended visual row (e.g. `cScaled` keeps its old
+// 3-`=`-then-break-then-rest shape from the previous
+// `\begin{aligned}` rendering).
 //
-// Contract: every entry in `segments` must start with its leading
-// relation (`\;=\;` / `\;\approx\;`).  That's what produces both
-// the visual gap before the relation glyph and — because each
-// segment starts with the same `\;` — the consistent left-offset
-// that makes the `=` column line up at wrap points.
-function kxChain(el, lhs, segments) {
+// Tooltip wiring (`attachBinTooltip`, `attachP10Tooltip`) is
+// unaffected: those helpers find their target via
+// `hostEl.querySelector('.' + markerClass)`, which descends through
+// however many child segments / containers the host now contains.
+//
+// Contract: every segment must start with its leading relation
+// (`\;=\;` / `\;\approx\;`).  That's what produces both the
+// visual gap before the relation glyph and — because each segment
+// starts with the same `\;` — the consistent left-offset that
+// makes the `=` column line up at wrap points and at forced
+// `<br>` boundaries.
+function kxChain(el, lhs, rows) {
   el.textContent = "";
   const lhsSpan = document.createElement("span");
   lhsSpan.className = "kx-lhs";
@@ -1523,12 +1533,16 @@ function kxChain(el, lhs, segments) {
   el.appendChild(lhsSpan);
   const rhsSpan = document.createElement("span");
   rhsSpan.className = "kx-rhs";
-  for (let i = 0; i < segments.length; i++) {
-    if (i > 0) rhsSpan.appendChild(document.createElement("wbr"));
-    const seg = document.createElement("span");
-    seg.className = "kx-chain-seg";
-    kx(seg, segments[i]);
-    rhsSpan.appendChild(seg);
+  for (let r = 0; r < rows.length; r++) {
+    if (r > 0) rhsSpan.appendChild(document.createElement("br"));
+    const segments = rows[r];
+    for (let i = 0; i < segments.length; i++) {
+      if (i > 0) rhsSpan.appendChild(document.createElement("wbr"));
+      const seg = document.createElement("span");
+      seg.className = "kx-chain-seg";
+      kx(seg, segments[i]);
+      rhsSpan.appendChild(seg);
+    }
   }
   el.appendChild(rhsSpan);
 }
@@ -2266,14 +2280,28 @@ function render() {
     kxChain(cScaledEl,
       `\\bar{v}`,
       [
-        `\\;=\\; c \\, 2^{e_2} \\cdot p_{10} \\, 2^{e_p}`,
-        `\\;=\\; (c \\cdot p_{10}) \\cdot 2^{e_2 + e_p}`,
-        `\\;=\\; (${c} \\cdot ${p10HexTex(hex, exact)}) \\cdot 2^{${d.e2} ${binExpTerm}}`,
-        `\\;=\\; ${prodTex} \\cdot 2^{${scaleBefore}} ` +
-          `\\;\\text{(shift by ${expShift})}`,
-        `\\;=\\; ${shiftedTex} \\cdot 2^{${scaleAfter}}`,
-        `\\;${finalRel}\\; ${finalTex}`,
-        `\\;=\\; ${integral} + \\texttt{0x0.${fractionalHiHex}}`,
+        // Row 1 — algebraic identity + numeric substitution.  Three
+        // `=`s, ending at the substituted product before the
+        // mechanical-rearrangement work begins.  The forced row
+        // boundary here matches the `\\` break in the previous
+        // `\begin{aligned}` rendering, so even on a panel wide
+        // enough to fit the whole chain on one line, the visual
+        // split between "what v̄ is" and "how we narrow it" stays.
+        [
+          `\\;=\\; c \\, 2^{e_2} \\cdot p_{10} \\, 2^{e_p}`,
+          `\\;=\\; (c \\cdot p_{10}) \\cdot 2^{e_2 + e_p}`,
+          `\\;=\\; (${c} \\cdot ${p10HexTex(hex, exact)}) \\cdot 2^{${d.e2} ${binExpTerm}}`,
+        ],
+        // Row 2 — group → shift → narrow → split.  Four steps,
+        // ending at the integer/fractional decomposition that the
+        // `v̄_{10}` row below keys off of.
+        [
+          `\\;=\\; ${prodTex} \\cdot 2^{${scaleBefore}} ` +
+            `\\;\\text{(shift by ${expShift})}`,
+          `\\;=\\; ${shiftedTex} \\cdot 2^{${scaleAfter}}`,
+          `\\;${finalRel}\\; ${finalTex}`,
+          `\\;=\\; ${integral} + \\texttt{0x0.${fractionalHiHex}}`,
+        ],
       ]);
 
     // Exact bit-counts of the tail that could differ if we had used
@@ -2678,17 +2706,17 @@ function render() {
       : `\\underline{${deltaQ4Body}}`;
     const deltaQ4Tex     = `\\htmlClass{${deltaQ4Cls}}{${deltaQ4Mark}}`;
     // Same LHS + per-`=` RHS segmentation as the v̄ chain above (see
-    // `kxChain`): single line on desktop, line-wraps at every `=`
-    // on phones with the `=` column kept aligned.
+    // `kxChain`): single intended row on desktop, line-wraps at
+    // every `=` on phones with the `=` column kept aligned.
     kxChain(cDeltaEl,
       `\\delta`,
-      [
+      [[
         `\\;=\\; \\tfrac12 \\,\\mathrm{ulp}(v) \\cdot p_{10}\\, 2^{e_p}`,
         `\\;=\\; p_{10}\\cdot 2^{e_2 + e_p - 1}`,
         `\\;=\\; ${p10HexTex(hex, exact)} \\cdot 2^{${deltaExpStr}}`,
         `\\;=\\; ${deltaTex}`,
         `\\;${deltaQ4Rel}\\; ${deltaQ4Tex}`,
-      ]);
+      ]]);
     // Dim band for the Q.P10_BITS view: only the bits the p_{10}
     // error can actually perturb — nothing is truncated at this step
     // so there is no "invisible tail" to blanket-dim.  Zero when
@@ -3119,17 +3147,17 @@ function render() {
     const vbar10Tex  = `\\htmlClass{${vbar10Cls}}{${vbar10Mark}}`;
     const vbar10Rel  = vbar10Exact ? "=" : "\\approx";
     // Same LHS + per-`=` RHS segmentation as the v̄ / δ chains above
-    // (see `kxChain`): single line on desktop, line-wraps at every
-    // `=` on phones with the `=` column kept aligned.  Short enough
-    // that wrapping rarely fires in practice but kept consistent
-    // with its siblings so the whole "Scale by a power of 10" /
-    // "Select the candidate" panel reflows uniformly.
+    // (see `kxChain`): single intended row on desktop, line-wraps
+    // at every `=` on phones with the `=` column kept aligned.
+    // Short enough that wrapping rarely fires in practice but kept
+    // consistent with its siblings so the whole "Scale by a power
+    // of 10" / "Select the candidate" panel reflows uniformly.
     kxChain(cVbar10El,
       `\\bar v_{10}`,
-      [
+      [[
         `\\;=\\; \\bar v \\bmod 10`,
         `\\;${vbar10Rel}\\; ${vbar10Tex}`,
-      ]);
+      ]]);
     attachBinTooltip(cVbar10El, "bin-hint-vbar10",
                      binTex(cQ16, widthQ16, uncBitsVbar10, P10_BITS),
                      vbar10Exact
