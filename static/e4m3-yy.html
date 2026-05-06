@@ -794,17 +794,28 @@
     /* KaTeX renders as a rigid inline-block with no line breaking, so
        the candidate / flag tables (which use `\begin{aligned}` and
        can't be split into independent segments without losing their
-       column alignment) run past the panel border on phones.  Allow
-       the row to scroll horizontally when its formula is wider than
-       the panel and shrink the math a notch so the common case still
-       fits without a scrollbar.  Restricted to the mobile media query
-       because `overflow-x: auto` forces `overflow-y` to clip too,
-       which would chop off the hover-only `.bin-tooltip`s on desktop;
-       touch devices can't trigger those anyway. */
+       column alignment) run past the panel border on phones.  Shrink
+       the math a notch so the common case still fits within the
+       panel.
+       
+       `overflow-x: clip` (rather than `auto`): we want to clip
+       overflow if it ever happens, but never establish a touch-scroll
+       container.  iOS Safari grabs horizontal-drag gestures on any
+       `overflow-x: auto` element regardless of whether content
+       actually overflows, and KaTeX's rendered width tends to be a
+       fractional pixel wider than the panel — together they made the
+       predicate block feel "draggable" even when it visually fit.
+       `clip` (unlike `hidden`) lets `overflow-y` stay `visible`
+       instead of getting forced to `auto`, so we don't accidentally
+       create a vertical scroller either.  Bin-tooltips are already
+       gated behind `(hover: hover)` so they don't render on touch
+       anyway, which means the old "needs auto so scroll works on
+       overflow" trade-off is moot here too — touch users wouldn't be
+       able to actually drag the scroll on a small hint glyph. */
     .compute-row {
       font-size: 13px;
       max-width: 100%;
-      overflow-x: auto;
+      overflow-x: clip;
     }
     /* Chained-equation rows (`\bar v`, `\delta`, `\bar v_{10}`) opt
        out: their per-`=` segments wrap naturally so there's nothing
