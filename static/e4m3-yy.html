@@ -983,18 +983,21 @@
       <div class="compute-row compute-row-flow">
         <span class="compute-expr" id="cVbar10"></span>
       </div>
-      <div class="compute-row">
-        <span class="compute-expr" id="cFlags"></span>
-      </div>
-      <!-- ε_c / η_c / ε_u definitions for the predicate row above.
+      <!-- ε_c / η_c / ε_u definitions for the predicate row below.
+           Placed here — between v̄_{10} and the predicate table —
+           so the parity-bias values are introduced *before* they're
+           referenced in the predicates' RHSs (read top-down).
            Lifted out of the cFlags `\begin{aligned}` block (where it
            inherited the wide column layout and forced horizontal
-           scrolling) and placed in its own `compute-row-flow` row so
-           the comma-separated definitions reflow at definition
+           scrolling) into its own `compute-row-flow` row so the
+           comma-separated definitions reflow at definition
            boundaries on phones, mirroring the `=`-aligned reflow
            used by `\bar v` / `\delta` / `\bar v_{10}` above. -->
       <div class="compute-row compute-row-flow">
         <span class="compute-expr" id="cWhere"></span>
+      </div>
+      <div class="compute-row">
+        <span class="compute-expr" id="cFlags"></span>
       </div>
       <div class="compute-row">
         <span class="compute-expr" id="cFinal"></span>
@@ -3274,12 +3277,15 @@ function render() {
        `\\vphantom{\\stackrel{?}{\\ge}}` +
        `\\end{aligned}`);
 
-    // Trailing definition row: ε_c / η_c / ε_u parity biases.  The
-    // `\bar v_{10}` shorthand is introduced on its own preamble row
-    // above (with values plugged in), so it's not repeated here.
-    // η_c is derived from ε_c but gets its own definition line so
-    // the reader can read off the signed value (−1 or +1) directly
-    // without having to do the `2ε_c − 1` arithmetic in their head.
+    // Definition row for ε_c / η_c / ε_u parity biases, sitting
+    // between v̄_{10} and the predicate table (see HTML markup) so
+    // the values are introduced *before* they're referenced in the
+    // predicate RHSs.  The `\bar v_{10}` shorthand is introduced on
+    // its own preamble row above (with values plugged in), so it's
+    // not repeated here.  η_c is derived from ε_c but gets its own
+    // definition line so the reader can read off the signed value
+    // (−1 or +1) directly without having to do the `2ε_c − 1`
+    // arithmetic in their head.
     //
     // Rendered as a `kxChain` row in its own `compute-row-flow`
     // grid rather than as a tail row of `cFlags`'s `\begin{aligned}`
@@ -3291,15 +3297,18 @@ function render() {
     // become its own `nowrap` segment that wraps independently on
     // narrow viewports while still sitting on one line on desktop.
     //
-    // Each segment after the first leads with `\quad` to provide
-    // the inter-definition gap (matching the original `\\quad`
-    // separators) and to give wrapped lines a small left indent so
-    // continuation rows visually distinguish from a fresh "where"
-    // header line.  ε_u only appears for regular values — the
-    // irregular `min(½, δ/2)` branch above doesn't use it, so
+    // No LHS label (`""`): the row is a bare list of definitions,
+    // sitting between v̄_{10} and the predicate table where its
+    // top-down position already conveys "these constants are about
+    // to be used".  Each segment after the first leads with `\quad`
+    // to provide the inter-definition gap (matching the original
+    // `\\quad` separators) and to give wrapped lines a small left
+    // indent so continuation rows visually distinguish from the
+    // first definition.  ε_u only appears for regular values —
+    // the irregular `min(½, δ/2)` branch below doesn't use it, so
     // listing it would be a phantom symbol with no anchor.
-    kxChain(cWhereEl, `\\text{where}`, [[
-      `\\; \\varepsilon_c = c \\bmod 2 = ${epsC},`,
+    kxChain(cWhereEl, ``, [[
+      `\\varepsilon_c = c \\bmod 2 = ${epsC},`,
       `\\quad \\eta_c = 2\\varepsilon_c - 1 ` +
         `= ${epsCsigned >= 0 ? "+" : ""}${epsCsigned}` +
         (irregular ? `` : `,`),
