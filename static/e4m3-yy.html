@@ -366,6 +366,38 @@
     color: var(--fg);
   }
   .compute-row .katex { font-size: 1em; color: inherit; }
+  /* Wrappable equation chains (see `kxChain` in the script).  Each
+     `compute-row-flow` row contains a `.compute-expr` laid out as a
+     two-column grid: column 1 holds the LHS (`\bar v`, `\delta`,
+     `\bar v_{10}`), column 2 holds all the `\;=\;` segments inside
+     a single `.kx-rhs` container.  The RHS segments are `nowrap`
+     inline-blocks separated by `<wbr>`, so on a wide screen they
+     sit on a single visual line (KaTeX's own binary-relation
+     spacing handles the visual `=` margins) while a narrow
+     viewport line-wraps inside column 2 at every `=` boundary —
+     and since every wrapped line starts at the same left edge
+     (the column-2 origin), the leading `\;=\;` of each segment
+     lines up vertically across rows.  This is the LaTeX
+     `\begin{aligned}` look without the rigid layout — the chain
+     reflows fluidly while keeping its `=` column.
+
+     `align-items: baseline` baselines the LHS with the first line
+     of the RHS so subscripts (`\bar v_{10}`'s `_{10}`) hang
+     normally below; bumped `line-height` keeps wrapped RHS lines
+     from feeling cramped (KaTeX's inline-block default leaves no
+     room between rows).  No explicit `column-gap` — the leading
+     `\;` inside each segment provides the LHS↔RHS spacing, so
+     adding grid gap on top would double up. */
+  .compute-row-flow .compute-expr {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: baseline;
+    line-height: 1.6;
+  }
+  .kx-chain-seg {
+    display: inline-block;
+    white-space: nowrap;
+  }
   /* The e_{10} formula sits between the section title and the p_{10}
      reference table — give it a small bottom margin so it reads as a
      leading preamble rather than visually merging with the table's
@@ -745,20 +777,25 @@
     .compute { padding: 12px 14px; }
     h1 { font-size: 22px; }
     /* KaTeX renders as a rigid inline-block with no line breaking, so
-       the long aligned blocks under "Scale by a power of 10"
-       (`\bar v = c\, 2^{e_2}\cdot p_{10}\, 2^{e_p} = …`) and the
-       candidate / flag tables run past the panel border on phones.
-       Allow the row to scroll horizontally when its formula is wider
-       than the panel and shrink the math a notch so the common case
-       still fits without a scrollbar.  Restricted to the mobile media
-       query because `overflow-x: auto` forces `overflow-y` to clip
-       too, which would chop off the hover-only `.bin-tooltip`s on
-       desktop; touch devices can't trigger those anyway. */
+       the candidate / flag tables (which use `\begin{aligned}` and
+       can't be split into independent segments without losing their
+       column alignment) run past the panel border on phones.  Allow
+       the row to scroll horizontally when its formula is wider than
+       the panel and shrink the math a notch so the common case still
+       fits without a scrollbar.  Restricted to the mobile media query
+       because `overflow-x: auto` forces `overflow-y` to clip too,
+       which would chop off the hover-only `.bin-tooltip`s on desktop;
+       touch devices can't trigger those anyway. */
     .compute-row {
       font-size: 13px;
       max-width: 100%;
       overflow-x: auto;
     }
+    /* Chained-equation rows (`\bar v`, `\delta`, `\bar v_{10}`) opt
+       out: their per-`=` segments wrap naturally so there's nothing
+       to scroll, and `overflow-x: auto` would clip the bin-tooltips
+       that hang above the now-multi-line content. */
+    .compute-row-flow { overflow-x: visible; }
   }
   @media (max-width: 400px) {
     :root {
@@ -880,10 +917,10 @@
     </table>
     <div class="compute-grid">
       <div class="compute-phase">Scale by a power of 10</div>
-      <div class="compute-row">
+      <div class="compute-row compute-row-flow">
         <span class="compute-expr" id="cScaled"></span>
       </div>
-      <div class="compute-row">
+      <div class="compute-row compute-row-flow">
         <span class="compute-expr" id="cDelta"></span>
       </div>
       <div class="compute-phase">Compute candidates</div>
@@ -891,7 +928,7 @@
         <span class="compute-expr" id="cCands"></span>
       </div>
       <div class="compute-phase">Select the candidate</div>
-      <div class="compute-row">
+      <div class="compute-row compute-row-flow">
         <span class="compute-expr" id="cVbar10"></span>
       </div>
       <div class="compute-row">
@@ -1445,6 +1482,55 @@ function kx(el, tex) {
   katex.render(tex, el, {
     throwOnError: false, output: "html", trust: true,
   });
+}
+
+// Render an equation chain (`lhs = rhs_1 = rhs_2 = …`) so it can
+// reflow on narrow viewports while keeping the `=` signs aligned
+// across wrap lines.  Layout:
+//
+//   ┌─────────┬──────────────────────────────────────────────────┐
+//   │   LHS   │ = rhs_1   = rhs_2   = rhs_3   …                  │
+//   │         │ = rhs_4   = rhs_5   …                            │   (wrap)
+//   └─────────┴──────────────────────────────────────────────────┘
+//
+// `el` is set up as a 2-column CSS grid: column 1 holds the bare
+// LHS, column 2 holds *all* the `\;=\; …` segments inside a single
+// RHS container.  When the RHS overflows its cell on a phone, the
+// segments wrap *inside* the cell — every wrapped line starts at
+// the left edge of column 2, so the leading `\;=\;` of each segment
+// lines up vertically across rows (the classic LaTeX `aligned`
+// look, achieved without `\begin{aligned}`).  The desktop case is a
+// degenerate single-row grid: the chain stays on one visual line.
+//
+// `<wbr>` between segments is the only point the browser is allowed
+// to break — KaTeX's own inline-block math never wraps mid-formula
+// because each segment is `white-space: nowrap`.  Tooltip wiring
+// (`attachBinTooltip`, `attachP10Tooltip`) is unaffected: those
+// helpers find their target via `hostEl.querySelector('.' +
+// markerClass)`, which descends through however many child
+// segments / containers the host now contains.
+//
+// Contract: every entry in `segments` must start with its leading
+// relation (`\;=\;` / `\;\approx\;`).  That's what produces both
+// the visual gap before the relation glyph and — because each
+// segment starts with the same `\;` — the consistent left-offset
+// that makes the `=` column line up at wrap points.
+function kxChain(el, lhs, segments) {
+  el.textContent = "";
+  const lhsSpan = document.createElement("span");
+  lhsSpan.className = "kx-lhs";
+  kx(lhsSpan, lhs);
+  el.appendChild(lhsSpan);
+  const rhsSpan = document.createElement("span");
+  rhsSpan.className = "kx-rhs";
+  for (let i = 0; i < segments.length; i++) {
+    if (i > 0) rhsSpan.appendChild(document.createElement("wbr"));
+    const seg = document.createElement("span");
+    seg.className = "kx-chain-seg";
+    kx(seg, segments[i]);
+    rhsSpan.appendChild(seg);
+  }
+  el.appendChild(rhsSpan);
 }
 
 // P10_BITS-wide fixed-point approximation of 10^decExp, mirroring
@@ -2161,34 +2247,34 @@ function render() {
     const finalMark  = finalExact ? finalBody : `\\underline{${finalBody}}`;
     const finalTex   = `\\htmlClass{${finalCls}}{${finalMark}}`;
     const finalRel   = finalExact ? "=" : "\\approx";
-    // Two-line `aligned` block keyed on the leading `=` of each row.
-    // Row 1 covers the algebraic identity plus numeric substitution:
-    //   v̄ = c·2^{e_2}·p_{10}·2^{e_p}
-    //     = (c·p_{10})·2^{e_2+e_p}
-    //     = (${c}·${p10hex})·2^{…}
-    // Row 2 carries the mechanical rearrangement on those substituted
-    // values — group into a Q.P10_BITS integer, shift by expShift,
-    // narrow to the low-byte-truncated display (signalled by `≈` + the
-    // shortened hex literal when the dropped byte was non-zero), and
-    // finish with an exact integer / fractional decomposition.  The
-    // integer is shown in decimal; the fractional stays the same hex
-    // byte the truncated display just printed.  That last `=` is
-    // strict equality — `0xII.HH = II + 0x0.HH` is a lossless split,
-    // no approximation is introduced — but it's the piece that makes
-    // the `v̄_{10} = v̄ mod 10` step below visually obvious (mod-10
-    // just strips the tens digit from the decimal integer and keeps
-    // the fractional as-is).
-    kx(cScaledEl,
-       `\\begin{aligned}` +
-       `\\bar{v} &\\;=\\; c \\, 2^{e_2} \\cdot p_{10} \\, 2^{e_p} \\;=\\; ` +
-       `(c \\cdot p_{10}) \\cdot 2^{e_2 + e_p} \\;=\\; ` +
-       `(${c} \\cdot ${p10HexTex(hex, exact)}) \\cdot 2^{${d.e2} ${binExpTerm}} \\\\ ` +
-       `&\\;=\\; ${prodTex} \\cdot 2^{${scaleBefore}} ` +
-       `\\;\\text{(shift by ${expShift})}\\;=\\; ` +
-       `${shiftedTex} \\cdot 2^{${scaleAfter}} ` +
-       `\\;${finalRel}\\; ${finalTex}` +
-       `\\;=\\; ${integral} + \\texttt{0x0.${fractionalHiHex}}` +
-       `\\end{aligned}`);
+    // Equation chain rendered as LHS + per-`=` RHS segments via
+    // `kxChain` so it reflows on narrow viewports while keeping its
+    // `=` column aligned (see kxChain's docstring for the layout).
+    // Phases of the chain:
+    //   v̄ = c·2^{e_2}·p_{10}·2^{e_p}                  (definition)
+    //     = (c·p_{10})·2^{e_2+e_p}                     (regroup)
+    //     = (${c}·${p10hex})·2^{…}                     (substitute)
+    //     = prod·2^{scaleBefore}  (shift by N)         (Q.P10 integer)
+    //     = shifted·2^{scaleAfter}                     (post-shift)
+    //     ≈ final                                      (low-byte truncation)
+    //     = integral + 0x0.fractional                  (int/frac split)
+    // The trailing `=` is strict equality — `0xII.HH = II + 0x0.HH`
+    // is a lossless split, no approximation is introduced — but it's
+    // the piece that makes the `v̄_{10} = v̄ mod 10` step below
+    // visually obvious (mod-10 just strips the tens digit from the
+    // decimal integer and keeps the fractional as-is).
+    kxChain(cScaledEl,
+      `\\bar{v}`,
+      [
+        `\\;=\\; c \\, 2^{e_2} \\cdot p_{10} \\, 2^{e_p}`,
+        `\\;=\\; (c \\cdot p_{10}) \\cdot 2^{e_2 + e_p}`,
+        `\\;=\\; (${c} \\cdot ${p10HexTex(hex, exact)}) \\cdot 2^{${d.e2} ${binExpTerm}}`,
+        `\\;=\\; ${prodTex} \\cdot 2^{${scaleBefore}} ` +
+          `\\;\\text{(shift by ${expShift})}`,
+        `\\;=\\; ${shiftedTex} \\cdot 2^{${scaleAfter}}`,
+        `\\;${finalRel}\\; ${finalTex}`,
+        `\\;=\\; ${integral} + \\texttt{0x0.${fractionalHiHex}}`,
+      ]);
 
     // Exact bit-counts of the tail that could differ if we had used
     // the full-precision p10 — mirrors the error intervals shown
@@ -2591,12 +2677,18 @@ function render() {
       ? deltaQ4Body
       : `\\underline{${deltaQ4Body}}`;
     const deltaQ4Tex     = `\\htmlClass{${deltaQ4Cls}}{${deltaQ4Mark}}`;
-    kx(cDeltaEl,
-       `\\delta \\;=\\; \\tfrac12 \\,\\mathrm{ulp}(v) \\cdot p_{10}\\, 2^{e_p} \\;=\\; ` +
-       `p_{10}\\cdot 2^{e_2 + e_p - 1} \\;=\\; ` +
-       `${p10HexTex(hex, exact)} \\cdot 2^{${deltaExpStr}} ` +
-       `\\;=\\; ${deltaTex} ` +
-       `\\;${deltaQ4Rel}\\; ${deltaQ4Tex}`);
+    // Same LHS + per-`=` RHS segmentation as the v̄ chain above (see
+    // `kxChain`): single line on desktop, line-wraps at every `=`
+    // on phones with the `=` column kept aligned.
+    kxChain(cDeltaEl,
+      `\\delta`,
+      [
+        `\\;=\\; \\tfrac12 \\,\\mathrm{ulp}(v) \\cdot p_{10}\\, 2^{e_p}`,
+        `\\;=\\; p_{10}\\cdot 2^{e_2 + e_p - 1}`,
+        `\\;=\\; ${p10HexTex(hex, exact)} \\cdot 2^{${deltaExpStr}}`,
+        `\\;=\\; ${deltaTex}`,
+        `\\;${deltaQ4Rel}\\; ${deltaQ4Tex}`,
+      ]);
     // Dim band for the Q.P10_BITS view: only the bits the p_{10}
     // error can actually perturb — nothing is truncated at this step
     // so there is no "invisible tail" to blanket-dim.  Zero when
@@ -3026,9 +3118,18 @@ function render() {
       : `\\underline{${vbar10Body}}`;
     const vbar10Tex  = `\\htmlClass{${vbar10Cls}}{${vbar10Mark}}`;
     const vbar10Rel  = vbar10Exact ? "=" : "\\approx";
-    kx(cVbar10El,
-       `\\bar v_{10} \\;=\\; \\bar v \\bmod 10 ` +
-       `\\;${vbar10Rel}\\; ${vbar10Tex}`);
+    // Same LHS + per-`=` RHS segmentation as the v̄ / δ chains above
+    // (see `kxChain`): single line on desktop, line-wraps at every
+    // `=` on phones with the `=` column kept aligned.  Short enough
+    // that wrapping rarely fires in practice but kept consistent
+    // with its siblings so the whole "Scale by a power of 10" /
+    // "Select the candidate" panel reflows uniformly.
+    kxChain(cVbar10El,
+      `\\bar v_{10}`,
+      [
+        `\\;=\\; \\bar v \\bmod 10`,
+        `\\;${vbar10Rel}\\; ${vbar10Tex}`,
+      ]);
     attachBinTooltip(cVbar10El, "bin-hint-vbar10",
                      binTex(cQ16, widthQ16, uncBitsVbar10, P10_BITS),
                      vbar10Exact
