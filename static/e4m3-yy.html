@@ -106,6 +106,16 @@
     font-feature-settings: "tnum" 1, "cv11" 1;
   }
 
+  /* Bit-layout sizing.  The header bar's geometry is derived entirely
+     from these two values: the 8 bit boxes (4 exp + 3 sig + 1 sign)
+     and the per-group decode/label tracks above and below them all
+     scale together via calc(), so shrinking them on mobile keeps the
+     three rows perfectly aligned. */
+  :root {
+    --bit-w:   44px;
+    --bit-gap: 6px;
+  }
+
   .wrap {
     max-width: 1200px;
     margin: 0 auto;
@@ -167,11 +177,11 @@
 
   .bit-row {
     display: inline-flex;
-    gap: 6px;
+    gap: var(--bit-gap);
   }
 
   .bit {
-    width: 44px;
+    width: var(--bit-w);
     height: 52px;
     display: flex;
     flex-direction: column;
@@ -236,7 +246,7 @@
   /* Top row of per-group decoded labels (above the 8 bits). */
   .bits-top {
     display: flex;
-    gap: 6px;
+    gap: var(--bit-gap);
     margin-bottom: 6px;
   }
   .bit-decode {
@@ -251,9 +261,24 @@
   .bit-decode.exp  { color: var(--exp); }
   .bit-decode.sig  { color: var(--mant); }
 
+  /* Per-group track widths.  Each track spans N bits + (N-1) gaps so it
+     lines up exactly with the corresponding span of bit boxes below.
+     Using calc() over the CSS variables keeps the three rows in lock
+     step at every breakpoint. */
+  .bit-decode.sign,
+  .bits-bottom > .bit-label.sign  { width: var(--bit-w); }
+  .bit-decode.exp,
+  .bits-bottom > .bit-label.exp   {
+    width: calc(4 * var(--bit-w) + 3 * var(--bit-gap));
+  }
+  .bit-decode.sig,
+  .bits-bottom > .bit-label.sig   {
+    width: calc(3 * var(--bit-w) + 2 * var(--bit-gap));
+  }
+
   .bits-bottom {
     display: flex;
-    gap: 6px;
+    gap: var(--bit-gap);
     margin-top: 22px;   /* clear the bit-index labels (idx: bottom -18px) */
   }
   .bits-bottom > .bit-label { margin-top: 0; }
@@ -697,6 +722,58 @@
     text-align: center;
   }
   footer a { color: var(--fg-dim); }
+
+  /* ---------- Mobile / narrow-viewport tuning ----------
+     The bit-layout panel at the top of the page is the widest
+     fixed-size element on the page (8 bit boxes + 7 gaps + the
+     decode/label tracks above and below).  At its desktop size
+     (--bit-w: 44px, --bit-gap: 6px) the row is 394px wide, which
+     exceeds the content area on phones once the wrap+panel padding
+     is accounted for.  Shrinking the two CSS variables rescales the
+     entire bit panel — bit boxes and their decode/label tracks —
+     in lockstep, while the rest of the page (which already uses
+     flex-wrap or width:100% SVGs) needs only minor padding tweaks. */
+  @media (max-width: 600px) {
+    :root {
+      --bit-w:   36px;
+      --bit-gap: 5px;
+    }
+    .bit { height: 46px; font-size: 18px; }
+    .wrap { padding: 24px 16px 60px; }
+    .panel { padding: 16px 14px; }
+    .controls { padding: 10px 14px; }
+    .compute { padding: 12px 14px; }
+    h1 { font-size: 22px; }
+    /* KaTeX renders as a rigid inline-block with no line breaking, so
+       the long aligned blocks under "Scale by a power of 10"
+       (`\bar v = c\, 2^{e_2}\cdot p_{10}\, 2^{e_p} = …`) and the
+       candidate / flag tables run past the panel border on phones.
+       Allow the row to scroll horizontally when its formula is wider
+       than the panel and shrink the math a notch so the common case
+       still fits without a scrollbar.  Restricted to the mobile media
+       query because `overflow-x: auto` forces `overflow-y` to clip
+       too, which would chop off the hover-only `.bin-tooltip`s on
+       desktop; touch devices can't trigger those anyway. */
+    .compute-row {
+      font-size: 13px;
+      max-width: 100%;
+      overflow-x: auto;
+    }
+  }
+  @media (max-width: 400px) {
+    :root {
+      --bit-w:   30px;
+      --bit-gap: 4px;
+    }
+    .bit { height: 40px; font-size: 16px; border-radius: 6px; }
+    .bit .idx { font-size: 9px; bottom: -16px; }
+    .bits-bottom { margin-top: 20px; }
+    .bit-decode.sign { font-size: 12px; }
+    .bit-label { font-size: 10px; }
+    .wrap { padding: 20px 10px 60px; }
+    .panel { padding: 12px 10px; }
+    .compute-row { font-size: 12px; }
+  }
 </style>
 </head>
 
@@ -717,17 +794,17 @@
       <div class="bit-group">
         <!-- per-group decoded label, above the bits -->
         <div class="bits-top">
-          <div class="bit-decode sign" id="dSign" style="width:44px;"></div>
-          <div class="bit-decode exp"  id="dExp"  style="width:194px;"></div>
-          <div class="bit-decode sig"  id="dSig"  style="width:144px;"></div>
+          <div class="bit-decode sign" id="dSign"></div>
+          <div class="bit-decode exp"  id="dExp"></div>
+          <div class="bit-decode sig"  id="dSig"></div>
         </div>
         <!-- the 8 bit boxes -->
         <div class="bit-row" id="bitRow"></div>
         <!-- static group names, below the bits -->
         <div class="bits-bottom">
-          <div class="bit-label" style="width:44px;">sign</div>
-          <div class="bit-label" style="width:194px;">exponent</div>
-          <div class="bit-label" style="width:144px;">significand</div>
+          <div class="bit-label sign">sign</div>
+          <div class="bit-label exp">exponent</div>
+          <div class="bit-label sig">significand</div>
         </div>
       </div>
 
