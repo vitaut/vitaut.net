@@ -934,6 +934,16 @@
       <div class="compute-row">
         <span class="compute-expr" id="cFlags"></span>
       </div>
+      <!-- ε_c / η_c / ε_u definitions for the predicate row above.
+           Lifted out of the cFlags `\begin{aligned}` block (where it
+           inherited the wide column layout and forced horizontal
+           scrolling) and placed in its own `compute-row-flow` row so
+           the comma-separated definitions reflow at definition
+           boundaries on phones, mirroring the `=`-aligned reflow
+           used by `\bar v` / `\delta` / `\bar v_{10}` above. -->
+      <div class="compute-row compute-row-flow">
+        <span class="compute-expr" id="cWhere"></span>
+      </div>
       <div class="compute-row">
         <span class="compute-expr" id="cFinal"></span>
       </div>
@@ -2098,6 +2108,7 @@ function render() {
   const cDeltaEl    = $("#cDelta");
   const cVbar10El   = $("#cVbar10");
   const cFlagsEl    = $("#cFlags");
+  const cWhereEl    = $("#cWhere");
   const cFinalEl    = $("#cFinal");
   if (d.kind === "zero" || d.kind === "nan") {
     kx(cE10El,     `e_{10} \\;=\\; \\text{—}`);
@@ -2106,6 +2117,7 @@ function render() {
     kx(cDeltaEl,   `\\text{—}`);
     kx(cVbar10El,  `\\text{—}`);
     kx(cFlagsEl,   `\\text{—}`);
+    cWhereEl.textContent = "";
     kx(cFinalEl,   `\\text{—}`);
     renderCandDiag({ hide: true });
   } else {
@@ -3207,32 +3219,42 @@ function render() {
                 `${iffTex} ${predFracTex} ${cmpTex(uncU1, u1RelTex)} ${halfTex} + ${epsUTex}`))} \\\\ ` +
        `${rowHead(d1State, "d_1")} ` +
        `& ${rowBody(d1State, `\\; \\text{otherwise}`)} ` +
-       `\\vphantom{\\stackrel{?}{\\ge}} \\\\[3pt] ` +
-       // Trailing definition row: ε_c / η_c / ε_u parity biases.  The
-       // `\bar v_{10}` shorthand is introduced on its own preamble row
-       // above (with values plugged in), so it's not repeated here.
-       // η_c is derived from ε_c but gets its own definition line so
-       // the reader can read off the signed value (−1 or +1) directly
-       // without having to do the `2ε_c − 1` arithmetic in their head.
-       // Col 1 stays empty (no checkbox/letter) and col 2 carries the
-       // legend at default foreground contrast — it's a definition,
-       // not a predicate outcome, and greying it made it harder to
-       // read than the comparisons it annotates.
-       `& \\; \\text{where}\\; ` +
-       `\\varepsilon_c = c \\bmod 2 = ${epsC}, ` +
-       `\\quad ` +
-       `\\eta_c = 2\\varepsilon_c - 1 = ${epsCsigned >= 0 ? "+" : ""}${epsCsigned}` +
-       // ε_u only enters the regular u_1 predicate (`½ + ε_u`).
-       // Irregulars use a strict `>` against `min(½, δ/2)` with no
-       // parity bias (the asymmetric threshold already breaks ties
-       // deterministically — see "keep level, irregular" comment),
-       // so listing ε_u in the legend would be a phantom symbol with
-       // no anchor in the rows above.  Trailing `\quad` only appears
-       // on the regular branch where the next entry is real.
-       (irregular
-          ? ` `
-          : `, \\quad \\varepsilon_u = u_1 \\bmod 2 = ${epsU} `) +
+       `\\vphantom{\\stackrel{?}{\\ge}}` +
        `\\end{aligned}`);
+
+    // Trailing definition row: ε_c / η_c / ε_u parity biases.  The
+    // `\bar v_{10}` shorthand is introduced on its own preamble row
+    // above (with values plugged in), so it's not repeated here.
+    // η_c is derived from ε_c but gets its own definition line so
+    // the reader can read off the signed value (−1 or +1) directly
+    // without having to do the `2ε_c − 1` arithmetic in their head.
+    //
+    // Rendered as a `kxChain` row in its own `compute-row-flow`
+    // grid rather than as a tail row of `cFlags`'s `\begin{aligned}`
+    // block — the predicate table needs a wide column layout to
+    // keep its `\iff` arrows aligned and overflows horizontally on
+    // phones, which dragged the `where` definitions along for the
+    // scroll.  Pulling them out into their own LHS-(`where`) +
+    // per-definition-RHS grid lets each comma-separated definition
+    // become its own `nowrap` segment that wraps independently on
+    // narrow viewports while still sitting on one line on desktop.
+    //
+    // Each segment after the first leads with `\quad` to provide
+    // the inter-definition gap (matching the original `\\quad`
+    // separators) and to give wrapped lines a small left indent so
+    // continuation rows visually distinguish from a fresh "where"
+    // header line.  ε_u only appears for regular values — the
+    // irregular `min(½, δ/2)` branch above doesn't use it, so
+    // listing it would be a phantom symbol with no anchor.
+    kxChain(cWhereEl, `\\text{where}`, [[
+      `\\; \\varepsilon_c = c \\bmod 2 = ${epsC},`,
+      `\\quad \\eta_c = 2\\varepsilon_c - 1 ` +
+        `= ${epsCsigned >= 0 ? "+" : ""}${epsCsigned}` +
+        (irregular ? `` : `,`),
+      ...(irregular
+        ? []
+        : [`\\quad \\varepsilon_u = u_1 \\bmod 2 = ${epsU}`]),
+    ]]);
     // Hover tooltips for each inexact hex literal — binary form with
     // low uncertain bits dimmed on line 1, the `val + [0, err)`
     // interval on line 2 (empty line 2 when exact).  Mirrors the
