@@ -398,6 +398,18 @@
     display: inline-block;
     white-space: nowrap;
   }
+  /* Candidates row (`cCands`): 4 independent KaTeX cells laid out
+     as a 2×2 grid on desktop (d_0/u_0 / d_1/u_1) and collapsing to
+     a single column on phones, so the candidate picture stacks
+     vertically instead of horizontally scrolling inside its row.
+     Overrides the `.compute-row-flow .compute-expr` kxChain grid
+     above (higher specificity via the extra `.cands-grid`). */
+  .compute-row-flow .compute-expr.cands-grid {
+    grid-template-columns: repeat(2, max-content);
+    column-gap: 28px;
+    row-gap: 4px;
+  }
+  .cand-cell { white-space: nowrap; }
   /* The e_{10} formula sits between the section title and the p_{10}
      reference table — give it a small bottom margin so it reads as a
      leading preamble rather than visually merging with the table's
@@ -796,6 +808,39 @@
        to scroll, and `overflow-x: auto` would clip the bin-tooltips
        that hang above the now-multi-line content. */
     .compute-row-flow { overflow-x: visible; }
+    /* Candidates grid collapses to one column on phones — d_0,
+       u_0, d_1, u_1 stack vertically instead of pushing the row
+       wider than the panel. */
+    .compute-row-flow .compute-expr.cands-grid {
+      grid-template-columns: max-content;
+      row-gap: 2px;
+    }
+    /* Per-group decoded labels above the bit boxes (`e₂ = E − bias
+       − 3 = …`, `c = 1.001₂·2³ = …`).  Each label sits in a
+       fixed-width track sized to its bit group, so on phones the
+       label outgrows its track and — with the desktop `nowrap` —
+       overflows into the neighbouring track, visually overlapping
+       the next group's decode.  Allow wrapping so the text breaks
+       at its natural word boundaries (spaces around `=`, `−`, `·`)
+       and stacks centred within its track instead.
+
+       Bumped `min-height` reserves enough vertical room for the
+       common two-line case so all three tracks share the same y
+       and their bit boxes line up below.  `display: flex` +
+       `justify-content: flex-end` bottom-aligns the wrapped text
+       inside each track — without it the short sign label (`+` /
+       `−`) hugs the top of its 28px track and looks visually
+       detached from its bit box, while the wrapped exp / sig
+       labels reach the bottom; flex-end aligns the *last* line of
+       every label flush with the row of bit boxes. */
+    .bit-decode {
+      white-space: normal;
+      line-height: 1.2;
+      min-height: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
   }
   @media (max-width: 400px) {
     :root {
@@ -924,8 +969,15 @@
         <span class="compute-expr" id="cDelta"></span>
       </div>
       <div class="compute-phase">Compute candidates</div>
-      <div class="compute-row">
-        <span class="compute-expr" id="cCands"></span>
+      <!-- 4-candidate picture rendered as 4 independent KaTeX cells
+           in a CSS grid (`cands-grid` rule below) — desktop keeps the
+           original 2×2 layout (d_0/u_0 on row 1, d_1/u_1 on row 2);
+           phones collapse to a single column so the cells stack
+           vertically instead of horizontally scrolling inside the
+           row.  `compute-row-flow` provides the `overflow-x: visible`
+           the column-stack relies on. -->
+      <div class="compute-row compute-row-flow">
+        <span class="compute-expr cands-grid" id="cCands"></span>
       </div>
       <div class="compute-phase">Select the candidate</div>
       <div class="compute-row compute-row-flow">
@@ -2067,11 +2119,11 @@ function render() {
   if (d.kind === "nan") {
     $("#dSig").textContent = `M = ${mBits}₂ (NaN)`;
   } else if (d.kind === "zero") {
-    $("#dSig").textContent = `c = 0.000₂ · 2³ = 0`;
+    $("#dSig").textContent = `c = 0.000₂·2³ = 0`;
   } else if (d.kind === "subnormal") {
-    $("#dSig").textContent = `c = 0.${mBits}₂ · 2³ = ${d.m}`;
+    $("#dSig").textContent = `c = 0.${mBits}₂·2³ = ${d.m}`;
   } else {
-    $("#dSig").textContent = `c = 1.${mBits}₂ · 2³ = ${d.gridM}`;
+    $("#dSig").textContent = `c = 1.${mBits}₂·2³ = ${d.gridM}`;
   }
 
   // Summary: the grid's native form  v = c · 2^{e₂},  where c and e₂
@@ -2608,22 +2660,28 @@ function render() {
     //   k = 0 (trim):  nearest multiples of 10 bracketing v̄
     //   k = 1 (keep):  nearest integers bracketing v̄
     //
-    // Rendered as a single `\begin{aligned}` block with four alignment
-    // points per row so every `=` lines up vertically:
-    //
-    //   col 1 (r): d_k / u_k letter
-    //   col 2 (l): = (definition)
-    //   col 3 (r): empty — forces col 4 into left-align territory
-    //   col 4 (l): = (numerical value)  ← rightmost `=` aligns here
-    //
-    // Same four-column layout repeated for the u-half of the row.
-    kx(cCandsEl,
-       `\\begin{aligned}` +
-       `d_0 &= 10 \\lfloor \\bar v / 10 \\rfloor & &= ${ten}, ` +
-       `& u_0 &= d_0 + 10 & &= ${ten + 10} \\\\ ` +
-       `d_1 &= \\lfloor \\bar v \\rfloor & &= ${integral}, ` +
-       `& u_1 &= d_1 + 1 & &= ${integral + 1}` +
-       `\\end{aligned}`);
+    // Rendered as 4 independent KaTeX cells — one per candidate —
+    // laid out by the `.cands-grid` CSS rule into a 2×2 grid on
+    // desktop (d_0/u_0 on row 1, d_1/u_1 on row 2) and a single
+    // column on phones.  The previous single-`\begin{aligned}`
+    // rendering kept `=` columns aligned across the whole 2×2 but
+    // forced a fixed 4-column-wide layout that horizontally
+    // scrolled on mobile inside its row; the per-cell layout drops
+    // the cross-cell `=` alignment in exchange for a clean vertical
+    // stack on narrow viewports.
+    const candCells = [
+      { sym: `d_0`, def: `10 \\lfloor \\bar v / 10 \\rfloor`, val: ten        },
+      { sym: `u_0`, def: `d_0 + 10`,                          val: ten + 10   },
+      { sym: `d_1`, def: `\\lfloor \\bar v \\rfloor`,         val: integral   },
+      { sym: `u_1`, def: `d_1 + 1`,                           val: integral+1 },
+    ];
+    cCandsEl.textContent = "";
+    for (const c of candCells) {
+      const cell = document.createElement("span");
+      cell.className = "cand-cell";
+      kx(cell, `${c.sym} \\;=\\; ${c.def} \\;=\\; ${c.val}`);
+      cCandsEl.appendChild(cell);
+    }
 
     // Row: the rounding-interval radius, written as ½·ulp(v) scaled
     // into v̄'s representation by the same p_{10}·2^{e_p} factor used
