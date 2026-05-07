@@ -292,16 +292,26 @@
     border-top: 1px dashed var(--line);
     flex-wrap: wrap;
   }
+  /* Two-row decode block:
+       row 1: c = 1.M₂·2³ = …,   e₂ = E − bias − 3 = …
+       row 2: v = c · 2^{e₂} = … = <decimal>
+     The inline-flex form we used to have only worked when the whole
+     summary was a single equation; once we stacked the c/e₂ derivation
+     above v we need block flow so the rows actually break to separate
+     lines (and so individual rows can still wrap their KaTeX spans at
+     comma `<wbr>` opportunities on narrow viewports).  `flex: 1`
+     still applies — the parent `.bit-summary` is the flex container
+     that lays this block out next to the kind-chip. */
   .bit-summary-main {
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 14px;
     color: var(--fg);
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
+    display: block;
     flex: 1;
     min-width: 0;
+    line-height: 1.7;
   }
+  .bit-summary-row { display: block; }
   .bit-summary-main .katex { font-size: 1em; }
   .controls { padding: 12px 22px; }
 
@@ -1282,6 +1292,15 @@ const computeE10 = (e2, irregular) =>
   const cy = (G.top + G.H - G.bottom) / 2;
   const yW = G.H - G.top - G.bottom;   // rotated into vertical height
   const yH = 20;
+  // Y-axis titles use plain Unicode (no KaTeX) — both <foreignObject>s
+  // here carry a `transform: rotate(±90)`, and Mobile Safari fails to
+  // compose KaTeX's pixel-positioned inline-block math with that
+  // transform: the math fragment escapes its container and floats off
+  // somewhere else on the page (we hit the same bug with the `±δ`
+  // legend in the candidate diagram).  Subscripts (`₂`, `₁₀`) and
+  // floor brackets (`⌊⌋`) are native Unicode codepoints, so the math
+  // here is short enough that rendering as plain text loses no
+  // information vs the KaTeX form.
   const yFobj = mk("foreignObject", {
     x: cx - yW / 2, y: cy - yH / 2,
     width: yW, height: yH,
@@ -1291,7 +1310,7 @@ const computeE10 = (e2, irregular) =>
   yDiv.setAttribute("xmlns", "http://www.w3.org/1999/xhtml");
   yDiv.className = "axis-title-html";
   yFobj.appendChild(yDiv);
-  mathText(yDiv, "binary exponent $e_2$");
+  yDiv.textContent = "binary exponent e₂";
 
   // Right-hand axis title: rotated 90° on the opposite side.
   const cxR = G.W - 31;
@@ -1304,7 +1323,7 @@ const computeE10 = (e2, irregular) =>
   yDivR.setAttribute("xmlns", "http://www.w3.org/1999/xhtml");
   yDivR.className = "axis-title-html";
   yFobjR.appendChild(yDivR);
-  mathText(yDivR, "decimal exponent $e_{10} = \\lfloor e_2 \\log_{10} 2 \\rfloor$");
+  yDivR.textContent = "decimal exponent e₁₀ = ⌊e₂ log₁₀ 2⌋";
 })();
 
 // one-time static labels with mixed text + inline math
@@ -2101,50 +2120,67 @@ function render() {
   chip.textContent = d.kind === "nan" ? "NaN"
                    : d.kind.charAt(0).toUpperCase() + d.kind.slice(1);
 
-  // Per-group decoded labels above the 8 bit boxes.
+  // Per-group decoded labels above the 8 bit boxes — show the *raw*
+  // 4-bit biased exponent field E and 3-bit mantissa field M as
+  // they're literally encoded in the bits below.  The interpretation
+  // (implicit leading 1, bias removal, ·2³ shift to get the integer
+  // significand c, kind chip) lives one row down in the summary
+  // formula, so the top box stays a clean read-out of "what's in the
+  // wire" and isn't kind-dependent.
   $("#dSign").textContent = d.s ? "−" : "+";
-  if (d.kind === "nan") {
-    $("#dExp").textContent = `NaN`;
-  } else if (d.kind === "zero") {
-    $("#dExp").textContent = `zero`;
-  } else if (d.kind === "subnormal") {
-    // IEEE subnormal convention: effective biased exponent is 1 (not 0);
-    // −bias removes bias, −3 undoes the ·2³ shift used for c.
-    $("#dExp").textContent = `e₂ = 1 − bias − 3 = −9`;
-  } else {
-    // −bias removes the bias, −3 undoes the ·2³ shift used for c.
-    $("#dExp").textContent = `e₂ = E − bias − 3 = ${d.e2}`;
-  }
-  // Show the implicit leading bit in the binary significand (1.M for normals,
-  // 0.M for subnormals), then shift past the 3 mantissa bits (·2³) to get the
-  // integer significand c used by the grid.
+  const eBits = d.e.toString(2).padStart(4, "0");
   const mBits = d.m.toString(2).padStart(3, "0");
-  if (d.kind === "nan") {
-    $("#dSig").textContent = `M = ${mBits}₂ (NaN)`;
-  } else if (d.kind === "zero") {
-    $("#dSig").textContent = `c = 0.000₂·2³ = 0`;
-  } else if (d.kind === "subnormal") {
-    $("#dSig").textContent = `c = 0.${mBits}₂·2³ = ${d.m}`;
-  } else {
-    $("#dSig").textContent = `c = 1.${mBits}₂·2³ = ${d.gridM}`;
-  }
+  $("#dExp").textContent = `E = ${eBits}₂`;
+  $("#dSig").textContent = `M = ${mBits}₂`;
 
-  // Summary: the grid's native form  v = c · 2^{e₂},  where c and e₂
-  // are the integer significand and binary exponent derived in the top-row
-  // labels (so the implicit leading bit and bias are already baked in).
-  // Naming this quantity `v` here lets downstream panels (decimal conversion,
-  // ulp(v), δ = ½·ulp(v), …) refer to it without re-defining the float.
+  // Summary block — two stacked rows:
+  //   row 1: derive c (integer significand) and e₂ (binary exponent)
+  //          from the raw E,M fields shown in the top box.
+  //   row 2: assemble v = c · 2^{e₂} in the grid's native form.
+  // Splitting "decode the components" from "assemble the value" gives
+  // each step its own line and avoids the long wrapping chain we'd
+  // get if all three equations sat on one row.  Naming the assembled
+  // quantity `v` here lets downstream panels (decimal conversion,
+  // ulp(v), δ = ½·ulp(v), …) refer to it without re-defining the
+  // float.  Within row 1 the c and e₂ equations are still separate
+  // KaTeX spans separated by ",⏎<wbr>" so they can break at the
+  // comma on narrow viewports.
   const formEl = $("#dFormula");
-  const sign   = d.s ? "-" : "";
+  formEl.textContent = "";
+  const sign = d.s ? "-" : "";
   if (d.kind === "zero") {
     kx(formEl, `v \\;=\\; \\pm 0`);
   } else if (d.kind === "nan") {
     kx(formEl, `v \\;=\\; \\mathrm{NaN}`);
   } else {
-    kx(formEl,
+    // Subnormals: implicit leading 0 (vs 1 for normals); IEEE
+    // convention sets the effective biased exponent to 1, not 0.
+    const cLeading = d.kind === "subnormal" ? "0" : "1";
+    const e2Lhs    = d.kind === "subnormal" ? "1" : "E";
+    const row1 = document.createElement("div");
+    row1.className = "bit-summary-row";
+    const row1Eqs = [
+      `c \\;=\\; ${cLeading}.${mBits}_2\\cdot 2^3 \\;=\\; ${d.gridM}`,
+      `e_2 \\;=\\; ${e2Lhs} - \\text{bias} - 3 \\;=\\; ${d.e2}`,
+    ];
+    for (let i = 0; i < row1Eqs.length; i++) {
+      if (i > 0) {
+        row1.appendChild(document.createTextNode(", "));
+        row1.appendChild(document.createElement("wbr"));
+      }
+      const span = document.createElement("span");
+      kx(span, row1Eqs[i]);
+      row1.appendChild(span);
+    }
+    formEl.appendChild(row1);
+
+    const row2 = document.createElement("div");
+    row2.className = "bit-summary-row";
+    kx(row2,
        `v \\;=\\; ${sign}c\\cdot 2^{e_2}` +
        `\\;=\\;${sign}${d.gridM}\\cdot 2^{${d.e2}}` +
        `\\;=\\;${fmtKatex(d.value)}`);
+    formEl.appendChild(row2);
   }
 
   // Computations panel.
