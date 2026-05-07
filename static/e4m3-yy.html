@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<title>E4M3 — FP8 format explorer</title>
+<title>E4M3 — yy binary-to-decimal conversion</title>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <link rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css"
@@ -475,18 +475,22 @@
      (the p_{10} table itself; the c·p_{10} → Q.16 narrowing).
      Downstream tooltips inherit their imprecision from one of those
      two and the dim-bit visual carries the rest of the story, so
-     they're left noteless.  Italic + dim foreground reads as
-     annotation rather than primary content; a slightly wider top
-     gap separates the "what" lines (binary + interval) from the
-     "why" line. */
+     they're left noteless.  Dim foreground reads as annotation
+     rather than primary content; a slightly wider top gap separates
+     the "what" lines (binary + interval) from the "why" line.
+     Italic was previously stacked on top of dim to push the
+     annotation feel further, but the italic system-sans prose
+     visually clashed with KaTeX math (upright serif) once notes
+     started embedding `$…$` fragments — the dim alone carries the
+     "secondary" signal cleanly, and prose now blends with inline
+     math instead of switching weights mid-sentence. */
   .bin-tooltip > .bin-tooltip-note {
-    font-style: italic;
     color: var(--fg-dim);
     /* Note text matches the size of KaTeX-rendered content elsewhere
        in the tooltip (`.bin-tooltip .katex { font-size: 0.95em }`);
        the previous 0.85em deliberately undersized prose to make it
-       feel "secondary", but italic + dim foreground already carry
-       that signal and the smaller body actively hurt readability. */
+       feel "secondary", but dim foreground already carries that
+       signal and the smaller body actively hurt readability. */
     font-size: 0.95em;
     margin-top: 6px;
     white-space: normal;
@@ -700,7 +704,19 @@
   svg .dot.subnormal { fill: var(--subnorm); }
   svg .dot.nan       { fill: var(--nan); }
   svg .dot.zero      { fill: var(--zero); }
-  svg .dot.faded     { opacity: 0.18; }
+  /* Hover spotlight: when one dot is hovered the rest dim slightly so
+     the hovered one (with its tooltip + halo) reads as the focus,
+     but the fade stays light enough that neighbouring dots remain
+     clearly visible — losing the local context around the hovered
+     dot defeats the point of inspecting it.  Gated behind
+     `(hover: hover)` so it doesn't apply on touch-only devices,
+     where tapping a dot fires mouseenter, sets state.hover, and then
+     never fires a clean mouseleave — leaving every other dot
+     permanently faded after the first tap.  Touch users still get
+     the selection halo + ring on the tapped dot to mark focus. */
+  @media (hover: hover) {
+    svg .dot.faded   { opacity: 0.7; }
+  }
 
   /* Halo around the selected dot and the rounding-interval band along
      its row share the same visual language — both mark "this is the
@@ -879,7 +895,7 @@
 <body>
 <div class="wrap">
 
-  <h1>E4M3 <span class="muted">— 8-bit floating-point format</span></h1>
+  <h1>E4M3 <span class="muted">— yy binary-to-decimal conversion</span></h1>
   <p class="sub">
     1 sign bit · 4 exponent bits · 3 significand bits · bias 7 · subnormals enabled ·
     S.1111.111 reserved for NaN.  Normals have an implicit leading 1
@@ -2168,7 +2184,16 @@ function render() {
         row1.appendChild(document.createTextNode(", "));
         row1.appendChild(document.createElement("wbr"));
       }
+      // `kx-chain-seg` (inline-block + nowrap) keeps each equation
+      // atomic — without it KaTeX's flat inline markup is free to
+      // break mid-formula on a narrow viewport (e.g. between
+      // `e_2 \;=\;` and `E - \text{bias} - 3`), which is the
+      // "part of it reflow" failure mode.  With nowrap, the only
+      // break opportunity in this row is the comma + <wbr> between
+      // the two segments — so when the row doesn't fit, the entire
+      // `e_2 = …` formula moves to the next line as one unit.
       const span = document.createElement("span");
+      span.className = "kx-chain-seg";
       kx(span, row1Eqs[i]);
       row1.appendChild(span);
     }
@@ -3039,16 +3064,49 @@ function render() {
         fractionalQ8 + errFracQ8    >  u1ThresholdQ8 + u1Bias
       : fractionalQ8                <  u1ThresholdQ8 + u1Bias + u1ErrThresholdQ8 &&
         fractionalQ8 + errFracQ8    >= u1ThresholdQ8 + u1Bias;
+    // u_0's bias-sensitivity flag: would the predicate's truth value
+    // flip if we swapped η_c (epsCsigned) for ε_c (epsC) on the RHS?
+    // The two biases differ only when c is even (η_c = −1 vs ε_c = 0),
+    // which moves the RHS by 1 Q.4 unit; so the substitution flips
+    // exactly the round-half-to-even tie-down cell on u_0's lower
+    // edge (sumQ4 == t0Q4 − 1, c even).  Marked by recomputing u_0
+    // with ε_c on the RHS and comparing to the canonical η_c result —
+    // independent of whether the canonical result itself is precision-
+    // uncertain, so the two flags compose orthogonally below.
+    const biasSensitiveU0 =
+      roundU0 !== (sumQ4 >= t0Q4 + epsC ? 1 : 0);
     // `\stackrel` with a phantom question mark reserves the same
-    // vertical space as the uncertain variant, so rows stay
-    // baseline-aligned whether or not any of them stacks a real `?`.
-    // Uncertain comparisons additionally pick up a `.cmp-uncertain`
-    // class (alongside the standard `.bin-hint` hover-trigger) so we
-    // can attach a hover tooltip explaining what the `?` means; the
-    // certain branch stays plain since there's nothing to disambiguate.
-    const cmpTex = (uncertain, op) => uncertain
-      ? `\\htmlClass{bin-hint cmp-uncertain}{\\stackrel{?}{${op}}}`
-      : `\\stackrel{\\phantom{?}}{${op}}`;
+    // vertical space as the loaded variants, so rows stay baseline-
+    // aligned whether or not any of them stacks a real `?`.  The `?`
+    // is rendered when the displayed comparison is *contingent* in
+    // either of two senses:
+    //
+    //   precUncertain — operand intervals overlap at the row's
+    //                   working precision (Q.4.4 / Q.0.8); tighter
+    //                   bounds could flip ✓/✗.
+    //   biasSens      — η_c → ε_c (or symmetric) substitution would
+    //                   flip ✓/✗ at this exact cell.  Currently only
+    //                   wired for u_0, where the η_c signed bias is
+    //                   the active design choice.
+    //
+    // Both meanings share the unified reading "the displayed result
+    // is on a tipping point".  We emit one of three marker classes
+    // (`cmp-uncertain`, `cmp-bias`, `cmp-both`) so the per-class
+    // tooltip below can give a precise diagnosis instead of a single
+    // generic one; the certain branch stays plain since there's
+    // nothing to disambiguate.
+    const cmpTex = (precUncertain, biasSens, op) => {
+      if (precUncertain && biasSens) {
+        return `\\htmlClass{bin-hint cmp-both}{\\stackrel{?}{${op}}}`;
+      }
+      if (precUncertain) {
+        return `\\htmlClass{bin-hint cmp-uncertain}{\\stackrel{?}{${op}}}`;
+      }
+      if (biasSens) {
+        return `\\htmlClass{bin-hint cmp-bias}{\\stackrel{?}{${op}}}`;
+      }
+      return `\\stackrel{\\phantom{?}}{${op}}`;
+    };
     // Rendered with `aligned` for its built-in `\jot` row spacing.
     // The leftmost cell of each predicate row is a three-state
     // checkbox that mirrors the algorithm's short-circuit chain:
@@ -3287,11 +3345,11 @@ function render() {
        `${rowHead(d0State, "d_0")} ` +
        `& ${rowBody(d0State,
             `${padIfBody(`\\; \\text{if}\\; ${d0LhsSym} \\ge \\bar v_{10} + \\varepsilon_c`)} ` +
-            `${iffTex} ${predDeltaTex} ${cmpTex(uncD0, `\\ge`)} ${predCQ16Tex} + ${epsCTex}`)} \\\\ ` +
+            `${iffTex} ${predDeltaTex} ${cmpTex(uncD0, false, `\\ge`)} ${predCQ16Tex} + ${epsCTex}`)} \\\\ ` +
        `${rowHead(u0State, "u_0")} ` +
        `& ${rowBody(u0State,
             `${padIfBody(`\\; \\text{if}\\; \\bar v_{10} + \\delta \\ge 10 + \\eta_c`)} ` +
-            `${iffTex} ${predSumTex} ${cmpTex(uncU0, `\\ge`)} ${texHex(t0Hex)} ${etaCOp} ${etaCAbs}`)} \\\\ ` +
+            `${iffTex} ${predSumTex} ${cmpTex(uncU0, biasSensitiveU0, `\\ge`)} ${texHex(t0Hex)} ${etaCOp} ${etaCAbs}`)} \\\\ ` +
        `${rowHead(u1State, "u_1")} ` +
        `& ${rowBody(u1State,
             // u_1's body is the only row whose shape changes with
@@ -3305,9 +3363,9 @@ function render() {
             // as a single byte.
             (irregular
               ? `${padIfBody(`\\; \\text{if}\\; \\bar v \\bmod 1 > \\min(\\tfrac12, \\delta/2)`)} ` +
-                `${iffTex} ${predFracTex} ${cmpTex(uncU1, u1RelTex)} ${u1RhsTex}`
+                `${iffTex} ${predFracTex} ${cmpTex(uncU1, false, u1RelTex)} ${u1RhsTex}`
               : `${padIfBody(`\\; \\text{if}\\; \\bar v \\bmod 1 \\ge \\tfrac12 + \\varepsilon_u`)} ` +
-                `${iffTex} ${predFracTex} ${cmpTex(uncU1, u1RelTex)} ${halfTex} + ${epsUTex}`))} \\\\ ` +
+                `${iffTex} ${predFracTex} ${cmpTex(uncU1, false, u1RelTex)} ${halfTex} + ${epsUTex}`))} \\\\ ` +
        `${rowHead(d1State, "d_1")} ` +
        `& ${rowBody(d1State, `\\; \\text{otherwise}`)} ` +
        `\\vphantom{\\stackrel{?}{\\ge}}` +
@@ -3415,6 +3473,28 @@ function render() {
     // own tooltip so we don't restate them here.
     attachNoteTooltip(cFlagsEl, "cmp-uncertain",
       `Intervals overlap; tighter bounds could flip ✓/✗.`);
+
+    // Bias-sensitivity tooltip — fires on u_0 cells where the η_c
+    // signed-bias choice is the *only* thing keeping the displayed
+    // ✓/✗ what it is (substituting ε_c on the RHS would flip the
+    // result).  These are exactly the round-half-to-even tie-down
+    // cells on u_0's lower edge — the cells where η_c is doing real
+    // algorithmic work vs being algebraically equivalent to ε_c.
+    // The note names the substitution explicitly so the reader can
+    // tie the marker back to the η_c definition row in the `where`
+    // block above.
+    attachNoteTooltip(cFlagsEl, "cmp-bias",
+      `Round-half-to-even tie cell: $\\eta_c \\to \\varepsilon_c$ ` +
+      `would flip ✓/✗.`);
+
+    // Both kinds of contingency on the same comparison — covered by
+    // a third class so the reader gets a precise diagnosis instead of
+    // having to guess which of the two `?` flavours fired.  Two
+    // sentences in one note (`.bin-tooltip-note` wraps naturally).
+    attachNoteTooltip(cFlagsEl, "cmp-both",
+      `Intervals overlap; tighter bounds could flip ✓/✗. ` +
+      `Also a round-half-to-even tie cell: $\\eta_c \\to \\varepsilon_c$ ` +
+      `would flip ✓/✗ on its own.`);
 
     // Name the picked candidate symbolically on the LHS so the
     // readout ties the predicate row back to the result, then
