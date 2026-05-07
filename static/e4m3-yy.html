@@ -143,6 +143,76 @@
     margin-bottom: 20px;
   }
 
+  /* "How yy converts a float to decimal" intro callout — a `<details>`
+     collapsible nested inside `.panel.compute`, between the subtitle
+     and the first formula row.  Closed by default: the formula chain
+     is the main content of that panel, so the intro advertises itself
+     via its summary line and stays out of the way until clicked.  No
+     `.panel` framing of its own (would be a panel-in-panel against
+     the surrounding compute panel) — instead a thin left accent +
+     small inset distinguish it from the formula rows that sit flush
+     beneath.
+
+     Custom disclosure triangle (▸) instead of the browser default —
+     the WebKit/Firefox markers vary in size, position, and style
+     enough that they read as foreign next to KaTeX-rendered math.
+     A single ▸ glyph rotated 90° on `[open]` matches the page's
+     overall typographic restraint. */
+  details.intro {
+    margin: 4px 0 14px;
+    border-left: 2px solid var(--line);
+    padding: 2px 0 4px 12px;
+  }
+  details.intro > summary {
+    cursor: pointer;
+    user-select: none;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--fg);
+    list-style: none;
+  }
+  details.intro > summary::-webkit-details-marker { display: none; }
+  details.intro > summary::before {
+    content: "▸";
+    display: inline-block;
+    width: 1em;
+    color: var(--fg-dim);
+    transition: transform 0.15s ease;
+  }
+  details.intro[open] > summary::before { transform: rotate(90deg); }
+  details.intro > p,
+  details.intro > ul {
+    margin: 8px 0 0;
+    color: var(--fg-dim);
+    line-height: 1.55;
+    font-size: 13px;
+  }
+  details.intro > ul { padding-left: 24px; }
+  details.intro > ul li { margin: 2px 0; }
+  details.intro code {
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 0.92em;
+    color: var(--fg);
+  }
+  /* Inline math inside the intro inherits the dim body colour by
+     default — KaTeX renders into nested spans whose own `color` is
+     unset, but `color: inherit` propagates `--fg-dim` down into the
+     math glyphs so they read as part of the prose. */
+  details.intro .katex { color: inherit; font-size: 1em; }
+  /* Subtle underlined link, same affordance shape as
+     `.compute-subtitle a` so cross-panel link styling stays
+     consistent. */
+  details.intro a {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: var(--fg-dimmer);
+    text-underline-offset: 2px;
+  }
+  details.intro a:hover {
+    color: var(--fg);
+    text-decoration-color: var(--fg);
+  }
+
   .controls {
     display: flex;
     align-items: center;
@@ -668,6 +738,40 @@
     fill: var(--fg);
   }
 
+  /* Main grid axis titles use the same HTML-overlay pattern as the
+     candidate diagram (see `.cd-labels`).  Wrapping the SVG in a
+     positioning container and placing KaTeX-rendered titles in a
+     sibling overlay keeps the labels at native CSS-pixel size on
+     phones and lets the rotated Y-axis titles rotate via plain CSS
+     `transform: rotate(...)`, sidestepping Mobile Safari's
+     long-standing bug where KaTeX inside a `<foreignObject>` carrying
+     an SVG `transform: rotate(...)` floats off to the wrong place.
+     With the overlay model rotation happens at the HTML level, after
+     KaTeX has already laid itself out in normal coordinates. */
+  .grid-wrap   { position: relative; }
+  .grid-labels {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    color: var(--fg);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+  /* `translate(-50%, -50%)` centres the rendered span on its
+     percentage anchor; the rotation modifiers compose with that
+     centring so the visual centre lands on the anchor regardless
+     of orientation. */
+  .grid-labels .grid-lbl       { position: absolute; transform: translate(-50%, -50%); line-height: 1; }
+  .grid-labels .grid-lbl-rot-l { transform: translate(-50%, -50%) rotate(-90deg); }
+  .grid-labels .grid-lbl-rot-r { transform: translate(-50%, -50%) rotate( 90deg); }
+  /* KaTeX inherits the prose colour but keeps its default 1.21em
+     font-size scale-up — math fonts (serif italic) read visually
+     smaller than monospace at the same nominal size, so the 21%
+     bump is what makes `e_2` look the same height as the
+     surrounding "binary exponent" prose. */
+  .grid-labels .grid-lbl .katex { color: inherit; }
+
   /* Scientific-figure style: axes + ticks are crisp black / white
      (full --fg), gridlines are a faint dashed scaffold, labels are
      full-contrast.  Color is reserved for the data itself. */
@@ -787,6 +891,35 @@
      is what dims the non-picked labels. */
   svg.cd-svg .cd-val       { fill: var(--fg); font-size: 11px; }
   svg.cd-svg .cd-eps       { fill: var(--highlight); font-size: 11px; }
+  /* Candidate / v̄ symbol labels live in an HTML overlay (`.cd-labels`)
+     above the SVG, not inside it, so KaTeX can render them as real
+     formulas at native CSS-pixel size.  Two earlier attempts didn't
+     work: KaTeX inside <foreignObject> sized itself independent of
+     the SVG scale (overflowed or vanished on phones), and native SVG
+     <text> with Unicode subscripts didn't carry the formula-style
+     italic typography of the rest of the page's math.  The overlay
+     decouples the two coordinate systems: SVG handles geometry, HTML
+     handles typography. */
+  .cd-wrap   { position: relative; }
+  .cd-labels {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  /* Each label is positioned via top/left percentages of the overlay
+     box, then translate(-50%, -50%) centres the rendered KaTeX on
+     that point.  white-space: nowrap keeps multi-token labels (e.g.
+     "d_0 = d_1") from wrapping mid-formula. */
+  .cd-labels .cd-lbl {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    color: var(--fg);
+    white-space: nowrap;
+    font-size: 14px;
+    line-height: 1;
+  }
+  .cd-labels .cd-lbl.cd-dim   { color: var(--fg-dim); }
+  .cd-labels .cd-lbl .katex   { color: inherit; font-size: 1em; }
 
   .legend {
     display: flex;
@@ -973,11 +1106,17 @@
     <button id="themeBtn" class="btn" title="Toggle light / dark mode">theme</button>
   </div>
 
-  <!-- Main diagram (full width, matches the number line below) -->
+  <!-- Main diagram (full width, matches the number line below).
+       Axis titles live in the sibling `.grid-labels` overlay rather
+       than inside the SVG so KaTeX renders at native CSS-pixel size
+       (same rationale as the candidate diagram further below). -->
   <div class="main">
     <div class="panel" style="padding:12px 10px 10px;">
-      <svg id="grid" viewBox="0 0 960 552" preserveAspectRatio="xMidYMid meet"
-           style="width:100%; height:auto;"></svg>
+      <div class="grid-wrap">
+        <svg id="grid" viewBox="0 0 960 552" preserveAspectRatio="xMidYMid meet"
+             style="width:100%; height:auto; display:block;"></svg>
+        <div class="grid-labels" id="gridLabels"></div>
+      </div>
       <div class="legend">
         <span><span class="swatch" style="background:var(--normal);"></span>normal</span>
         <span><span class="swatch" style="background:var(--subnorm);"></span>subnormal</span>
@@ -995,6 +1134,27 @@
          target="_blank" rel="noopener"><code>yy</code></a>
       Schubfach-family algorithm at E4M3 scale
     </div>
+    <!-- High-level orientation block: explains the four-candidate /
+         trim-vs-keep framing once, in prose, just above the dense
+         formula chain it summarises.  Closed by default so the
+         formulas remain front-and-centre on repeat visits; the ▸
+         summary advertises that more context is available without
+         spending vertical space.  Body text is populated by
+         `renderStaticLabels()` via `mathText()` so inline `$…$`
+         segments render through KaTeX in the same typeface as the
+         rest of the page (footer, formula chain).  The static link
+         to verify.py and the parenthetical `<code>` predicate names
+         live directly in markup since `mathText()` emits plain text
+         for non-math segments. -->
+    <details class="intro">
+      <summary>How yy converts a float to decimal</summary>
+      <p id="introIntro"></p>
+      <ul>
+        <li id="introCandKeep"></li>
+        <li id="introCandTrim"></li>
+      </ul>
+      <p id="introTest"></p>
+    </details>
     <div class="compute-row compute-e10-row">
       <span class="compute-expr" id="cE10"></span>
     </div>
@@ -1046,9 +1206,39 @@
         <span class="compute-expr" id="cFinal"></span>
       </div>
     </div>
-    <svg id="candDiag" class="cd-svg" viewBox="0 0 1000 130"
-         preserveAspectRatio="xMidYMid meet"
-         style="width:100%; height:auto; margin-top:18px;"></svg>
+    <!-- 4-candidate neighborhood diagram.  The SVG carries the
+         structural geometry (axis, ticks, band, candidate dots,
+         numeric values); symbol labels (d₀, d₁, u₁, u₀, v̄) live in
+         the sibling `.cd-labels` overlay so they can render via
+         KaTeX at native CSS-pixel size — placing them inside the
+         SVG's <foreignObject> made them either overflow or vanish on
+         narrow viewports because KaTeX sizes itself in CSS pixels
+         independent of the SVG viewBox scale.  The overlay is
+         absolutely positioned with `inset: 0` so it covers exactly
+         the SVG's drawn area; per-label percentages map 1-to-1 to
+         viewBox coordinates because the SVG fills its container with
+         no letterboxing (width:100% + height:auto preserves the
+         viewBox aspect). -->
+    <div class="cd-wrap" style="margin-top:18px;">
+      <svg id="candDiag" class="cd-svg" viewBox="0 0 1000 130"
+           preserveAspectRatio="xMidYMid meet"
+           style="width:100%; height:auto; display:block;"></svg>
+      <div class="cd-labels" id="candDiagLabels"></div>
+    </div>
+  </div>
+
+  <!-- Correctness verification — placeholder panel.  Mirrors the
+       structure of `.panel.compute` (title + subtitle + body) so
+       whatever visualization lands here will sit visually flush
+       with the Decimal conversion panel above.  Body is intentionally
+       empty for now; populate via `#verifyBody`. -->
+  <div class="panel verify" hidden>
+    <div class="compute-title">Correctness</div>
+    <div class="compute-subtitle">
+      <!-- Replace with a one-line description of what the panel
+           visualizes once the content lands. -->
+    </div>
+    <div id="verifyBody"></div>
   </div>
 
   <footer id="footer">
@@ -1309,54 +1499,43 @@ const P10_HEX_CHARS = P10_BITS / 4;
 const computeE10 = (e2, irregular) =>
   Math.floor(e2 * LOG10_2 + (irregular ? LOG10_3_4 : 0));
 
-// axis titles via <foreignObject> so KaTeX can render the symbols
+// Axis titles in the `.grid-labels` HTML overlay (see the CSS
+// comment for the rationale).  All three render via `mathText`
+// so prose stays in monospace and `$…$` math segments hand off
+// to KaTeX with proper italic/serif Math typography.  The Y-axis
+// titles get back full KaTeX rendering (the previous foreignObject
+// + SVG-rotate approach had to fall back to plain Unicode `e₂` /
+// `⌊⌋` because Mobile Safari refuses to compose KaTeX with an SVG
+// rotate transform).
 (function axisTitles() {
-  const xW = G.W - G.left - G.right;
-  const xFobj = mk("foreignObject", {
-    x: G.left, y: G.H - 22, width: xW, height: 20,
-  });
-  const xDiv = document.createElement("div");
-  xDiv.setAttribute("xmlns", "http://www.w3.org/1999/xhtml");
-  xDiv.className = "axis-title-html";
-  xFobj.appendChild(xDiv);
-  mathText(xDiv, "significand $c$   (value = $c \\cdot 2^{e_2}$)");
+  const labels = $("#gridLabels");
+  const place = (cx, cy, cls, tmpl) => {
+    const span = document.createElement("span");
+    span.className = "grid-lbl" + (cls ? " " + cls : "");
+    span.style.left = (cx / G.W * 100) + "%";
+    span.style.top  = (cy / G.H * 100) + "%";
+    mathText(span, tmpl);
+    labels.appendChild(span);
+  };
 
-  const cx = 16;
-  const cy = (G.top + G.H - G.bottom) / 2;
-  const yW = G.H - G.top - G.bottom;   // rotated into vertical height
-  const yH = 20;
-  // Y-axis titles use plain Unicode (no KaTeX) — both <foreignObject>s
-  // here carry a `transform: rotate(±90)`, and Mobile Safari fails to
-  // compose KaTeX's pixel-positioned inline-block math with that
-  // transform: the math fragment escapes its container and floats off
-  // somewhere else on the page (we hit the same bug with the `±δ`
-  // legend in the candidate diagram).  Subscripts (`₂`, `₁₀`) and
-  // floor brackets (`⌊⌋`) are native Unicode codepoints, so the math
-  // here is short enough that rendering as plain text loses no
-  // information vs the KaTeX form.
-  const yFobj = mk("foreignObject", {
-    x: cx - yW / 2, y: cy - yH / 2,
-    width: yW, height: yH,
-    transform: `rotate(-90 ${cx} ${cy})`,
-  });
-  const yDiv = document.createElement("div");
-  yDiv.setAttribute("xmlns", "http://www.w3.org/1999/xhtml");
-  yDiv.className = "axis-title-html";
-  yFobj.appendChild(yDiv);
-  yDiv.textContent = "binary exponent e₂";
+  // Bottom (X-axis): centred horizontally on the chart, sitting just
+  // inside the bottom edge.  Same anchor point as the original
+  // foreignObject's visual centre (G.H − 22 + 10 = G.H − 12).
+  const xCx = G.left + (G.W - G.left - G.right) / 2;
+  place(xCx, G.H - 12, null,
+        "significand $c$   (value = $c \\cdot 2^{e_2}$)");
 
-  // Right-hand axis title: rotated 90° on the opposite side.
-  const cxR = G.W - 31;
-  const yFobjR = mk("foreignObject", {
-    x: cxR - yW / 2, y: cy - yH / 2,
-    width: yW, height: yH,
-    transform: `rotate(90 ${cxR} ${cy})`,
-  });
-  const yDivR = document.createElement("div");
-  yDivR.setAttribute("xmlns", "http://www.w3.org/1999/xhtml");
-  yDivR.className = "axis-title-html";
-  yFobjR.appendChild(yDivR);
-  yDivR.textContent = "decimal exponent e₁₀ = ⌊e₂ log₁₀ 2⌋";
+  // Left (Y-axis): rotated -90°, anchored midway between top and
+  // bottom margins.  `cx = 16` matches the original pivot.
+  const yCy  = (G.top + G.H - G.bottom) / 2;
+  place(16, yCy, "grid-lbl-rot-l",
+        "binary exponent $e_2$");
+
+  // Right axis: rotated +90° on the opposite side.  Same vertical
+  // anchor; horizontal anchor mirrors the left side from the right
+  // edge.
+  place(G.W - 31, yCy, "grid-lbl-rot-r",
+        "decimal exponent $e_{10} = \\lfloor e_2 \\log_{10} 2 \\rfloor$");
 })();
 
 // one-time static labels with mixed text + inline math
@@ -1364,6 +1543,33 @@ function renderStaticLabels() {
   mathText($("#footer"),
     "E4M3-FN as specified by the OFP8 / NVIDIA/Arm/Intel FP8 paper. " +
     "Max normal ≈ 448, smallest subnormal = $2^{-9}$ ≈ $1.95 \\times 10^{-3}$.");
+
+  // Intro panel — populates the math-bearing paragraphs of the
+  // "How yy converts a float to decimal" `<details>` block above
+  // the bit layout.  Each $…$ segment is handed off to KaTeX by
+  // `mathText`, so the symbols ($v$, $\bar v$, $\varepsilon_c$, …)
+  // render in the same typeface as the formula chain below — the
+  // intro reads as a prose summary of the same algorithm, not a
+  // separate vocabulary.
+  mathText($("#introIntro"),
+    "For each binary float $v = c \\cdot 2^{e_2}$, yy picks the shortest " +
+    "decimal $\\sigma \\cdot 10^{e_{10}}$ that parses back to $v$. " +
+    "It re-expresses $v$ at the decimal scale as " +
+    "$\\bar v \\approx v \\cdot 10^{-e_{10}}$ (using the precomputed " +
+    "$p_{10}$ table below), then brackets $\\bar v$ with four " +
+    "candidates at two precisions:");
+  mathText($("#introCandKeep"),
+    "$d_1, u_1$ — the integers below/above $\\bar v$.");
+  mathText($("#introCandTrim"),
+    "$d_0, u_0$ — the multiples of 10 below/above $\\bar v$.");
+  mathText($("#introTest"),
+    "$d_0, u_0$ are one digit shorter than $d_1, u_1$ (the trailing " +
+    "zero folds into $e_{10}$), so yy prefers them when valid: it picks " +
+    "$d_0$ or $u_0$ iff $v \\pm \\tfrac12\\,\\mathrm{ulp}(v)$ still rounds " +
+    "back to $v$ at that precision; otherwise it picks the closer of " +
+    "$d_1$ or $u_1$. The $d_0$, $u_0$, $u_1$ rows below carry out those " +
+    "checks, with parity biases ($\\varepsilon_c$, $\\eta_c$, " +
+    "$\\varepsilon_u$) for round-half-to-even at exact ties.");
 }
 
 // All grid content that depends on layout (stretched vs normal) goes into
@@ -1959,30 +2165,28 @@ function buildP10Table() {
   }
 }
 
-// Helper: place a centered KaTeX formula in an SVG <foreignObject>.
-// (cx, cyMid) is the target visual center of a `w × h` rectangle.
-function cdFobj(svg, cx, cyMid, w, h, tex) {
-  const f = mk("foreignObject", {
-    x: cx - w / 2, y: cyMid - h / 2, width: w, height: h,
-  }, svg);
-  const div = document.createElement("div");
-  div.setAttribute("xmlns", "http://www.w3.org/1999/xhtml");
-  div.className = "axis-title-html";
-  f.appendChild(div);
-  kx(div, tex);
-  return f;
-}
-
 // Draw the 4-candidate neighborhood diagram yy evaluates at each
 // float.  Shows the four candidates (d₀, d₁, u₁, u₀) on a number
 // line, v̄ between d₁ and u₁, and the half-ulp band (±δ) around v̄.
 // The `sel` argument is one of "d0" | "d1" | "u1" | "u0" and marks
 // which candidate the algorithm picked.
+//
+// Symbol labels (d_k, u_k, v̄) render as KaTeX in the sibling
+// `.cd-labels` overlay, positioned via percentages of the SVG's
+// viewBox — see the `.cd-labels` CSS comment for why HTML overlay
+// rather than SVG <text> or <foreignObject>.
 function renderCandDiag(o) {
-  const svg = $("#candDiag");
+  const svg    = $("#candDiag");
+  const labels = $("#candDiagLabels");
   clearChildren(svg);
-  if (o.hide) { svg.style.display = "none"; return; }
-  svg.style.display = "";
+  clearChildren(labels);
+  if (o.hide) {
+    svg.style.display    = "none";
+    labels.style.display = "none";
+    return;
+  }
+  svg.style.display    = "";
+  labels.style.display = "";
   const {
     integral, fractional, ten, halfUlpQ16, sel, irregular,
   } = o;
@@ -2003,7 +2207,7 @@ function renderCandDiag(o) {
   const drawnL = vbar - halfUlpL;
   const drawnR = vbar + halfUlpR;
 
-  const W = 1000, margin = 50, yAxis = 70;
+  const W = 1000, H = 130, margin = 50, yAxis = 70;
   const lo = d0 - 5, hi = u0 + 5;
   const xOf = v => margin + (v - lo) / (hi - lo) * (W - 2 * margin);
 
@@ -2073,13 +2277,23 @@ function renderCandDiag(o) {
   mk("line", { x1: vx, x2: vx, y1: yAxis - 14, y2: yAxis + 14,
                class: "cd-vbar" }, svg);
 
+  // Place a KaTeX-rendered label as an absolutely-positioned <span>
+  // on the `.cd-labels` overlay.  (cx, cy) are viewBox coordinates;
+  // we convert to percentages of the overlay box, which exactly
+  // matches the SVG's drawn area (no letterboxing, see the markup
+  // comment).  translate(-50%, -50%) in CSS centres the rendered
+  // KaTeX on the percentage anchor, mirroring the visual-centre
+  // semantics the old `cdFobj` helper used.
+  const placeLabel = (cx, cy, tex, dimmed) => {
+    const span = document.createElement("span");
+    span.className = "cd-lbl" + (dimmed ? " cd-dim" : "");
+    span.style.left = (cx / W * 100) + "%";
+    span.style.top  = (cy / H * 100) + "%";
+    kx(span, tex);
+    labels.appendChild(span);
+  };
+
   // Candidate dots + labels.
-  // Single-label formulas are padded on the left with an invisible
-  // \phantom subscript so the *letter* (d / u) lands centered on the
-  // tick — a bare `d_0` centered by its bounding box would drift left
-  // because of the trailing subscript's width.  Combined labels (for
-  // coinciding candidates, e.g. d_0 = d_1 when `one = 0`) are rendered
-  // without the phantom padding and centered on the tick as a whole.
   const candList = [
     { v: d0, key: "d0", sym: "d_0" },
     { v: d1, key: "d1", sym: "d_1" },
@@ -2101,32 +2315,25 @@ function renderCandDiag(o) {
     // numeric value, and symbol) dim to --fg-dim so the viewer's eye
     // lands on the chosen candidate.
     const groupSelected = items.some(c => c.key === sel);
-    const dotCls = "cd-cand-dot" + (groupSelected ? "" : " cd-dim");
-    mk("circle", { cx, cy: yAxis, r: 3.5, class: dotCls }, svg);
+    const dimSuffix = groupSelected ? "" : " cd-dim";
+    mk("circle", { cx, cy: yAxis, r: 3.5,
+                   class: "cd-cand-dot" + dimSuffix }, svg);
     const vt = mk("text", {
       x: cx, y: yAxis + 28,
-      class: "cd-val" + (groupSelected ? "" : " cd-dim"),
+      class: "cd-val" + dimSuffix,
       "text-anchor": "middle",
     }, svg);
     vt.textContent = val;
-    let f;
-    if (items.length === 1) {
-      const { sym } = items[0];
-      const sub = sym.slice(-1);                     // "0" or "1"
-      f = cdFobj(svg, cx, yAxis + 38, 40, 20,
-                 `\\phantom{_${sub}}${sym}`);
-    } else {
-      // e.g. `d_0 = d_1` or `u_0 = u_1`.  Box widened so the chained
-      // equality fits; natural centering lines the '=' up on the tick.
-      f = cdFobj(svg, cx, yAxis + 38, 90, 20,
-                 items.map(c => c.sym).join(" = "));
-    }
-    if (!groupSelected) f.firstChild.style.color = "var(--fg-dim)";
+    // Combined labels for coinciding candidates (e.g. d_0 = d_1 when
+    // `one = 0`) join the symbols with " = " so the chained equality
+    // sits naturally centred on the shared tick.
+    const tex = items.map(c => c.sym).join(" = ");
+    placeLabel(cx, yAxis + 44, tex, !groupSelected);
   }
 
   // v̄ label placed visually symmetric to the numeric value labels
-  // below — rendered as a KaTeX formula via <foreignObject>.
-  cdFobj(svg, vx, yAxis - 28, 40, 20, "\\bar{v}");
+  // below.
+  placeLabel(vx, yAxis - 24, "\\bar{v}", false);
 }
 
 // Render a string with inline `$...$` math segments as a mix of text nodes
