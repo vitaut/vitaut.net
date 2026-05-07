@@ -736,6 +736,23 @@
     pointer-events: none;
   }
 
+  /* Hide the dot-hover tooltip (value + bits readout) on touch-only
+     devices.  The render() pass keeps setting `opacity: 1` inline
+     whenever `state.hover` is non-null — which on touch fires from a
+     tap and never clears, leaving the tooltip permanently hovering
+     above whichever dot was most recently tapped.  `!important` on
+     `opacity: 0` overrides the inline style so the readout stays
+     hidden on touch; the tap still sets `state.hover` (so selection,
+     halo, p_{10}-row highlight, and the rest of the recompute fire),
+     it just doesn't paint the SVG-overlay tooltip.  Mirrors the
+     same (hover: none) gating used for the bin-hint tooltips. */
+  @media (hover: none) {
+    svg .hover-label,
+    svg .tooltip-bg {
+      opacity: 0 !important;
+    }
+  }
+
   svg .tooltip-bg {
     fill: var(--tooltip-bg);
     stroke: var(--tooltip-border);
