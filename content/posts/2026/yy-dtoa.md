@@ -156,8 +156,10 @@ a tipping point.
 Set the encoding to **116** in the explorer, or work out
 $v = 12 \cdot 2^{4} = 192$ by hand. The bits are `0 1110 100`, so
 $c = 12$, $e_2 = 4$, and yy picks
-$e_{10} = \lfloor 4 \log_{10} 2 \rfloor = 1$. The shorter grid is
-multiples of $10^{2} = 100$, with $d_0 = 100$ and $u_0 = 200$. If
+$e_{10} = \lfloor 4 \log_{10} 2 \rfloor = 1$, so
+$\bar v = 192 \cdot 10^{-1} = 19.2$ and the fine-grid fallback is
+$d_1 = \lfloor \bar v \rfloor = 19$, printed as `19e1`. The shorter grid
+is multiples of $10^{2} = 100$, with $d_0 = 100$ and $u_0 = 200$. If
 $v$'s rounding interval reaches $u_0 = 200$, yy can emit the
 two-character `2e2` instead of the longer `19e1`.
 
