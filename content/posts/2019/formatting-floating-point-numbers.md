@@ -2,9 +2,8 @@
 title: Formatting floating point numbers
 date: 2019-02-11
 aliases: ['/2019/02/11/formatting-floating-point-numbers.html']
+enableLaTeX: true
 ---
-
-<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
 ![](/img/dragon.png#floatright "Here be dragons")
 
