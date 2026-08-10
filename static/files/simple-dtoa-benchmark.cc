@@ -99,7 +99,7 @@ struct decimal {
       }
       bigits[num_bigits++] = v % bigit_bound;
       int i = 0;
-      int bits_per_iteration = 9; // 10**9 can only be shifted left 9 bits.
+      int bits_per_iteration = 9; // 10**9 can only be shifted right 9 digits.
       for (; i - bits_per_iteration >= exp; i -= bits_per_iteration)
         shift_right(bits_per_iteration);
       if (i != exp) shift_right(i - exp);
