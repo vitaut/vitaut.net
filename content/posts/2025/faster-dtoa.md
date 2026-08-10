@@ -1,6 +1,7 @@
 ---
 title: Faster double-to-string conversion
 date: 2025-12-13
+enableLaTeX: true
 ---
 
 ![](/img/dragons.jpg#floatright
@@ -706,19 +707,6 @@ randomdigit,zmij,15,13.080000
 randomdigit,zmij,16,14.940000
 randomdigit,zmij,17,18.920000
 </textarea>
-
-<script>
-  window.MathJax = {
-    tex: {
-      inlineMath: [['$', '$'], ['\\(', '\\)']],
-      displayMath: [['$$', '$$'], ['\\[', '\\]']]
-    },
-    svg: { fontCache: 'global' }
-  };
-</script>
-<script
-  id="MathJax-script" async
-  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 
 <!-- Rounding interval illustration -->
 <script src="https://cdn.jsdelivr.net/npm/@svgdotjs/svg.js@3.0/dist/svg.min.js"></script>

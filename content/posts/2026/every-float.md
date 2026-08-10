@@ -1,6 +1,7 @@
 ---
 title: Every float on one page
 date: 2026-05-02
+enableLaTeX: true
 ---
 
 <img src="/img/all-floats.png#floatright" class="floatright" width="40%" />
@@ -173,16 +174,3 @@ just read how it's wired together, the source is in
 [the website's repo](https://github.com/vitaut/vitaut.net).
 
 Happy floatspotting!
-
-<script>
-  window.MathJax = {
-    tex: {
-      inlineMath: [['$', '$'], ['\\(', '\\)']],
-      displayMath: [['$$', '$$'], ['\\[', '\\]']]
-    },
-    svg: { fontCache: 'global' }
-  };
-</script>
-<script
-  id="MathJax-script" async
-  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>

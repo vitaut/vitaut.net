@@ -1,6 +1,7 @@
 ---
 title: The smallest state-of-the-art double-to-string implementation
 date: 2025-11-29
+enableLaTeX: true
 ---
 
 <img src="/img/pigeonhole.jpeg#floatright" class="floatright" width="40%" />
@@ -766,16 +767,3 @@ randomdigit,schubfach,15,36.340000
 randomdigit,schubfach,16,38.330000
 randomdigit,schubfach,17,43.990000
 </textarea>
-
-<script>
-  window.MathJax = {
-    tex: {
-      inlineMath: [['$', '$'], ['\\(', '\\)']],
-      displayMath: [['$$', '$$'], ['\\[', '\\]']]
-    },
-    svg: { fontCache: 'global' }
-  };
-</script>
-<script
-  id="MathJax-script" async
-  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
