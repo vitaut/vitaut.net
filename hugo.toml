@@ -11,6 +11,9 @@ ignoreFiles = 'static/slides'
 [markup.goldmark.renderer]
   unsafe= true
 
+[markup.goldmark.extensions.typographer]
+  disable = true
+
 [params]
   disqusShortname = 'zverovich'
 
@@ -47,3 +50,6 @@ ignoreFiles = 'static/slides'
 [[params.socialIcons]]
   name = 'Mastodon'
   url = 'https://mastodon.social/@vitaut'
+
+[security]
+  allowContent = ['^text/markdown$', '^text/html$']
