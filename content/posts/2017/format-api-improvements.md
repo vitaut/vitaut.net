@@ -9,7 +9,7 @@ aliases: ['/2017/08/20/format-api-improvements.html']
 It's been a while since my last post. Two important things happened
 in the meantime to the [fmt project](https://github.com/fmtlib/fmt):
 [revision 0 of the formatting paper](
-http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2017/p0645r0.html)
+https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2017/p0645r0.html)
 has been submitted to the standards committee and [version 4 of the library
 released](https://github.com/fmtlib/fmt/releases/tag/4.0.0) (thanks to
 [Jonathan Müller](https://github.com/foonathan) for putting the new release
@@ -19,7 +19,7 @@ implementation of the standards proposal.
 
 ## `string_view` support
 
-Methods now take format string as a [`string_view`](http://en.cppreference.com/w/cpp/string/basic_string_view)
+Methods now take format string as a [`string_view`](https://en.cppreference.com/w/cpp/string/basic_string_view)
 instead of a null-terminated string (that used to be wrapped in a now extinct
 `cstring_view`):
 

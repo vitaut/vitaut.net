@@ -6,14 +6,14 @@ aliases: ['/2016/03/07/working-with-optimization-problems-in-nl-files.html']
 
 ![](/img/api.jpg#floatright "The truth is out there, in the code comments.")
 
-In [one of the previous posts](http://zverovich.net/2014/09/19/reading-nl-files.html)
+In [one of the previous posts](https://zverovich.net/2014/09/19/reading-nl-files.html)
 I have described an API for reading [.nl files](https://en.wikipedia.org/wiki/Nl_(format)).
 The NL reader API is now stable and documented at
-[http://ampl.github.io/nl-reader.html](http://ampl.github.io/nl-reader.html).
+[https://ampl.github.io/nl-reader.html](https://ampl.github.io/nl-reader.html).
 Also you can find a few examples of using it in
 [nl-example.cc](https://github.com/ampl/mp/blob/master/src/nl-example.cc).
 It is still the way to go if you want to process .nl files in
-[the most efficient way](http://zverovich.net/slides/2015-01-11-ics/socp-reformulation.html#/14).
+[the most efficient way](https://zverovich.net/slides/2015-01-11-ics/socp-reformulation.html#/14).
 However, if you want to load the complete optimization problem and work with it,
 the NL reader will require you to manage the data structures that represent the problem
 yourself. Fortunately, [the AMPL/MP library](https://github.com/ampl/mp)
@@ -23,7 +23,7 @@ this new API.
 The optimization problem is represented by the `mp::Problem` type which provides methods
 for accessing variables, objectives (multiple objectives are supported) and constraints.
 It can handle all
-[types of optimization problems that the NL format can represent](http://ampl.github.io/nl-reader.html)
+[types of optimization problems that the NL format can represent](https://ampl.github.io/nl-reader.html)
 including LP, MIP, quadratic, general nonlinear and constraint programming
 problems.
 
@@ -41,20 +41,20 @@ int main() {
 ```
 
 As you can see, this example uses the NL reader API function
-[`ReadNLFile`](http://ampl.github.io/nl-reader.html#_CPPv2N2mp10ReadNLFileEN3fmt10CStringRefER7Handleri)
+[`ReadNLFile`](https://ampl.github.io/nl-reader.html#_CPPv2N2mp10ReadNLFileEN3fmt10CStringRefER7Handleri)
 but passes a reference to the `Problem` object instead of an NL handler as a second argument.
 `ReadNLFile` automatically recognizes this and constructs an optimization problem
 instead of sending notifications of NL constructs to it. Reading problems from memory
 is also supported with
-[`ReadNLString`](http://ampl.github.io/nl-reader.html#_CPPv2N2mp12ReadNLStringE11NLStringRefR7HandlerN3fmt10CStringRefEi).
+[`ReadNLString`](https://ampl.github.io/nl-reader.html#_CPPv2N2mp12ReadNLStringE11NLStringRefR7HandlerN3fmt10CStringRefEi).
 
 But why yet another API, doesn't the AMPL Solver Library (ASL) have the same functionality?
 The difference from the ASL is that the new API is simpler, fully type-safe
 (no unsafe casts required), faster,
 and allows modification of the problem after it has been loaded that can be
-[used to implement transformations](http://zverovich.net/slides/2015-01-11-ics/socp-reformulation.html).
+[used to implement transformations](https://zverovich.net/slides/2015-01-11-ics/socp-reformulation.html).
 The new implementation is already
-[~36% faster on the CUTE test set](http://zverovich.net/slides/2015-01-11-ics/socp-reformulation.html#/14)
+[~36% faster on the CUTE test set](https://zverovich.net/slides/2015-01-11-ics/socp-reformulation.html#/14)
 and it hasn't been even optimized yet.
 The current limitation is that it doesn't provide support automatic differentiation,
 but this will be addressed in the future.

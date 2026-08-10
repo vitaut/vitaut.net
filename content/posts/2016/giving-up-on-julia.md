@@ -108,7 +108,7 @@ In addition to that, Julia programs have excessive memory consumption.
 The above hello world example in Julia uses 18x more memory than Python
 and 92x more memory than the C version.
 
-Possible reason for this is the use of [LLVM](http://llvm.org/) for JIT. LLVM is great as a compiler backend
+Possible reason for this is the use of [LLVM](https://llvm.org/) for JIT. LLVM is great as a compiler backend
 for statically-typed compiled languages, but it has been known not to work equally well in
 the context of dynamic languages. [Unladen Swallow](https://en.wikipedia.org/wiki/Unladen_Swallow) and
 a recent [migration of WebKit away from LLVM](https://webkit.org/blog/5852/introducing-the-b3-jit-compiler/)
@@ -146,8 +146,8 @@ but a language for numerical computing. However, as Python shows you don't have
 to sacrifice one for the other.
 
 And the last issue that I want to mention in this section is apidocs. The standard documentation
-system is a step back even compared to [Doxygen](http://www.stack.nl/~dimitri/doxygen/),
-not to mention [Sphinx](http://www.sphinx-doc.org/en/stable/). Instead of using
+system is a step back even compared to [Doxygen](https://www.stack.nl/~dimitri/doxygen/),
+not to mention [Sphinx](https://www.sphinx-doc.org/en/stable/). Instead of using
 semantic markup it relies on rudimentary Markdown-based format with focus on presentation.
 Apart from obvious limitations of Markdown, this makes documentation of heterogeneous
 projects more difficult.
@@ -177,7 +177,7 @@ to abuse FFI there too, but at least it's not actively encouraged.
 ## Libraries
 
 Another area where Julia is lacking at the moment is libraries, including the standard
-library. As [has been pointed out elsewhere](http://danluu.com/julialang/) "Base APIs outside of
+library. As [has been pointed out elsewhere](https://danluu.com/julialang/) "Base APIs outside of
 the niche Julia targets often don’t make sense" and the general-purpose APIs are somewhat limited.
 
 For example, text formatting is one of the most basic and commonly used language facilities
@@ -189,7 +189,7 @@ to be useful for very basic formatting.
 
 Being macros, `@printf`/`@sprintf` generate custom code for every format string
 in the hope that it will be more efficient than parsing it at runtime.
-However, as [Stefan Karpinski wrote](http://stackoverflow.com/q/19783030/471164)
+However, as [Stefan Karpinski wrote](https://stackoverflow.com/q/19783030/471164)
 he had "hard enough time matching C, let alone beating it". To be more specific,
 let's have a look at a simple printf example in C:
 
@@ -245,7 +245,7 @@ contribute to Julia and looking at the repo, I found a mish-mash of C, C++, Juli
 and Lisp, which put me off even though I had some experience with LLVM used in
 the backend. The reason for that is not dislike of any particular language in the
 set but that such a mix of languages in one project requires people with a unique
-expertise or working within a narrow scope. As [Dan Luu put it](http://danluu.com/julialang/):
+expertise or working within a narrow scope. As [Dan Luu put it](https://danluu.com/julialang/):
 
 > A small team of highly talented developers who can basically hold all of the code
 > in their collective heads can make great progress while eschewing anything that
@@ -254,7 +254,7 @@ expertise or working within a narrow scope. As [Dan Luu put it](http://danluu.co
 
 I am not sure that such approach scales
 very well and other people [reported slowdown in Julia development
-](http://www.davideaversa.it/2015/12/the-most-promising-languages-of-2016/):
+](https://www.davideaversa.it/2015/12/the-most-promising-languages-of-2016/):
 
 > Julia instead is slowing down and it disappeared from my radar during the last 9 months.
 

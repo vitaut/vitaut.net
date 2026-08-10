@@ -4,7 +4,7 @@ date: 2012-12-15
 aliases: ['/2012/12/15/making-string-formatting-fast.html']
 ---
 
-In [one of the previous posts](http://zverovich.net/2012/12/12/a-better-string-formatting-library-for-cplusplus.html)
+In [one of the previous posts](https://zverovich.net/2012/12/12/a-better-string-formatting-library-for-cplusplus.html)
 I've introduced [C++ Format](https://github.com/cppformat/cppformat), a new formatting
 library for C++ and briefly described its API on a few examples.
 In this post I'll compare its performance with other libraries
@@ -35,7 +35,7 @@ As you can see, the C++ Format library is only slightly slower then `printf` and
 both methods are considerably faster than the alternatives. Boost Format
 is exceptionally slow, almost 8 times slower than the C++ Format library.
 Poor performance of Boost Format is also confirmed
-[here](http://accu.org/index.php/journals/1539), see section
+[here](https://accu.org/index.php/journals/1539), see section
 Efficiency.
 
 Now that we see that the C++ Format library is almost as fast as plain old
@@ -43,7 +43,7 @@ Now that we see that the C++ Format library is almost as fast as plain old
 and extensibility.
 
 One of the main things that affects performance is dynamic memory allocation.
-As shown in [this article](http://accu.org/index.php/journals/1539) Boost
+As shown in [this article](https://accu.org/index.php/journals/1539) Boost
 Format makes lots of allocations (from 16 to 41 depending on a compiler) for
 a simple formatting operation. FastFormat library does from 1 to 3
 allocations for the same example. The C++ Format library can avoid any
@@ -86,8 +86,8 @@ of the arguments, so there is no need to copy them.
 So it is clear that for the formatting to be efficient all the arguments
 should be supplied at once. But how can it be done if the arguments are
 passed using an overloaded operator? I've found the solution to this problem
-in [Clang](http://clang.llvm.org/)'s source code, namely
-[DiagnosticEngine](http://clang.llvm.org/doxygen/classclang_1_1DiagnosticsEngine.html).
+in [Clang](https://clang.llvm.org/)'s source code, namely
+[DiagnosticEngine](https://clang.llvm.org/doxygen/classclang_1_1DiagnosticsEngine.html).
 The main idea is that a formatting function returns a temporary object that
 accepts arguments through overloaded operator `<<` and the formatting is
 performed in the destructor of this temporary object.
@@ -119,11 +119,11 @@ string for each argument that had to be parsed by `snprintf`. This was
 a lot of extra work, so the new implementation formats integers, strings
 and characters itself and only uses `snprintf` to format floating-point
 numbers. It might be possible to get additional improvement by using
-[`dtoa`](http://www.netlib.org/fp/dtoa.c) function written by my colleague
+[`dtoa`](https://www.netlib.org/fp/dtoa.c) function written by my colleague
 David Gay instead of `snprintf`.
 
 I've done profiling of the speed test executable used in the benchmark with
-[gperftools](http://code.google.com/p/gperftools/) and here are the results:
+[gperftools](https://code.google.com/p/gperftools/) and here are the results:
 
 ```
 Total: 342 samples

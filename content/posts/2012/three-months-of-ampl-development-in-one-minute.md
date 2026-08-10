@@ -11,7 +11,7 @@ the change history:
 
 {{< youtube Dlt50vevmuY >}}
 
-The video was created using [Gource](http://code.google.com/p/gource/):
+The video was created using [Gource](https://code.google.com/p/gource/):
 
 ```
 $ gource -1280x720 --title AMPL --hide filenames,mouse \
@@ -25,4 +25,4 @@ $ ffmpeg -i ampl.mp4 -vcodec copy -i track.mp3 -acodec copy \
 ```
 
 Music track is Constancy Part Two from the [collection of royalty-free music
-by Kevin MacLeod](http://incompetech.com/m/c/royalty-free/).
+by Kevin MacLeod](https://incompetech.com/m/c/royalty-free/).

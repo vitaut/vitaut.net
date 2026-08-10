@@ -5,7 +5,7 @@ aliases: ['/2015/04/22/compile-time-checking-of-printf-args-in-cppformat.html']
 ---
 
 **Update**: See [Compile-time format string checks](
-http://www.zverovich.net/2017/11/05/compile-time-format-strings.html) for a
+https://www.zverovich.net/2017/11/05/compile-time-format-strings.html) for a
 better solution that doesn't involve macros.
 
 <div style="clear:right; float:right; margin-left:1em; margin-bottom:1em">
@@ -67,7 +67,7 @@ and for obvious safety reasons C++ Format avoids varargs.
 
 The main (and ugly) part of the solution is to use a macro with a call to a dummy vararg function
 declared with the `format` attribute and a call to the actual formatting function
-[`fmt::printf`](http://cppformat.readthedocs.org/en/stable/reference.html#printf-formatting-functions):
+[`fmt::printf`](https://cppformat.readthedocs.org/en/stable/reference.html#printf-formatting-functions):
 
 ```c++
 #include "format.h"
@@ -107,7 +107,7 @@ non-trivially-copyable C++ types such as `std::string` passed as formatting argu
 Of course, this only gives a compile-time diagnostic for literal format string,
 but C++ Format got you covered in all cases with runtime type checking which
 is relatively cheap. Also if you use
-[Python-like format strings](http://cppformat.readthedocs.org/en/stable/reference.html#formatting-functions),
+[Python-like format strings](https://cppformat.readthedocs.org/en/stable/reference.html#formatting-functions),
 you can often omit type specifier in the format string which makes the check unnecessary:
 
 ```c++

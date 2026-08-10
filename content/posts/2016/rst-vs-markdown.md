@@ -13,20 +13,20 @@ In this post I am going to share my experience of using
 [Markdown](https://en.wikipedia.org/wiki/Markdown) and
 [reStructuredText](https://en.wikipedia.org/wiki/ReStructuredText) (RST)
 for technical documentation. As a library developer I have to write a fair amount of
-it, for example, the [fmt library documentation](http://fmtlib.net),
+it, for example, the [fmt library documentation](https://fmtlib.net),
 and I've used both languages extensively. In fact, I'm writing this blog post
 in Markdown.
 
 At first sight RST and Markdown look very similar. Both are lightweight markup languages
 that emphasize plain-text readability. Both are widely used for API documentation,
-RST in [Sphinx](http://www.sphinx-doc.org/en/stable/), the standard Python
-documentation system, and Markdown in [Doxygen](http://www.stack.nl/~dimitri/doxygen/)
-(optionally), [MkDocs](http://www.mkdocs.org/), the
+RST in [Sphinx](https://www.sphinx-doc.org/en/stable/), the standard Python
+documentation system, and Markdown in [Doxygen](https://www.stack.nl/~dimitri/doxygen/)
+(optionally), [MkDocs](https://www.mkdocs.org/), the
 [Rust Standard Library](https://doc.rust-lang.org/std/) documentation, and other.
 
 So what are the differences? According to John Gruber, the inventor of Markdown,
 "Markdown’s syntax is intended for one purpose: to be used as a format for writing for the web."
-([source](http://daringfireball.net/projects/markdown/syntax#philosophy)) and, in particular,
+([source](https://daringfireball.net/projects/markdown/syntax#philosophy)) and, in particular,
 it supports inline HTML. reStructuredText on the other hand is specifically designed for writing
 technical documentation. But what does it mean in practice?
 
@@ -38,8 +38,8 @@ It's great when all you need is to produce a web page and that's why I use Markd
 However, it's not so great when you need to write an API documentation.
 
 reStructuredText provides standard extension mechanisms called
-[directives](http://docutils.sourceforge.net/docs/ref/rst/directives.html) and
-[roles](http://docutils.sourceforge.net/docs/ref/rst/roles.html)
+[directives](https://docutils.sourceforge.net/docs/ref/rst/directives.html) and
+[roles](https://docutils.sourceforge.net/docs/ref/rst/roles.html)
 which make all the difference. For example, you can use the math role to write
 a mathematical equation:
 
@@ -64,7 +64,7 @@ subclasses can define their own format string syntax).
 ```
 
 I briefly mentioned this in my
-[review of the Julia language](http://zverovich.net/2016/05/13/giving-up-on-julia.html)
+[review of the Julia language](https://zverovich.net/2016/05/13/giving-up-on-julia.html)
 which uses rudimentary Markdown in its apidocs, but I'm not sure many people
 understood it so I'm glad to have an opportunity to elaborate.
 
@@ -108,7 +108,7 @@ systems support multiple languages. Doxygen and Sphinx are arguably
 the most popular polyglot systems, at least among those that use Markdown and RST.
 Sphinx produces way better output while Doxygen works with more languages.
 Note that C++ support in Sphinx improved considerably in
-[version 1.4 and later](http://www.sphinx-doc.org/en/stable/changes.html#release-1-4-released-mar-28-2016)
+[version 1.4 and later](https://www.sphinx-doc.org/en/stable/changes.html#release-1-4-released-mar-28-2016)
 thanks to amazing work by [Jakob Lykke Andersen](https://github.com/jakobandersen).
 Currently Sphinx supports Python, C, C++ and Javascript out-of-the box and Java
 (and other JVM-based languages) via [javasphinx](https://bronto.github.io/javasphinx/).
@@ -124,8 +124,8 @@ In contrast, Sphinx and RST were designed for writing documentation and have the
 advantage of consistency, extensibility, semantic rather than presentational markup,
 support for multiple languages (*), standard API. So I think they are a better
 choice in a long term. If you are writing such documentation, I encourage you to
-try [Sphinx](http://www.sphinx-doc.org/en/stable/) and if you are developing a
+try [Sphinx](https://www.sphinx-doc.org/en/stable/) and if you are developing a
 documentation system for a language, consider adding a
-[Sphinx domain](http://www.sphinx-doc.org/en/stable/domains.html) for it.
+[Sphinx domain](https://www.sphinx-doc.org/en/stable/domains.html) for it.
 
 [*] Although Doxygen also has it.

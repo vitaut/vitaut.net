@@ -51,7 +51,7 @@ This makes the code much faster to compile and reduces the code bloat at the
 minor cost of a dispatch on an argument type at runtime. This cost is negligible
 compared to the actual formatting and parsing, and [fmt can still easily beat
 glibc's
-`printf`](http://zverovich.net/2013/09/07/integer-to-string-conversion-in-cplusplus.html).
+`printf`](https://zverovich.net/2013/09/07/integer-to-string-conversion-in-cplusplus.html).
 
 To illustrate the effects of this technique, let's compare fmt to Folly Format,
 which wires variadic templates throughout the formatting code, on a
@@ -93,7 +93,7 @@ arguments:
 Doing less work at compile time seems like an obvioius thing and it's not
 specific to C++ or AOT compilation for that matter. For example, as I reported
 before, [formatting in Julia is spectacularly bad](
-http://zverovich.net/2016/05/13/giving-up-on-julia.html),
+https://zverovich.net/2016/05/13/giving-up-on-julia.html),
 because they unsuccessfully try to generate "optimal" code for each formatting function
 (actually macro) call which results in enormous bloat and still performs worse
 than `sprintf` that does everything at runtime. Add to this a slow JIT
@@ -112,7 +112,7 @@ integration and be notified about any errors asynchronously as it is often done
 with tests.
 
 And if formatting is really a bottleneck in some part of your application, you
-can use the [Write API](http://fmtlib.net/latest/api.html#write-api) and have
+can use the [Write API](https://fmtlib.net/latest/api.html#write-api) and have
 faster formatting at the cost of longer compilation and more generated code just
 for the translation units / call sites where performance is critical.
 
@@ -148,7 +148,7 @@ mode](https://vittorioromeo.info/index/blog/2016_cpp_library_configuration_api.h
   GNU Scientific Library.
 
 * Consider using the [pimpl idiom](
-  http://en.cppreference.com/w/cpp/language/pimpl) to decouple interface from
+  https://en.cppreference.com/w/cpp/language/pimpl) to decouple interface from
   the implementation.
 
 Also make sure that you optimize for the common use case. For example, the next

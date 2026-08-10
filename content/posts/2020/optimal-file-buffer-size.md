@@ -270,4 +270,4 @@ With an increased default buffer size {fmt} now provides a simple and efficient
 file output API which is up to 5-9 times faster than `fprintf` (possibly more on
 [numeric formatting][4]).
 
-[4]: http://www.zverovich.net/2020/06/13/fast-int-to-string-revisited.html
+[4]: https://www.zverovich.net/2020/06/13/fast-int-to-string-revisited.html

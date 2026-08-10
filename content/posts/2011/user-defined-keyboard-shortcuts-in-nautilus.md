@@ -5,14 +5,14 @@ aliases: ['/2011/02/18/user-defined-keyboard-shortcuts-in-nautilus.html']
 ---
 
 In this post I describe how to add arbitrary keyboard shortcuts to the
-[Nautilus](http://live.gnome.org/Nautilus) file manager using its
-[extension API](http://projects.gnome.org/nautilus-python/). I really
+[Nautilus](https://live.gnome.org/Nautilus) file manager using its
+[extension API](https://projects.gnome.org/nautilus-python/). I really
 like Nautilus, it has a clean interface and lots of features under the
 hood. One of the things I was missing coming from the world of [orthodox
-file managers](http://en.wikipedia.org/wiki/File_manager#Orthodox_file_managers)
+file managers](https://en.wikipedia.org/wiki/File_manager#Orthodox_file_managers)
 was an embedded terminal which can be shown/hidden with a simple
 keyboard shorcut. Recently there appeared an extension called [Nautilus
-Terminal](http://software.flogisoft.com/nautilus-terminal/en/) that
+Terminal](https://software.flogisoft.com/nautilus-terminal/en/) that
 provides exactly this. It is quite good and I highly recommend to give
 it a try. However I was not entirely satisfied with it because of
 inability to use some usual shortcuts such as `Ctrl+L`, although you can
@@ -23,12 +23,12 @@ at the same time browse the directories.
 
 After some googling I\'ve found another nice extension called
 [nautilus-open-terminal](
-http://packages.ubuntu.com/maverick/nautilus-open-terminal)
+https://packages.ubuntu.com/maverick/nautilus-open-terminal)
 which allows to open a terminal through a context menu. It is not bad
 but I would prefer a keyboard shortcut instead of the context menu.
 After some experiments I\'ve found a hackish way to implement this by
 (ab)using [LocationWidgetProvider](
-http://projects.gnome.org/nautilus-python/documentation/html/class-nautilus-python-location-widget-provider.html).
+https://projects.gnome.org/nautilus-python/documentation/html/class-nautilus-python-location-widget-provider.html).
 If you know a better way please tell me about it in the comments section
 below.
 

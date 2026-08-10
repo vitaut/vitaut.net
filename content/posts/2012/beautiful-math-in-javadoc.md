@@ -14,7 +14,7 @@ some time to explore this problem and this post is devoted to my
 findings.
 
 As Javadoc generates output in HTML format,
-[MathML](http://en.wikipedia.org/wiki/MathML) is the obvious candidate
+[MathML](https://en.wikipedia.org/wiki/MathML) is the obvious candidate
 for embedded math. However, I am not paid for the number of lines of
 code I write, so MathML doesn\'t really appeal to me. For example
 here\'s a MathML snippet for \\(ax\^2 + bx + c\\):
@@ -48,8 +48,8 @@ above example in LaTeX is just `ax^2 + bx + c`. Besides, browser support
 for MathML is patchy at best.
 
 Fortunately, there are at least two Javascript libraries,
-[MathJax](http://www.mathjax.org/) and
-[jsMath](http://www.math.union.edu/~dpvc/jsMath/), that can render LaTeX
+[MathJax](https://www.mathjax.org/) and
+[jsMath](https://www.math.union.edu/~dpvc/jsMath/), that can render LaTeX
 formulas. To link MathJax to the generated HTML pages add the `-header`
 option providing the necessary code to the `javadoc` command as follows:
 
@@ -69,7 +69,7 @@ Or, if you are using Maven, you can pass the Javadoc parameter via
         <artifactid>maven-javadoc-plugin</artifactid>
         <version>2.8</version>
         <configuration>
-        <additionalparam>-header '<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>'</additionalparam>
+        <additionalparam>-header '<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>'</additionalparam>
         </configuration>
     </plugin>
     ...
@@ -79,7 +79,7 @@ Or, if you are using Maven, you can pass the Javadoc parameter via
 ```
 
 Note that substantial amount of
-[escaping](http://en.wikipedia.org/wiki/Escape_character) is needed in
+[escaping](https://en.wikipedia.org/wiki/Escape_character) is needed in
 this case.
 
 Now you should be able to use LaTeX in your Javadoc:

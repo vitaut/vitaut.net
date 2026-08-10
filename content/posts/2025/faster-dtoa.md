@@ -227,11 +227,11 @@ My former colleague David Gay wrote an early `dtoa` implementation back at
 Bell Labs, and it was widely used for many years.
 
 <script src="https://code.jquery.com/jquery-1.8.2.js"></script>
-<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/0.8.12/jquery.csv.js"></script>
 <script>
-	google.load("visualization", "1", {packages:["corechart", "table"]});
-  google.setOnLoadCallback(drawChart);
+	google.charts.load("current", {packages:["corechart", "table"]});
+  google.charts.setOnLoadCallback(drawChart);
   function drawChart() {
     var csv = $('#textInput').val();
     var data = $.csv.toArrays(csv, {
@@ -446,7 +446,7 @@ function drawDigitChart(type, timeDigitData) {
 	chart.draw(data, options);
 }
 
-// http://jsfiddle.net/P6XXM/
+// https://jsfiddle.net/P6XXM/
 function sanitize(svg) {
     svg = svg
         .replace(/\<svg/,'<svg xmlns="http://www.w3.org/2000/svg" version="1.1"')

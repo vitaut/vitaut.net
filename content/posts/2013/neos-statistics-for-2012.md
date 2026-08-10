@@ -5,10 +5,10 @@ aliases: ['/2013/01/01/neos-statistics-for-2012.html']
 ---
 
 With the start of a new year I think it's about time to look at the
-[NEOS Server](http://www.neos-server.org/neos/) statistics for 2012.
-So I wrote a small [IPython](http://ipython.org/) notebook that
+[NEOS Server](https://www.neos-server.org/neos/) statistics for 2012.
+So I wrote a small [IPython](https://ipython.org/) notebook that
 extracts the information from
-[NEOS Solver Access Statistics](http://www.neos-server.org/neos/report.html)
+[NEOS Solver Access Statistics](https://www.neos-server.org/neos/report.html)
 and here are the results.
 
 <div style="width: 500px; height: 300px" id="solver_chart">
@@ -21,7 +21,7 @@ or mixed integer or both.
 </div>
 
 Modelling languages continue to dominate as in a
-[similar report made by Erwin Kalvelagen in 2009](http://yetanothermathprogrammingconsultant.blogspot.com/2009/11/neos-statistics.html),
+[similar report made by Erwin Kalvelagen in 2009](https://yetanothermathprogrammingconsultant.blogspot.com/2009/11/neos-statistics.html),
 with AMPL being the most widely used input format.
 AMPL and GAMS together account for more than 90% of submissions.
 

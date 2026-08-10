@@ -131,7 +131,7 @@ So we start with ~368k which seems excessive even considering that {fmt}
 implements a replacement for `(s)printf`, iostreams and [double-conversion](
 https://github.com/google/double-conversion) including full implementation of
 [Grisu3](https://www.cs.tufts.edu/~nr/cs257/archive/florian-loitsch/printf.pdf)
-and [Dragon4](http://kurtstephens.com/files/p372-steele.pdf) floating point
+and [Dragon4](https://kurtstephens.com/files/p372-steele.pdf) floating point
 formatting algorithms. Can we do better?
 
 Recompiling the test binary to restore symbols and running bloaty gives the

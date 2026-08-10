@@ -4,19 +4,19 @@ date: 2012-06-25
 aliases: ['/2012/06/25/comparing-methods-of-downloading-software-from-netlib.html']
 ---
 
-<p><a href="http://www.netlib.org/">Netlib</a> is a repository for
-mathematical software such as <a href="http://www.netlib.org/blas">BLAS</a>,
-<a href="http://www.netlib.org/lapack">LAPACK</a> and, most importantly =),
-<a href="http://www.netlib.org/ampl">AMPL Solver Library (ASL)</a>. The
+<p><a href="https://www.netlib.org/">Netlib</a> is a repository for
+mathematical software such as <a href="https://www.netlib.org/blas">BLAS</a>,
+<a href="https://www.netlib.org/lapack">LAPACK</a> and, most importantly =),
+<a href="https://www.netlib.org/ampl">AMPL Solver Library (ASL)</a>. The
 software can be retrieved using a number of protocols and as I found out the
 download speed can vary greatly. For example, it took me 10 minutes to
 retrieve entire ASL by FTP using <a href=
-"http://www.gnu.org/software/wget/">wget</a> while other options can reduce
+"https://www.gnu.org/software/wget/">wget</a> while other options can reduce
 this time to tens of seconds. This was the reason why I decided to do this
 small comparison of different methods to retrieve software from Netlib.</p>
 
 <p>So the slowest way is to retrieve individual files by <a href=
-"http://en.wikipedia.org/wiki/File_Transfer_Protocol">FTP</a>:</p>
+"https://en.wikipedia.org/wiki/File_Transfer_Protocol">FTP</a>:</p>
 <pre class="terminal">
 <code>$ time wget --recursive ftp://netlib.org/ampl
 ...
@@ -29,14 +29,14 @@ sys 0m3.704s
 </code></pre>
 
 <p>It turned out that a much faster method is to use <a href=
-"http://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol">HTTP</a> instead
+"https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol">HTTP</a> instead
 of FTP. This is a complete surprise to me, considering that FTP was designed
 for file transfer. Maybe its just an issue with wget? If you have any ideas
 please let me know in the comment section below.</p>
 
 <pre class="terminal">
 <code>$ time wget --recursive --include-directories=ampl \
-    http://www.netlib.org/ampl
+    https://www.netlib.org/ampl
 ...
 Total wall clock time: 1m 59s
 Downloaded: 714 files, 41M in 30s (1.37 MB/s)
@@ -61,7 +61,7 @@ user 0m0.320s
 sys 0m1.908s
 </code></pre>
 
-  <p><a href="http://en.wikipedia.org/wiki/Rsync">Rsync</a> is yet another
+  <p><a href="https://en.wikipedia.org/wiki/Rsync">Rsync</a> is yet another
   method almost as fast as downloading compressed directories by FTP:</p>
 
 <pre class="terminal">
@@ -72,9 +72,9 @@ user 0m0.860s
 sys 0m2.512s
 </code></pre>
 
-<p>Putting it all together: <script src="https://www.google.com/jsapi" type=
+<p>Putting it all together: <script src="https://www.gstatic.com/charts/loader.js" type=
 "text/javascript"></script> <script type="text/javascript">
-  google.load("visualization", "1", {packages:["corechart"]});       google.setOnLoadCallback(drawChart);       function drawChart() {         var data = google.visualization.arrayToDataTable([           ['Method', 'Time, seconds'],           ['FTP recursive',  608.855],           ['HTTP',  118.986],           ['FTP tar.gz',  49.365],           ['rsync',  53.467],           ['FileZilla', 348]         ]);          var options = {           title: 'Comparison of Download Methods',           vAxis: {title: 'Method',  titleTextStyle: {color: 'red'}}         };          var chart = new google.visualization.BarChart(document.getElementById('chart_div'));         chart.draw(data, options);       }     
+  google.charts.load("current", {packages:["corechart"]});       google.charts.setOnLoadCallback(drawChart);       function drawChart() {         var data = google.visualization.arrayToDataTable([           ['Method', 'Time, seconds'],           ['FTP recursive',  608.855],           ['HTTP',  118.986],           ['FTP tar.gz',  49.365],           ['rsync',  53.467],           ['FileZilla', 348]         ]);          var options = {           title: 'Comparison of Download Methods',           vAxis: {title: 'Method',  titleTextStyle: {color: 'red'}}         };          var chart = new google.visualization.BarChart(document.getElementById('chart_div'));         chart.draw(data, options);       }     
 </script></p>
 
 <div id="chart_div"></div>
@@ -86,7 +86,7 @@ slow.</p>
 
 <p><strong>Update:</strong> found possible explanation of poor performance of
 recursive FTP <a href=
-"http://mywiki.wooledge.org/FtpMustDie#I_Love_Sitting_Around_Waiting_For_Ten_Round_Trips_To_Get_One_File.21">
+"https://mywiki.wooledge.org/FtpMustDie#I_Love_Sitting_Around_Waiting_For_Ten_Round_Trips_To_Get_One_File.21">
 here</a>:</p>
 
 <blockquote>

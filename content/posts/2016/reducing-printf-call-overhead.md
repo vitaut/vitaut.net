@@ -263,7 +263,7 @@ bytes and the number of CPU instructions is the same.
 
 The cool thing is that the type information is effectively passed for free
 (compared to `printf`) because it takes the same amount of code as passing the
-`flag` argument to [`__printf_chk`](http://refspecs.linuxbase.org/LSB_4.1.0/LSB-Core-generic/LSB-Core-generic/libc---printf-chk-1.html).
+`flag` argument to [`__printf_chk`](https://refspecs.linuxbase.org/LSB_4.1.0/LSB-Core-generic/LSB-Core-generic/libc---printf-chk-1.html).
 
 So replacing varargs with variadic templates may give nontrivial performance
 improvement if you are willing to accept small increase in binary code.

@@ -182,7 +182,7 @@ It works with gcc 10+, clang 11+ and any other C++ compiler that supports
 
 The compile-time checks for C++20 `std::format` have been accepted into the C++
 standard ([P2216](
-http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2021/p2216r3.html])) and are
+https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2021/p2216r3.html])) and are
 coming to the standard library implementations near you. Until then you can
 of course use the {fmt} library which will include compile-time checks in the
 upcoming major release.

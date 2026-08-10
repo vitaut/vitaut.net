@@ -5,16 +5,16 @@ aliases: ['/2011/12/03/first-experience-with-xtext.html']
 ---
 
 In this post I describe my experience with the recent version (2.1) of
-[Xtext](http://www.eclipse.org/Xtext/), a framework for developing
+[Xtext](https://www.eclipse.org/Xtext/), a framework for developing
 domain specific languages (DSLs).
 
 The main input for Xtext is a grammar file written in an elegant little
-[language](http://git.eclipse.org/c/tmf/org.eclipse.xtext.git/tree/plugins/org.eclipse.xtext/src/org/eclipse/xtext/Xtext.xtext).
+[language](https://git.eclipse.org/c/tmf/org.eclipse.xtext.git/tree/plugins/org.eclipse.xtext/src/org/eclipse/xtext/Xtext.xtext).
 The grammar language uses a variation of [Extended Backus-Naur
-Form](http://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_Form) to
+Form](https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_Form) to
 define rules for both terminals and nonterminals. So far this is very
 similar to parser generators like [GNU
-bison](http://www.gnu.org/s/bison/) or [ANTLR](http://www.antlr.org/)
+bison](https://www.gnu.org/s/bison/) or [ANTLR](https://www.antlr.org/)
 which can create parsers out of similar grammar definitions. I have a
 lot of experience with parser generators and have become a bit sceptical
 about them. A hand-written parser is often easier to debug and maintain
@@ -50,7 +50,7 @@ Here is how it looks in Eclipse:
 Syntax colouring, content assist, the Outline and Problems views - all
 work nicely. Let\'s now extend this language. First I add support
 for [scientific
-notation](http://en.wikipedia.org/wiki/Scientific_notation), like
+notation](https://en.wikipedia.org/wiki/Scientific_notation), like
 `6.02e23,` in floating-point literals. The following modification of the
 `NUMBER` terminal does the job:
 
@@ -238,10 +238,10 @@ public class ArithmeticsJavaValidator
 As you can see from the above code the type checks aren\'t really pretty
 with all the `instanceof`s and casts. If I had more control over the
 generated AST classes I would apply the [Visitor
-pattern](http://en.wikipedia.org/wiki/Visitor_pattern) and implemented
+pattern](https://en.wikipedia.org/wiki/Visitor_pattern) and implemented
 the type checker as a visitor. However this can be mitigated with the
 help of the poorly documented
-[PolymorphicDispatcher](http://download.eclipse.org/modeling/tmf/xtext/javadoc/2.0.0/org/eclipse/xtext/util/PolymorphicDispatcher.html).
+[PolymorphicDispatcher](https://download.eclipse.org/modeling/tmf/xtext/javadoc/2.0.0/org/eclipse/xtext/util/PolymorphicDispatcher.html).
 
 Next I modify the `Calculator` class that implements evaluation to
 handle string concatenation. Also the evaluation methods should return

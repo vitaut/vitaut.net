@@ -20,15 +20,15 @@ which is neither particularly human readable nor efficient.
   [1]: https://en.wikipedia.org/wiki/Nl_(format)
 
 Originally developed for
-[connecting solvers to AMPL](http://www.ampl.com/REFS/hooking2.pdf),
+[connecting solvers to AMPL](https://www.ampl.com/REFS/hooking2.pdf),
 the .nl format is now used in other modeling systems as well, including
 [Pyomo](https://software.sandia.gov/trac/coopr/wiki/Pyomo) and
-[Solver Studio](http://solverstudio.org/languages/ampl/).
+[Solver Studio](https://solverstudio.org/languages/ampl/).
 It is supported by numerous commercial and open-source solvers, either natively or
 via separate driver programs. For example, the `cplexamp` executable included in the
-[CPLEX](http://www-01.ibm.com/software/commerce/optimization/cplex-optimizer/) distribution
+[CPLEX](https://www-01.ibm.com/software/commerce/optimization/cplex-optimizer/) distribution
 accepts problems in this format. [Cbc](https://projects.coin-or.org/Cbc),
-[Ipopt](https://projects.coin-or.org/Ipopt) and other [COIN-OR](http://www.coin-or.org/)
+[Ipopt](https://projects.coin-or.org/Ipopt) and other [COIN-OR](https://www.coin-or.org/)
 solvers have built-in support for it.
 
 The AMPL Solver Library (ASL), which is mainly used to connect solvers to AMPL, includes
@@ -71,7 +71,7 @@ optimization problem in the .nl format while the second one reads an .nl file.
 
 The `handler` object receives notification of problem components.
 For example, when the parser reads a binary expression, it invokes
-the `OnBinary` method. The `Handler` [concept](http://en.cppreference.com/w/cpp/concept)
+the `OnBinary` method. The `Handler` [concept](https://en.cppreference.com/w/cpp/concept)
 is designed in such a way that it is possible, although not necessary,
 to construct a problem representation on the fly.
 
@@ -126,7 +126,7 @@ construct an expression tree here, but only distinguish between constants
 and other expressions. The expression type is passed as a template argument
 to `NullNLHandler`. This ensures that default handler methods such as
 `NullNLHandler::OnUnary` also return `Expr`. These methods
-[value-initialize](http://en.cppreference.com/w/cpp/language/value_initialization)
+[value-initialize](https://en.cppreference.com/w/cpp/language/value_initialization)
 the expression objects they return which in this case gives the value `OTHER`.
 
 The implementation of `ExprCounter` is very straightforward, the `OnBinary`
@@ -153,12 +153,12 @@ $ git clone https://github.com/ampl/mp.git
 $ cd mp
 $ cmake .
 $ make
-$ wget -O nlreader-example.cc http://bit.ly/1U2RDS4
+$ wget -O nlreader-example.cc https://bit.ly/1U2RDS4
 $ g++ -O3 -onlreader-example nlreader-example.cc -Iinclude -Llib -lmp
 ```
 
 Now let's get a bunch of nonlinear problems from
-the [CUTE set](http://orfe.princeton.edu/~rvdb/ampl/nlmodels/cute/index.html),
+the [CUTE set](https://orfe.princeton.edu/~rvdb/ampl/nlmodels/cute/index.html),
 convert them into .nl format and pass them to our program:
 
 ```
@@ -192,4 +192,4 @@ Note that the code described here is fresh from the <s>oven</s>
 it hasn't been documented yet, other than with source comments.
 
 **Update 2016-03-07**: Updated to the latest NL reader API which is now documented at
-[http://ampl.github.io/nl-reader.html](http://ampl.github.io/nl-reader.html).
+[https://ampl.github.io/nl-reader.html](https://ampl.github.io/nl-reader.html).

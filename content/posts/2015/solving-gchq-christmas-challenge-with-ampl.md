@@ -4,7 +4,7 @@ date: 2015-12-13
 aliases: ['/2015/12/13/solving-gchq-christmas-challenge-with-ampl.html']
 ---
 
-The [GCHQ's Christmas Challenge](http://www.gchq.gov.uk/press_and_media/news_and_features/Pages/Directors-Christmas-puzzle-2015.aspx)
+The [GCHQ's Christmas Challenge](https://www.gchq.gov.uk/press_and_media/news_and_features/Pages/Directors-Christmas-puzzle-2015.aspx)
 puzzle shown in the picture below has been making rounds on social media and in
 the news so I decided to try modeling it in AMPL and solving with a constraint programming solver.
 
@@ -179,7 +179,7 @@ s.t. known_pos{(r, c) in KnownPos}:
 ```
 
 And that's the whole formulation. The following little script solves it with
-[IBM ILOG CPLEX CP Optimizer](http://www-01.ibm.com/software/commerce/optimization/cplex-cp-optimizer/)
+[IBM ILOG CPLEX CP Optimizer](https://www-01.ibm.com/software/commerce/optimization/cplex-cp-optimizer/)
 aka `ilogcp` and displays the solution in a terminal:
 
 ```
@@ -204,13 +204,13 @@ printf{1..35} '██';
 
 This worked pretty well and scanned with Barcode Scanner app on my phone although a
 fancier way would be to use something like [iampl](https://github.com/vitaut/iampl) or
-[AMPL API](http://ampl.com/products/api/) to render a proper image instead of using ASCII "art".
+[AMPL API](https://ampl.com/products/api/) to render a proper image instead of using ASCII "art".
 
 ![](/img/barcode.png)
 
 And this post would be incomplete without mentioning related approaches to solving this puzzle,
 [Solving The GCHQ Christmas Puzzle As A MIP With Python](https://www.ibm.com/developerworks/community/blogs/jfp/entry/Solving_The_GCHQ_Christmas_Puzzle_As_A_MIP_With_Python?lang=en)
-by Jean-Francois Puget and [Solving the GCHQ christmas card with Python and pycosat](http://matthewearl.github.io/2015/12/10/gchq-xmas-card/?cm_mc_uid=40052151720514307744226&cm_mc_sid_50200000=1450054102)
+by Jean-Francois Puget and [Solving the GCHQ christmas card with Python and pycosat](https://matthewearl.github.io/2015/12/10/gchq-xmas-card/?cm_mc_uid=40052151720514307744226&cm_mc_sid_50200000=1450054102)
 by Matthew Earl.
 
 You can find the complete AMPL code to solve this puzzle [here](/files/gchq.ampl).

@@ -23,7 +23,7 @@ decimal-binary conversions"](https://ampl.com/REFS/rounding.pdf) in 1990. His
 implementation which is almost 30 years old is still widely used. A more recent
 development is the Ryū algorithm by Ulf Adams published in 2018 paper
 ["Ryū: fast float-to-string conversion"](
-http://delivery.acm.org/10.1145/3200000/3192369/pldi18main-p10-p.pdf).
+https://delivery.acm.org/10.1145/3200000/3192369/pldi18main-p10-p.pdf).
 
 I recently implemented a variation of the Grisu algorithm in the [{fmt}
 formatting library](https://github.com/fmtlib/fmt) and in this blog post I will
@@ -368,6 +368,6 @@ shortest representation.
 As you might have noticed, we only used integer operations and, in particular,
 integer to decimal conversion. So the implementation can benefit from [fast
 integer formatting](
-http://www.zverovich.net/2013/09/07/integer-to-string-conversion-in-cplusplus.html)
+https://www.zverovich.net/2013/09/07/integer-to-string-conversion-in-cplusplus.html)
 as well as fast integer division and remainer operations such as described in the recent
 [blog by Daniel Lemire](https://lemire.me/blog/2019/02/08/faster-remainders-when-the-divisor-is-a-constant-beating-compilers-and-libdivide/).

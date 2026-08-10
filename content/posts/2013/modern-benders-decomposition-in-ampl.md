@@ -6,10 +6,10 @@ aliases: ['/2013/09/01/modern-benders-decomposition-in-ampl.html']
 
 I was thinking of how to implement Benders decomposition in AMPL
 in the way Paul Rubin calls "modern approach" in his great blog post,
-[Benders Decomposition Then and Now](http://orinanobworld.blogspot.com/2011/10/benders-decomposition-then-and-now.html).
+[Benders Decomposition Then and Now](https://orinanobworld.blogspot.com/2011/10/benders-decomposition-then-and-now.html).
 And experimenting with [smpswriter](https://github.com/vitaut/ampl/tree/master/solvers/smpswriter),
 a program I recently wrote to convert deterministic equivalent problems written
-in AMPL into stochastic programming (SP) problems in [SMPS](http://myweb.dal.ca/gassmann/smps2.htm),
+in AMPL into stochastic programming (SP) problems in [SMPS](https://myweb.dal.ca/gassmann/smps2.htm),
 I realized that it can already be done and this is what this post is about.
 
 As it often happens in mathematics, one thing is a special case of another or we
@@ -23,22 +23,22 @@ There is even a joke about it:
 > throw out the water – "reducing the problem to a previously solved problem".
 
 With this in mind, we can think of deterministic
-[mixed-integer programming](http://en.wikipedia.org/wiki/Integer_programming)
+[mixed-integer programming](https://en.wikipedia.org/wiki/Integer_programming)
 as a special case of stochastic mixed-integer programming. Not sure if it is of
 much use because stochastic programming problems are generally more difficult to
 solve. However it allows to see that the modern Benders decomposition is in fact
-a variant of the [integer L-shaped method](http://www.sciencedirect.com/science/article/pii/016763779390002X).
+a variant of the [integer L-shaped method](https://www.sciencedirect.com/science/article/pii/016763779390002X).
 
 So with the help of smpswriter, one can use any SP solver implementing the integer
-L-shaped method, and [FortSP](http://www.optirisk-systems.com/products_fortsp.asp)
+L-shaped method, and [FortSP](https://www.optirisk-systems.com/products_fortsp.asp)
 is one such solver, to apply modern Benders decomposition to MIP problems.
 Now I'll show how it can be done using as an example a location-transportation
 problem for which there is an implementation of old-school Benders decomposition.
 
 Here is the implementation of the original Benders decomposition in AMPL:
-* [trnloc1.mod](http://www.ampl.com/NEW/LOOP2/trnloc1.mod) - model
-* [trnloc.dat](http://www.ampl.com/NEW/LOOP2/trnloc.dat) - data
-* [trnloc1.run](http://www.ampl.com/NEW/LOOP2/trnloc1.run) - script
+* [trnloc1.mod](https://www.ampl.com/NEW/LOOP2/trnloc1.mod) - model
+* [trnloc.dat](https://www.ampl.com/NEW/LOOP2/trnloc.dat) - data
+* [trnloc1.run](https://www.ampl.com/NEW/LOOP2/trnloc1.run) - script
 
 Let's measure how fast it is:
 
@@ -55,7 +55,7 @@ sys	0m0.136s
 ```
 
 To apply the integer L-shaped method I took the original location-transportation
-problem ([trnloc.mod](http://www.ampl.com/NEW/LOOP2/trnloc.mod)) without
+problem ([trnloc.mod](https://www.ampl.com/NEW/LOOP2/trnloc.mod)) without
 Benders, added a dummy scenario set <code>SCEN</code> and marked variables
 that should belong to a subproblem with <code>suffix stage 2</code>.
 I also modified the objective and constraints introducing scenario indexing where
@@ -131,7 +131,7 @@ problems. But I think it is as good illustration.
 Here are the files I used to test the modern Benders decomposition:
 
 * [trnloc-scenario.mod](/files/trnloc-scenario.ampl) - model
-* [trnloc.dat](http://www.ampl.com/NEW/LOOP2/trnloc.dat) - data (the same as before)
+* [trnloc.dat](https://www.ampl.com/NEW/LOOP2/trnloc.dat) - data (the same as before)
 * [trnloc-modern-benders.ampl](/files/trnloc-modern-benders.ampl) - script
 
 Apart from performance benefits this approach requires much less modifications

@@ -37,7 +37,7 @@ format strings that are string literals which is not always the case especially
 when strings are localized. Also not all C and C++ compilers support this
 attribute.
 
-[1]: http://gcc.gnu.org/onlinedocs/gcc/Function-Attributes.html
+[1]: https://gcc.gnu.org/onlinedocs/gcc/Function-Attributes.html
 
 C++ Format uses [variadic templates][2] introduces in C++11 and emulates them on
 older compilers. This ensures complete type safety. Mismatch between the format
@@ -104,7 +104,7 @@ It is often said that `printf` is not extensible and doesn't support
 user-defined types. This is not entirely true as the GNU C Library provides some
 [extension mechanisms][3]. However, as with attributes, they are not standard.
 
-[3]: http://www.gnu.org/software/libc/manual/html_node/Customizing-Printf.html
+[3]: https://www.gnu.org/software/libc/manual/html_node/Customizing-Printf.html
 
 The current version of C++ Format can format any type that provides overloaded
 `operator<<` in addition to all built-in types, for example:
@@ -144,7 +144,7 @@ on `snprintf` for floating-point formatting and does some additional processing
 to ensure consistent output across platforms. This will be improved in the next
 version.
 
-[5]: http://zverovich.net/2013/09/07/integer-to-string-conversion-in-cplusplus.html
+[5]: https://zverovich.net/2013/09/07/integer-to-string-conversion-in-cplusplus.html
 
 ## Portability
 
@@ -167,7 +167,7 @@ type information that is passed alongside the formatting arguments.
 
 In practice, increase in binary size when switching from `printf` to C++
 Format is small and, of course, depends on amount of formatting done by the
-application. For example, when [0 A.D.](http://play0ad.com/) switched to C++
+application. For example, when [0 A.D.](https://play0ad.com/) switched to C++
 Format, they reported only 3% increase in binary size on older version of the
 library (statically linked) which was more affected by code bloat. On the
 current version it would be even smaller.
@@ -177,12 +177,12 @@ current version it would be even smaller.
 Memory management is related to safety, but I think it deserves a separate
 section not to mix with type safety issues.
 
-[`sprintf`](http://en.cppreference.com/w/cpp/io/c/sprintf) relies on the user
+[`sprintf`](https://en.cppreference.com/w/cpp/io/c/sprintf) relies on the user
 to provide large enough buffer which may easily result in buffer overflow.
 This issue is addressed in `snprintf` where you can pass buffer size.
 Unfortunately, it is rather awkward to use if you want to grow your buffer
 dynamicaly to accommodate large output as the following example taken from
-the [`snprintf` manpage](http://linux.die.net/man/3/snprintf) nicely
+the [`snprintf` manpage](https://linux.die.net/man/3/snprintf) nicely
 illustrates:
 
 ```c++
@@ -235,7 +235,7 @@ w.c_str(); // returns a C string (const char*)
 If necessary you can specify a [custom allocator][7] to be used for large
 output.
 
-[7]: http://fmtlib.net/latest/api.html#custom-allocators
+[7]: https://fmtlib.net/latest/api.html#custom-allocators
 
 ## Conclusion
 

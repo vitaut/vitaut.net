@@ -12,7 +12,7 @@ Here's an interesting little puzzle posted by
 > The result is 41751. What is the original number?
 
 It can be easily solved with constraint programming and I'll demonstrate how
-to do it using [AMPL](http://www.ampl.com/) and [Gecode](http://www.gecode.org/).
+to do it using [AMPL](https://www.ampl.com/) and [Gecode](https://www.gecode.org/).
 The model is very simple, it's just a few lines of code:
 
 ```c++
@@ -37,14 +37,14 @@ which, when added to the original one, gives 41751.
 
 We can use a free student version of AMPL to solve this model.
 The Windows version of AMPL is available from the
-[download page](http://www.ampl.com/DOWNLOADS/index.html)
+[download page](https://www.ampl.com/DOWNLOADS/index.html)
 on the AMPL website. Versions for other platforms are available from the
-[AMPL repository on Netlib](http://www.netlib.org/ampl/student/).
+[AMPL repository on Netlib](https://www.netlib.org/ampl/student/).
 
 The model uses constraint programming (CP) features or, more specifically,
 logical constraints. So we need a CP solver such as Gecode to solve it.
 Gecode binaries for AMPL are available for download from the
-[GoogleCode AMPL page](http://code.google.com/p/ampl/downloads/list?q=gecode).
+[GoogleCode AMPL page](https://code.google.com/p/ampl/downloads/list?q=gecode).
 
 Once AMPL and Gecode have been downloaded and extracted, and the model saved
 to the file `puzzle.ampl`, we can run `ampl` and solve the the problem:

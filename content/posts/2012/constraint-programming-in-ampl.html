@@ -5,26 +5,26 @@ aliases: ['/2012/10/09/constraint-programming-in-ampl.html']
 ---
 
 <p>AMPL has supported <a href=
-"http://en.wikipedia.org/wiki/Constraint_programming">constraint
+"https://en.wikipedia.org/wiki/Constraint_programming">constraint
 programming</a> since early 2000s when the paper <a href=
-"http://users.iems.northwestern.edu/~4er/WRITINGS/extmodcp.pdf">Extending an
+"https://users.iems.northwestern.edu/~4er/WRITINGS/extmodcp.pdf">Extending an
 Algebraic Modeling Language to Support Constraint Programming</a> was
 published. This work has been recently resumed with an update to <a href=
 "https://github.com/vitaut/ampl/tree/master/solvers/ilogcp">ilogcp</a>, the
 AMPL driver for <a href=
-"http://www-01.ibm.com/software/integration/optimization/cplex-cp-optimizer/">
+"https://www-01.ibm.com/software/integration/optimization/cplex-cp-optimizer/">
 IBM ILOG CPLEX CP Optimizer</a> (yes, that's how it is called), and more work
 in this direction is underway. In this post I will show how to build the
 ilogcp driver and use it with AMPL to solve constraint programming
 models.</p>
 
 <p><strong>Update:</strong> Now you can download the ilogcp driver from
-<a href="http://www.ampl.com/NEW/LOGIC/index.html">the AMPL website</a>, so
+<a href="https://www.ampl.com/NEW/LOGIC/index.html">the AMPL website</a>, so
 you don't have to build it yourself.</p>
 
 <p>The source code is available in <a href=
 "https://github.com/vitaut/ampl">this AMPL GitHub repository</a> which you
-can get using <a href="http://git-scm.com/">Git</a>:</p>
+can get using <a href="https://git-scm.com/">Git</a>:</p>
 
 <pre class="terminal"><code>$ git clone git://github.com/vitaut/ampl.git</code></pre>
 
@@ -36,7 +36,7 @@ can get using <a href="http://git-scm.com/">Git</a>:</p>
   Studio and development tools (a C/C++ compiler and make on Linux and Mac,
   Visual C++ on Windows) installed on your machine. The easiest way to build
   the source code is with <a href=
-  "http://www.cmake.org/cmake/resources/software.html">CMake</a>.</p>
+  "https://www.cmake.org/cmake/resources/software.html">CMake</a>.</p>
 
   <p>The build process is fairly straightforward especially if you have CPLEX
   Studio installed in the default location:</p>
@@ -59,7 +59,7 @@ can get using <a href="http://git-scm.com/">Git</a>:</p>
   the same folder with other ampl binaries and you are good to go.</p>
 
   <p>As an example let's consider a classical <a href=
-  "http://en.wikipedia.org/wiki/Verbal_arithmetic">verbal arithmetic</a> puzzle
+  "https://en.wikipedia.org/wiki/Verbal_arithmetic">verbal arithmetic</a> puzzle
   SEND+MORE=MONEY by Henry Dudeney. As in other puzzles of this kind you need
   to find distinct digits to replace the letters such that the equation holds.
   In addition the most significant digit of each number shouldn't be zero. This
@@ -136,4 +136,4 @@ by the ilogcp driver in the <a href=
 "https://raw.github.com/vitaut/ampl/master/solvers/ilogcp/README">README
 file</a>. The AMPL's constraint programming constructs and their mapping to
 the corresponding Concert API elements are documented <a href=
-"http://vitaut.github.com/ampl/solvers/ilogcp/usage.html">here</a>.</p>
+"https://vitaut.github.com/ampl/solvers/ilogcp/usage.html">here</a>.</p>

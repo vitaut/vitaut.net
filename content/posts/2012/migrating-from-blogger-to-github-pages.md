@@ -4,14 +4,14 @@ date: 2012-12-14
 aliases: ['/2012/12/14/migrating-from-blogger-to-github-pages.html']
 ---
 
-I've just migrated from [Blogger](http://www.blogger.com/) to
-[GitHub Pages](http://pages.github.com/). This is the first post
+I've just migrated from [Blogger](https://www.blogger.com/) to
+[GitHub Pages](https://pages.github.com/). This is the first post
 that I'm writing using the new platform.
 
 The main reason for migration was that I wanted to write my posts in a
-[lightweight markup language](http://en.wikipedia.org/wiki/Lightweight_markup_language)
-such as [Markdown](http://en.wikipedia.org/wiki/Markdown) or
-[reStructured Text](http://en.wikipedia.org/wiki/ReStructuredText).
+[lightweight markup language](https://en.wikipedia.org/wiki/Lightweight_markup_language)
+such as [Markdown](https://en.wikipedia.org/wiki/Markdown) or
+[reStructured Text](https://en.wikipedia.org/wiki/ReStructuredText).
 In Blogger I had to either use a WYSIWYG editor which is OK for simple posts
 but not for advanced stuff such as code snippets or formulas, or an HTML
 editor.
@@ -42,9 +42,9 @@ There are some disadvantages as well:
   > page build failed
 
 * The documentation seems to be spread out between various places, namely
-  [GitHub Pages](http://pages.github.com/),
+  [GitHub Pages](https://pages.github.com/),
   [Jekyll](https://github.com/mojombo/jekyll) and
-  [Liquid](http://liquidmarkup.org/).
+  [Liquid](https://liquidmarkup.org/).
 
 I used [this script](https://gist.github.com/1506614) by
 [ngauthier](https://github.com/ngauthier) to convert my posts.

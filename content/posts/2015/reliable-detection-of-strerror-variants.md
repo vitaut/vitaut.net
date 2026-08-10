@@ -13,10 +13,10 @@ One of the challenges of writing portable code is dealing with variations of
 APIs that are supposed to be standard. In this post I'll talk about `strerror` and
 friends which turned out to be particularly interesting to detect.
 
-First, why not just use [`strerror`](http://pubs.opengroup.org/onlinepubs/9699919799/functions/strerror.html)
+First, why not just use [`strerror`](https://pubs.opengroup.org/onlinepubs/9699919799/functions/strerror.html)
 which is defined in the C and POSIX standards?
 Unfortunately, quoting
-[one of the standards](http://pubs.opengroup.org/onlinepubs/9699919799/functions/strerror.html):
+[one of the standards](https://pubs.opengroup.org/onlinepubs/9699919799/functions/strerror.html):
 
 > The strerror() function need not be thread-safe.
 
@@ -24,7 +24,7 @@ which is a bit of a non-starter. One might hope that standard libraries use thre
 storage to implement it, but there is no guarantee.
 
 This limitation can be overcome by using
-[`strerror_r`](http://pubs.opengroup.org/onlinepubs/9699919799/functions/strerror.html)
+[`strerror_r`](https://pubs.opengroup.org/onlinepubs/9699919799/functions/strerror.html)
 instead. But the problem is that there is not one, but two functions of the same name
 with incompatible API, XSI-compliant:
 
@@ -39,7 +39,7 @@ char *strerror_r(int errnum, char *buf, size_t buflen);
 ```
 
 No problems, the correct variant of `strerror_r` can be detected with a few lines
-of [CMake](http://www.cmake.org/) code. And this is a fine solution if you are
+of [CMake](https://www.cmake.org/) code. And this is a fine solution if you are
 writing an application and have control over your build system. But if you are
 writing a library distrubuted in source form that is supposed to be used with any
 build system, you can't rely on CMake.
@@ -48,7 +48,7 @@ A common solution to such problems is using macros. This is also the only soluti
 if you are using C and, if you are interfacing to C from another language via some
 kind of an [FFI](https://en.wikipedia.org/wiki/Foreign_function_interface), you are
 totally out of luck.
-The man page of [`strerror_r`](http://linux.die.net/man/3/strerror_r) gives
+The man page of [`strerror_r`](https://linux.die.net/man/3/strerror_r) gives
 this beatiful condition that you can check to see if XSI-compliant version is provided:
 
 ```c++
@@ -116,5 +116,5 @@ As expected, all cases are detected correctly without any use of preprocessor
 This will be integrated in the [C++ Format](https://github.com/cppformat/cppformat)
 library very soon. If you are interested in a more high-level way to report
 system errors, check out my
-[Reporting system errors in C++ made easy](http://zverovich.net/2014/04/30/reporting-system-errors-made-easy.html)
+[Reporting system errors in C++ made easy](https://zverovich.net/2014/04/30/reporting-system-errors-made-easy.html)
 post.

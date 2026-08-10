@@ -21,7 +21,7 @@ incomplete list of supported systems:
 * [Ubuntu](https://launchpad.net/ubuntu/+source/cppformat)
 * [Fedora](https://admin.fedoraproject.org/pkgdb/package/cppformat/)
 * [Arch Linux](https://aur.archlinux.org/packages/cppformat/) (user repository)
-* [Homebrew](http://brewformulas.org/Cppformat)
+* [Homebrew](https://brewformulas.org/Cppformat)
 
 Thanks go to the following people
 
@@ -36,7 +36,7 @@ is now compatible with a wide range of platforms including ARM, ppc64, ppc64le a
 s390x.
 
 Since I'm an Ubuntu user myself, I'll show how to install C++ Format in the
-recently released Ubuntu 15.10 [Wily Werewolf](http://releases.ubuntu.com/15.10/).
+recently released Ubuntu 15.10 [Wily Werewolf](https://releases.ubuntu.com/15.10/).
 First you need to enable the Universe repository if you haven't done it before:
 
 ```

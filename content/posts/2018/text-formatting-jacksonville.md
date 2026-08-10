@@ -8,7 +8,7 @@ aliases: ['/2018/03/17/text-formatting-jacksonville.html']
 
 This week I attended the ISO C++ standards committee meeting to present the
 second revision of my paper [P0645R1 Text
-Formatting](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p0645r1.html),
+Formatting](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p0645r1.html),
 based on the [{fmt} formatting library](https://github.com/fmtlib/fmt).
 The first revision was reviewed by Library Evolution Working Group (LEWG) in
 June 2017 in Toronto and there was a lot of feedback, particularly I've been
@@ -29,7 +29,7 @@ well.
 
 ## Results
 
-[P0645R1](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p0645r1.html)
+[P0645R1](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p0645r1.html)
 was reviewed on Wednesday and the main features of the proposal received strong
 support from LEWG. Here are the [results of the polls](
 https://issues.isocpp.org/show_bug.cgi?id=322):
@@ -165,7 +165,7 @@ where `fmt(s)` is roughly defined as follows:
 
 Obviously this is far from ideal. Fortunately, Louis Dionne proposed the paper
 [P0424 Reconsidering literal operator templates for
-strings](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0424r0.pdf)
+strings](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0424r0.pdf)
 which addressed exactly this use case and added literal operator template for
 string literals, so that you could do something like
 
@@ -175,7 +175,7 @@ s = format("{}"_fmt, 42);
 
 P0424 was approved by Evolution Working Group in Albuquerque, but in
 Jacksonville Jeff Snyder submitted [P0732 Class Types in Non-Type Template
-Parameters](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p0732r0.pdf)
+Parameters](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p0732r0.pdf)
 which provided a more general way of addressing the same use cases.
 As the name suggests with P0732 you can use strings (and more) as template
 parameters:

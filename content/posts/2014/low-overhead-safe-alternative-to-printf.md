@@ -9,10 +9,10 @@ aliases: ['/2014/05/22/low-overhead-safe-alternative-to-printf.html']
        title="Do you want to talk about code bloat?" width="240">
 </div>
 
-In posts [Making string formatting fast](http://zverovich.net/2012/12/15/making-string-formatting-fast.html)
-and [Fast integer to string conversion in C++](http://zverovich.net/2013/09/07/integer-to-string-conversion-in-cplusplus.html)
+In posts [Making string formatting fast](https://zverovich.net/2012/12/15/making-string-formatting-fast.html)
+and [Fast integer to string conversion in C++](https://zverovich.net/2013/09/07/integer-to-string-conversion-in-cplusplus.html)
 I have shown that safe alternatives to `printf` and `sprintf` such as
-the [C++ Format library](http://cppformat.github.io/) can perform on par and
+the [C++ Format library](https://cppformat.github.io/) can perform on par and
 even outperform their unsafe C counterparts.
 
 But speed is not the only parameter that may be of interest to us.
@@ -22,7 +22,7 @@ this is what the current post is about.
 First question is how does one measure the code bloat. Fortunately,
 Chris Foster, the author of [tinyformat](https://github.com/c42f/tinyformat)
 wrote a nice benchmark `bloat_test.sh` which I took the liberty to extend
-by including [C++ Format](http://cppformat.github.io/) and making some minor
+by including [C++ Format](https://cppformat.github.io/) and making some minor
 improvements. This benchmark simulates a medium-sized project by generating
 100 translation units each containing 5 calls to `printf` or its equivalent
 for a particular formatting method. These translation units are compiled into

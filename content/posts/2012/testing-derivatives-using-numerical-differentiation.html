@@ -8,19 +8,19 @@ aliases: ['/2012/07/17/testing-derivatives-using-numerical-differentiation.html'
 "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
 type="text/javascript"></script>
 
-<p>I've been working recently on the <a href="http://www.ampl.com">AMPL</a>
-interface for the <a href="http://www.gnu.org/software/gsl/">GNU Scientific
+<p>I've been working recently on the <a href="https://www.ampl.com">AMPL</a>
+interface for the <a href="https://www.gnu.org/software/gsl/">GNU Scientific
 Library</a>. Adding a function to AMPL normally requires providing first and
 second partial derivatives for it. Computing the derivatives is
 straightforward and there are plenty of tools, such as <a href=
-"http://www.wolframalpha.com/">Wolfram Alpha</a>, that automate this.
+"https://www.wolframalpha.com/">Wolfram Alpha</a>, that automate this.
 However, transferring this to code is a tedious and error-prone process.</p>
 
 <p>For example, consider the function <a href=
-"http://www.gnu.org/software/gsl/manual/html_node/Regular-Modified-Cylindrical-Bessel-Functions.html">
+"https://www.gnu.org/software/gsl/manual/html_node/Regular-Modified-Cylindrical-Bessel-Functions.html">
 <code>gsl_sf_bessel_I0_scaled(double x)</code></a> which is defined as
 \(e^{-|x|} I_0(x)\), where \(I_0(x)\) is the <a href=
-"http://en.wikipedia.org/wiki/Bessel_function#Modified_Bessel_functions_:_I.CE.B1.2C_K.CE.B1">
+"https://en.wikipedia.org/wiki/Bessel_function#Modified_Bessel_functions_:_I.CE.B1.2C_K.CE.B1">
 regular modified cylindrical Bessel function</a> of zeroth order. It has a
 simple derivative:</p>
 
@@ -58,7 +58,7 @@ $ ./test
 </code></pre>
 
 <p>It is <a href=
-"http://www.wolframalpha.com/input/?i=d%2Fdx+exp%28-%7Cx%7C%29+I_0%28x%29+at+1.5">
+"https://www.wolframalpha.com/input/?i=d%2Fdx+exp%28-%7Cx%7C%29+I_0%28x%29+at+1.5">
 easy to check</a> that the printed value is incorrect, <code>-0.148394</code>
 should be printed instead. Can you spot the error?</p>
 
@@ -80,7 +80,7 @@ function ShowHide(divId) {   if(document.getElementById(divId).style.display == 
 <p>This small example demonstrates how important it is to test the code.
 Unfortunately it is rarely discussed in the context of OR. As Tim Hopper put
 it in his recent <a href=
-"http://www.stiglerdiet.com/2012/07/12/operations-research-and-computer-programming/">
+"https://www.stiglerdiet.com/2012/07/12/operations-research-and-computer-programming/">
 blog post</a>:</p>
 
 <blockquote>
@@ -92,7 +92,7 @@ blog post</a>:</p>
 
 <p>Returning to the question of derivatives, how do you actually test that
 the implementation is correct? One possibility is to use <a href=
-"http://en.wikipedia.org/wiki/Numerical_differentiation">numerical
+"https://en.wikipedia.org/wiki/Numerical_differentiation">numerical
 differentiation</a>. The simplest method is directly based on the definition
 of the derivative:</p>
 
@@ -101,7 +101,7 @@ of the derivative:</p>
 <p>Although trivial to implement, this method suffers from several issues
 such as the difficulty of selecting \(h\) especially for \(x = 0\). So I used
 the Ridders' method described in the book <a href=
-"http://www.amazon.com/Numerical-Recipes-Scientific-Computing-Edition/dp/0521431085">
+"https://www.amazon.com/Numerical-Recipes-Scientific-Computing-Edition/dp/0521431085">
 Numerical Recipes in C: The Art of Scientific Computing</a>. This methods
 starts from large \(h\) and successfully decreases it estimating error at
 each iteration.</p>

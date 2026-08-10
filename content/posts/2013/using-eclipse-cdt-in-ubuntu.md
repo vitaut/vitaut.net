@@ -13,21 +13,21 @@ better at that time and due to the work requirements. Fortunately none of these 
 longer the case.
 
 I've used several IDEs since then and my current IDE of choice is
-[Eclipse](http://www.eclipse.org/) which I think is a brilliant piece of software.
+[Eclipse](https://www.eclipse.org/) which I think is a brilliant piece of software.
 It is a multi-language IDE which supports pretty much every well-known computer
 language and a few esoteric ones either via plugins or specialized versions of IDE.
 I'm not using the term "programming language" intentionally because Eclipse supports
 languages that have little to do with programming, at least in its usual definition.
-For example, I wrote my PhD thesis using [TeXlipse](http://texlipse.sourceforge.net/),
+For example, I wrote my PhD thesis using [TeXlipse](https://texlipse.sourceforge.net/),
 a plugin that add LaTeX support to Eclipse.
-The new [AMPL IDE](http://www.ampl.com/IDE/beta.html) is also based on Eclipse.
+The new [AMPL IDE](https://www.ampl.com/IDE/beta.html) is also based on Eclipse.
 
 In this post I'll share my experience with setting up Eclipse CDT in Linux,
 namely Ubuntu 13.04 which happens to be the OS I have right now.
 
 The version of Eclipse that comes in Ubuntu repositories is usually
 a bit outdated. So I recommend using the latest version from
-[Eclipse Downloads](http://www.eclipse.org/downloads/).
+[Eclipse Downloads](https://www.eclipse.org/downloads/).
 The price to pay for this, however, is that the latest version will not
 be as well-integrated with Ubuntu as the one from the repositories.
 
@@ -44,13 +44,13 @@ And voilà: you have a shiny blue Eclipse icon in the Launcher.
 <img src="/img/eclipse-launcher.png" title="Eclipse in the Unity Launcher"/>
 
 Now from trivial stuff to something more interesting. If you have ever worked with
-Eclipse project generated with [CMake](http://cmake.org/), you have probably noticed
+Eclipse project generated with [CMake](https://cmake.org/), you have probably noticed
 that there are a few annoying errors that are not cleared between the builds:
 
 <img src="/img/eclipse-errors.png" title="Eclipse Errors"/>
 
 [The fix for this problem](https://github.com/Kitware/CMake/pull/38), the idea of which
-I borrowed from [this blog post](http://www.jazzbee.com/blog/?p=76), has been accepted
+I borrowed from [this blog post](https://www.jazzbee.com/blog/?p=76), has been accepted
 in CMake and will hopefully appear in version 2.8.12. In the meantime you can either
 use the [developement version of CMake](https://github.com/Kitware/CMake) or
 manually change the error parser from "GNU gmake Error Parser 6.0 (Deprecated)"
@@ -67,7 +67,7 @@ resolved it (gdb version 7.6-5ubuntu2 from Ubuntu repositories was not good enou
 
 ```
 $ sudo apt-get install libncurses5-dev
-$ wget http://ftp.gnu.org/gnu/gdb/gdb-7.6.tar.gz
+$ wget https://ftp.gnu.org/gnu/gdb/gdb-7.6.tar.gz
 $ tar xzf gdb-7.6.tar.gz
 $ ./configure
 $ make -j6

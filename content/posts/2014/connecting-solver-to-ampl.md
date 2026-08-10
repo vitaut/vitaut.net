@@ -14,16 +14,16 @@ want to reimplement them. At the same time I didn't want to use an obscure solve
 noone heard of.
 
 Finally, I've found a good candidate for my post. The solver I'm going to use is
-called [LocalSolver](http://www.localsolver.com/) and it is a relatively new one
+called [LocalSolver](https://www.localsolver.com/) and it is a relatively new one
 (see [Constraint Programming History](
 https://www.ibm.com/developerworks/community/blogs/jfp/entry/constraint_programming_history?lang=en))
 based on local search techniques.
 
 Connecting solvers to AMPL is usually done with the help of AMPL Solver
 Library (ASL) which provides two APIs, a classic C API described in the
-[Hooking Your Solver to AMPL](http://ampl.com/resources/hooking-your-solver-to-ampl/)
+[Hooking Your Solver to AMPL](https://ampl.com/resources/hooking-your-solver-to-ampl/)
 guide and a new C++ API introduced in [The AMPL Interface to Constraint Programming Solvers](
-http://zverovich.net/slides/2013-01-06-ics/ampl-interface-to-constraint-programming-solvers.html).
+https://zverovich.net/slides/2013-01-06-ics/ampl-interface-to-constraint-programming-solvers.html).
 
 The new C++ API is a natural object-oriented interface for connecting solvers
 to AMPL. It provides classes for working with optimization problems, options and
@@ -34,9 +34,9 @@ compared to the C API.
 Although the C++ API was initially designed for constraint programming solvers,
 it can be used to connect other kinds of solvers as well. It has been used to
 connect the following solvers: [IBM/ILOG CPLEX CP Optimizer](
-http://www-01.ibm.com/software/commerce/optimization/cplex-cp-optimizer/),
-[Gecode](http://www.gecode.org/), [JaCoP](http://jacop.osolpro.com/) and
-[Sulum](http://sulumoptimization.com/).
+https://www-01.ibm.com/software/commerce/optimization/cplex-cp-optimizer/),
+[Gecode](https://www.gecode.org/), [JaCoP](https://jacop.osolpro.com/) and
+[Sulum](https://sulumoptimization.com/).
 
 In this post I'll use the C++ ASL API because it simplifies writing a
 solver connection. Besides LocalSolver itself only provides C++ and not C API.
@@ -232,9 +232,9 @@ LocalSolver::LocalSolver() : Solver("localsolver", 0, 20140710), timelimit_(0) {
 ```
 
 All descriptions are written in a subset of 
-[reStructuredText](http://docutils.sourceforge.net/rst.html) to allow
+[reStructuredText](https://docutils.sourceforge.net/rst.html) to allow
 high quality rendering both in console and in the HTML documentation.
-See [Gecode Options for AMPL](http://ampl.com/products/solvers/gecode-options/)
+See [Gecode Options for AMPL](https://ampl.com/products/solvers/gecode-options/)
 for example.
 
 The `DoSolve` method uses `NLToLocalSolverConverter` described above to convert

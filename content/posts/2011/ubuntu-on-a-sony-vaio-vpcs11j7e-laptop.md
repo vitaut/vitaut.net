@@ -27,9 +27,9 @@ networking, camera, card reader, etc. So I will only focus on the few
 things that are not working and how to fix them. Note that although
 optical drive test fails the drive itself works perfectly. However the
 default disk burning software
-([Brasero](http://projects.gnome.org/brasero//index.html)) has some
+([Brasero](https://projects.gnome.org/brasero//index.html)) has some
 problems with it, like being unable to eject disks. So I recommend using
-[K3b](http://www.k3b.org/) instead.
+[K3b](https://www.k3b.org/) instead.
 
 **Microphone**
 

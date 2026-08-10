@@ -17,19 +17,19 @@ An updated version of this post is available here:
 In this post I compare the performance of several methods
 of integer to string conversion in C++:
 
-* [`sprintf`](http://en.cppreference.com/w/cpp/io/c/fprintf)
-* [`std::stringstream`](http://en.cppreference.com/w/cpp/io/basic_stringstream)
-* [`std::to_string`](http://en.cppreference.com/w/cpp/string/basic_string/to_string) from C++11
-* `boost::format` from the [Boost Format library](http://www.boost.org/doc/libs/1_54_0/libs/format/)
-* [`boost::lexical_cast`](http://www.boost.org/doc/libs/1_54_0/doc/html/boost_lexical_cast.html)
-* `karma::generate` from the [Boost Spirit Parser framework](http://www.boost.org/doc/libs/1_54_0/libs/spirit/doc/html/index.html)
+* [`sprintf`](https://en.cppreference.com/w/cpp/io/c/fprintf)
+* [`std::stringstream`](https://en.cppreference.com/w/cpp/io/basic_stringstream)
+* [`std::to_string`](https://en.cppreference.com/w/cpp/string/basic_string/to_string) from C++11
+* `boost::format` from the [Boost Format library](https://www.boost.org/doc/libs/1_54_0/libs/format/)
+* [`boost::lexical_cast`](https://www.boost.org/doc/libs/1_54_0/doc/html/boost_lexical_cast.html)
+* `karma::generate` from the [Boost Spirit Parser framework](https://www.boost.org/doc/libs/1_54_0/libs/spirit/doc/html/index.html)
 * `fmt::format_int`, `fmt::format`, `fmt::format_to` and `fmt::compile` from
   the [{fmt} library](https://github.com/fmtlib/fmt)
-* [Public-domain `ltoa`](http://www8.cs.umu.se/~isak/snippets/ltoa.c) implementation
-* [`decimal_from`](http://ideone.com/nrQfA8) function suggested by Alf P. Steinbach
+* [Public-domain `ltoa`](https://www8.cs.umu.se/~isak/snippets/ltoa.c) implementation
+* [`decimal_from`](https://ideone.com/nrQfA8) function suggested by Alf P. Steinbach
 
 To measure the performance I used a
-[benchmark from Boost Karma](http://www.boost.org/doc/libs/1_52_0/libs/spirit/doc/html/spirit/karma/performance_measurements/numeric_performance/int_performance.html).
+[benchmark from Boost Karma](https://www.boost.org/doc/libs/1_52_0/libs/spirit/doc/html/spirit/karma/performance_measurements/numeric_performance/int_performance.html).
 This benchmark generates 10,000,000 random integers and converts them to strings
 using different methods measuring conversion time. I've replaced nonportable
 `itoa` with `sprintf` and added several other methods.
@@ -101,16 +101,16 @@ $ ./int-generator-test.py
 
 You can find out more about `fmt::format_int` and `fmt::format` in the [{fmt}
 library repository](https://github.com/fmtlib/fmt) on GitHub and in the
-[documentation](http://fmt.dev/).
+[documentation](https://fmt.dev/).
 
 **Update:**
 Since I don't have `ltoa` on my platform, I've added a basic
 public-domain implementation of this function from
-[here](http://www8.cs.umu.se/~isak/snippets/ltoa.c). Let me know in the
+[here](https://www8.cs.umu.se/~isak/snippets/ltoa.c). Let me know in the
 comment section if there is a better version available somewhere.
 
 **Update 2:**
-Added [decimal_from](http://ideone.com/nrQfA8) function suggested by Alf P.
+Added [decimal_from](https://ideone.com/nrQfA8) function suggested by Alf P.
 Steinbach. As `sprintf` and `ltoa` it requires a user-provided buffer.
 
 **Update 3:**

@@ -11,25 +11,25 @@ When I started learning C++ I kind of liked the [IOStreams][1] library. It was
 safe, [extensible][2] and could work with user-defined types. This compared
 favorably with the `printf` family of functions. However, as I started using
 C++ more and more in my daily job I found out that IOStreams had serious flaws.
-[This answer](http://stackoverflow.com/a/3176640/471164) on Stack Overflow
+[This answer](https://stackoverflow.com/a/3176640/471164) on Stack Overflow
 nicely summarizes several issues with IOStreams:
 
 - Poor error handling
 - Poor separation between formatting and I/O
 - Poor support for i18n
 
-[1]: http://en.wikipedia.org/wiki/Input/output_(C%2B%2B)
-[2]: http://www.boost.org/doc/libs/1_37_0/libs/iostreams/doc/index.html
+[1]: https://en.wikipedia.org/wiki/Input/output_(C%2B%2B)
+[2]: https://www.boost.org/doc/libs/1_37_0/libs/iostreams/doc/index.html
 
 The popular [Google C++ Style
-Guide](http://google-styleguide.googlecode.com/svn/trunk/cppguide.xml)
+Guide](https://google-styleguide.googlecode.com/svn/trunk/cppguide.xml)
 even restricts the use of streams only to logging.
 
 So I started looking for a better solution and discovered the following
 libraries: [Boost
-Format](http://www.boost.org/doc/libs/1_52_0/libs/format/),
-[SafeFormat](http://loki-lib.sourceforge.net/html/a00666.html),
-[FastFormat](http://fastformat.sourceforge.net/) and
+Format](https://www.boost.org/doc/libs/1_52_0/libs/format/),
+[SafeFormat](https://loki-lib.sourceforge.net/html/a00666.html),
+[FastFormat](https://fastformat.sourceforge.net/) and
 [tinyformat](https://github.com/c42f/tinyformat). Unfortunately neither
 of these entirely satisfied my needs so a few days ago when I was
 staying at home with cold I wrote [a new formatting
@@ -47,11 +47,11 @@ printf("%s, %s %d\n", weekday, month, day);
 ```
 
 One way to implement this kind of API is to use
-[varargs](http://en.wikipedia.org/wiki/Stdarg.h). This method is
+[varargs](https://en.wikipedia.org/wiki/Stdarg.h). This method is
 inherently unsafe because the type information is not available to the
 callee and it has to use some other mechanism such as a type field in a
 format string like `printf` does. Another possibility is to use
-[variadic templates](http://en.wikipedia.org/wiki/Variadic_template)
+[variadic templates](https://en.wikipedia.org/wiki/Variadic_template)
 which unfortunately only available in C++11. For C++98 compatibility
 some libraries like tinyformat provide multiple versions of the same
 function with different number of arguments. The problem with this

@@ -51,7 +51,7 @@ Here's a brief history of the proposal aka "what took you so long?":
 
 2018-11-05 to 10, San Diego, USA:
   - presented R4 (R3 was in the [post-Rapperswil mailing](
-    http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/#mailing2018-06))
+    https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/#mailing2018-06))
   - [type-erased API](https://fmt.dev/Text%20Formatting.html#Footprint) was
     approved (`std::vformat` that doesn't depend on argument types and gives you
     compact per-call binary code)
@@ -181,7 +181,7 @@ papers approved at Cologne:
    ```
 
 2. [P1652 Printf corner cases in `std::format`](
-   http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2019/p1652r0.html)
+   https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2019/p1652r0.html)
    written by Zhihao Yuan. This paper contains a number of critical bug fixes
    for P0645 Text Formatting. For example, it makes formatting of `float`
    round trip (previously `float` was converted to `double` as in `printf`):

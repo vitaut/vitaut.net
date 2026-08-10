@@ -21,7 +21,7 @@ more intuitive conversion speed in integers per second.
 
 [2]: https://github.com/fmtlib/format-benchmark/blob/d0d5e141df6a8f2e60d4ba3ea718415a00ca3e5b/src/int-benchmark.cc
 
-[3]: http://www.boost.org/doc/libs/1_52_0/libs/spirit/doc/html/spirit/karma/performance_measurements/numeric_performance/int_performance.html
+[3]: https://www.boost.org/doc/libs/1_52_0/libs/spirit/doc/html/spirit/karma/performance_measurements/numeric_performance/int_performance.html
 
 [4]: https://github.com/google/benchmark
 
@@ -230,5 +230,5 @@ https://stackoverflow.com/users/2985907/user2985907), sometimes incorrectly
 attributed to jiaendu, shows good results. Unfortunately it uses a whopping
 90k of data tables which is a bit excessive. For comparison, the whole {fmt}
 library compiled with LTO is ~57k after [recent optimizations](
-http://www.zverovich.net/2020/05/21/reducing-library-size.html) which includes
+https://www.zverovich.net/2020/05/21/reducing-library-size.html) which includes
 implementations of integer and floating-point formatting algorithms.

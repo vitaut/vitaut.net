@@ -20,9 +20,9 @@ requested features in the [fmt project](https://github.com/fmtlib/fmt) on GitHub
 [#544](https://github.com/fmtlib/fmt/issues/544),
 [#546](https://github.com/fmtlib/fmt/issues/546)) and a major request
 from the C++ standards committee after the review of my [formatting paper](
-http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2017/p0645r0.html).
+https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2017/p0645r0.html).
 In 2015 I came up with an [unsatisfactory solution](
-http://zverovich.net/2015/04/22/compile-time-checking-of-printf-args-in-cppformat.html)
+https://zverovich.net/2015/04/22/compile-time-checking-of-printf-args-in-cppformat.html)
 to this problem that only worked with printf syntax and involved macros.
 But inspired by recent progress in `constexpr` support in modern compilers and the
 work of various people, most importantly, Michael Park's cool
@@ -121,7 +121,7 @@ constexpr void parse_format_string(Iterator it, Handler &&handler) {
 }
 ```
 
-Second, [full Python-esque format string syntax](http://fmtlib.net/latest/syntax.html)
+Second, [full Python-esque format string syntax](https://fmtlib.net/latest/syntax.html)
 is supported and not just some basic subset of it. Argument types are taken into
 account as well, for example
 
@@ -165,7 +165,7 @@ not just for checks but, as [pointed out by Louis Dionne](
 https://github.com/fmtlib/fmt/issues/546#issuecomment-337450603), the author
 of the famous [Boost.Hana](https://github.com/boostorg/hana) library, also to generate
 optimal formatting code. This will make the separate [write API](
-http://fmtlib.net/latest/api.html#write-api) unnecessary and make fmt even
+https://fmtlib.net/latest/api.html#write-api) unnecessary and make fmt even
 easier to use.
 
 Thanks to the C++ Library Evolution Working Group members for encouraging me

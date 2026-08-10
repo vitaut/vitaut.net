@@ -11,10 +11,10 @@ If you've read any of my recent posts about string formatting
 I apologize for bringing this topic up again.
 
 Today my attention was drawn by
-[Boost Karma](http://www.boost.org/doc/libs/1_52_0/libs/spirit/doc/html/spirit/karma.html),
+[Boost Karma](https://www.boost.org/doc/libs/1_52_0/libs/spirit/doc/html/spirit/karma.html),
 which is a less-known Boost library for output generation.
 The authors of this library
-[claim](http://www.boost.org/doc/libs/1_52_0/libs/spirit/doc/html/spirit/karma/tutorials/quick_start.html)
+[claim](https://www.boost.org/doc/libs/1_52_0/libs/spirit/doc/html/spirit/karma/tutorials/quick_start.html)
 that it is much faster than `printf`, `std::stream` and `boost::format`,
 so I decided to have a look at it.
 
@@ -24,7 +24,7 @@ Generators can be combined using operator `<<` like `int_ << int_` which
 outputs two integers, or `*int_` which outputs zero or more integers.
 This is somewhat similar to construction of regular expressions or grammar
 productions which is not surprising considering that Karma is a part of the
-[Spirit Parser Framework](http://www.boost.org/doc/libs/1_52_0/libs/spirit/doc/html/index.html).
+[Spirit Parser Framework](https://www.boost.org/doc/libs/1_52_0/libs/spirit/doc/html/index.html).
 
 Here is a small example:
 
@@ -86,7 +86,7 @@ Unfortunately I haven't found an equivalent to printf's `0` format specifier.
 
 One of the claimed advantages of Karma is performance so I decided to do a
 small comparison of integer to string conversion with my formatting library.
-I took the [int_generator](http://www.boost.org/doc/libs/1_43_0/libs/spirit/optimization/karma/int_generator.cpp)
+I took the [int_generator](https://www.boost.org/doc/libs/1_43_0/libs/spirit/optimization/karma/int_generator.cpp)
 test and modified it to include the C++ Format library. I've exposed an integer
 formatting method through `Formatter::operator<<(int)` and used it to avoid
 unnecessary parsing of a format string and make the comparison to Karma more
@@ -116,5 +116,5 @@ The conclusion is that Karma is most useful if you need fast output in
 some predefined format known at compile time, but not for any user messages.
 
 *Update*: Karma is no longer the fastest method, see the
-[follow up post](http://zverovich.net/2013/09/07/integer-to-string-conversion-in-cplusplus.html)
+[follow up post](https://zverovich.net/2013/09/07/integer-to-string-conversion-in-cplusplus.html)
 for new results.

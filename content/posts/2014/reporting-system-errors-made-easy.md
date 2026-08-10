@@ -20,7 +20,7 @@ you have to call a Windows API function and the error code returned by
 <code>FormatMessage</code> that will only appeal to you if you like functions
 with 7 arguments with meaning of some of them depending on values of the other.
 
-To cope with this, the [C++ Format library](http://cppformat.github.io) now
+To cope with this, the [C++ Format library](https://cppformat.github.io) now
 provides two exception classes, <code>SystemError</code> and
 <code>WindowsError</code>. The constructors of both classes take an error code,
 a format string and arbitrary formatting arguments like the <code>format</code>

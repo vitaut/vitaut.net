@@ -18,7 +18,7 @@ https://www.reddit.com/r/cpp/comments/8prqzm/2018_rapperswil_iso_c_committee_tri
 ## Text Formatting
 
 Revision 2 (zero-based, obviously) of my paper, [P0645R2 Text Formatting](
-http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p0645r2.html), was
+https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p0645r2.html), was
 reviewed on Wednesday. This revision had mostly cosmetic changes based on the
 feedback from Jacksonville, namely:
 
@@ -133,7 +133,7 @@ to constructing an empty `string_view`. The result was to keep the status quo
 
 A good progress was made on merging the Ranges Technical Specification (TS) as
 well as reviewing the new paper [P1037 Deep Integration of the Ranges
-TS](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p1037r0.pdf) which
+TS](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p1037r0.pdf) which
 proposed an elegant and concise solution to the problem of having two separate
 set of iterator classes, one in `std` and one in `std::ranges`.
 
@@ -147,15 +147,15 @@ a merged proposal and it was decided to adopt the latter into the Modules TS.
 ### Stack trace library
 
 A proposal to add stack trace library ([P0881R1](
-http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p0881r1.html)) by Alexey
+https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p0881r1.html)) by Alexey
 Gorgurov and Antony Polukhin was unanimously approved by LEWG and sent to Library
 Working Group for C++20.
 
 ### Class types in non-type template parameters
 
 Class Types in Non-Type Template Parameters ([P0732R1](
-http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p0732r1.pdf)) by Jeff
+https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p0732r1.pdf)) by Jeff
 Snyder and Louis Dionne made it into C++20! This is great news, because, as I
 wrote in my [previous
-post](http://www.zverovich.net/2018/03/17/text-formatting-jacksonville.html),
+post](https://www.zverovich.net/2018/03/17/text-formatting-jacksonville.html),
 it will enable usable APIs that take compile-time strings and more.
