@@ -141,7 +141,7 @@ candidates derived from $\bar v$:
 The bottom of that panel is the predicate table. Each row shows ✓
 when the predicate fires, ✗ when it evaluates to false, and is
 greyed out when an earlier row already fired, alongside the actual
-comparison at 8-bit working-word precision. To the right, a small
+comparison at 8-bit working-word precision. Below it, a small
 diagram puts the four candidates on a number line with $\bar v$ in
 the middle and a band of width $\pm \delta$:
 
@@ -203,8 +203,7 @@ The visualization flags this cell with a `?` because it's
 bias-sensitive: flip $\eta_c$ from $-1$ back to $0$ and the verdict
 flips, and yy emits `19e1`. Both decimals round-trip: `200` parses to
 the halfway point between $192$ and $208$, and round-half-to-even picks
-$192$ because $c = 12$ is even. So the `-1` LSB doesn't change whether
-the result is correct, only whether yy pays for a digit it doesn't need.
+$192$ because $c = 12$ is even.
 
 ## Try it
 
