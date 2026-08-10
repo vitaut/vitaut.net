@@ -93,11 +93,12 @@ only when it lands exactly on a tie, branches off and rounds to even by
 testing a low bit of the significand.
 
 This is where the one-multiplication claim from earlier comes in:
-$\delta$ doesn't need its own multiplication. In $\bar v$'s scale,
+$\delta$ doesn't need its own multiplication. The half-ulp of $v$ is
+$\tfrac12 \cdot \mathrm{ulp}(v) = 2^{e_2 - 1}$, which in $\bar v$'s scale
+gives
 
 $$
-\delta = \tfrac12 \cdot \mathrm{ulp}(\bar v)
-       = 2^{e_2 - 1} \cdot p_{10} \cdot 2^{e_p}
+\delta = 2^{e_2 - 1} \cdot p_{10} \cdot 2^{e_p}
        = p_{10} \cdot 2^{e_2 + e_p - 1}
 $$
 
@@ -125,9 +126,9 @@ The walk-through is one HTML page,
 [`e4m3-yy.html`](https://vitaut.net/e4m3-yy.html); open it in a new
 tab.
 
-The page is one pipeline. The main grid at the top plots every
-E4M3 value, with the rounding interval of the selected value
-highlighted:
+The page walks a value through yy's pipeline top to bottom. The main
+grid at the top plots every E4M3 value, with the rounding interval of
+the selected value highlighted:
 
 [![](/img/yy-grid.png)](https://vitaut.net/e4m3-yy.html)
 
@@ -188,9 +189,11 @@ $$
 $$
 
 so $u_0 = 200 = 10 \cdot 10^{1}$ sits at the edge of the interval. yy has
-no exact arithmetic: its 16-bit fixed-point $p_{10}$ floors $10^{-1}$ to
-`0xCCCC`, dropping a `0.8` LSB tail, the largest truncation any row of
-the table carries. That is what turns a true `10.0` into `0x9.F`, and
+no exact arithmetic. Its $p_{10}$ table is stored wider than the Q4.4
+working word, 16 bits at this scale, and the $10^{-1}$ row floors to
+`0xCCCC`, dropping a `0.8` LSB tail, the largest truncation any row
+carries. Multiplying by that rounded-down $p_{10}$ and packing the
+product back into Q4.4 is what turns a true `10.0` into `0x9.F`, and
 $\eta_c$ subtracts the same LSB from the threshold to match:
 
 $$
