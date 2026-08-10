@@ -4,7 +4,7 @@ date: 2012-12-12
 aliases: ['/2012/12/12/a-better-string-formatting-library-for-cplusplus.html']
 ---
 
-![](http://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Calabi-Yau-alternate.png/240px-Calabi-Yau-alternate.png#floatright
+![](https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Calabi-Yau-alternate.png/240px-Calabi-Yau-alternate.png#floatright
 "Artist's impression of the state of string formatting in C++.")
 
 When I started learning C++ I kind of liked the [IOStreams][1] library. It was
