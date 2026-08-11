@@ -98,8 +98,10 @@ $\tfrac12 \cdot \mathrm{ulp}(v) = 2^{e_2 - 1}$, which in $\bar v$'s scale
 gives
 
 $$
-\delta = 2^{e_2 - 1} \cdot p_{10} \cdot 2^{e_p}
-       = p_{10} \cdot 2^{e_2 + e_p - 1}
+\begin{aligned}
+\delta &= 2^{e_2 - 1} \cdot p_{10} \cdot 2^{e_p} \\
+       &= p_{10} \cdot 2^{e_2 + e_p - 1}
+\end{aligned}
 $$
 
 so $\delta$ is just $p_{10}$ shifted by an integer (no rounding, no
@@ -184,8 +186,11 @@ place looks like an off-by-one, but it is correcting for one.
 In exact arithmetic the interval reaches $u_0$ exactly:
 
 $$
-\bar v + \delta = 192 \cdot 10^{-1} + \tfrac12 \cdot 2^{4} \cdot 10^{-1}
-= 19.2 + 0.8 = 20.0,
+\begin{aligned}
+\bar v + \delta
+  &= 192 \cdot 10^{-1} + \tfrac12 \cdot 2^{4} \cdot 10^{-1} \\
+  &= 19.2 + 0.8 = 20.0,
+\end{aligned}
 $$
 
 so $u_0 = 200 = 10 \cdot 10^{1}$ sits at the edge of the interval. yy has
