@@ -162,7 +162,7 @@ $\bar v = 192 \cdot 10^{-1} = 19.2$ and the fine-grid fallback is
 $d_1 = \lfloor \bar v \rfloor = 19$, printed as `19e1`. The shorter grid
 is multiples of $10^{2} = 100$, with $d_0 = 100$ and $u_0 = 200$. If
 $v$'s rounding interval reaches $u_0 = 200$, yy can emit the
-two-character `2e2` instead of the longer `19e1`.
+shorter `2e2` instead of the longer `19e1`.
 
 The decision comes down to the second predicate,
 $\bar v_{10} + \delta \ge 10$. yy evaluates it in a Q4.4 fixed-point
