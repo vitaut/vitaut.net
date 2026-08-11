@@ -98,10 +98,7 @@ $\tfrac12 \cdot \mathrm{ulp}(v) = 2^{e_2 - 1}$, which in $\bar v$'s scale
 gives
 
 $$
-\begin{aligned}
-\delta &= 2^{e_2 - 1} \cdot p_{10} \cdot 2^{e_p} \\
-       &= p_{10} \cdot 2^{e_2 + e_p - 1}
-\end{aligned}
+\delta = 2^{e_2 - 1} \cdot p_{10} \cdot 2^{e_p} = p_{10} \cdot 2^{e_2 + e_p - 1}
 $$
 
 so $\delta$ is just $p_{10}$ shifted by an integer (no rounding, no
@@ -186,10 +183,7 @@ place looks like an off-by-one, but it is correcting for one.
 In exact arithmetic the interval reaches $u_0$ exactly:
 
 $$
-\begin{aligned}
-\bar v + \delta &= 19.2 + \tfrac12 \cdot 2^{4} \cdot 10^{-1} \\
-&= 19.2 + 0.8 = 20.0,
-\end{aligned}
+\bar v + \delta = 19.2 + \tfrac12 \cdot 2^{4} \cdot 10^{-1} = 19.2 + 0.8 = 20.0,
 $$
 
 so $u_0 = 200 = 10 \cdot 10^{1}$ sits at the edge of the interval. yy has
@@ -201,10 +195,7 @@ product back into Q4.4 is what turns a true `10.0` into `0x9.F`, and
 $\eta_c$ subtracts the same LSB from the threshold to match:
 
 $$
-\begin{aligned}
-\bar v_{10} + \delta &\ge 10 + \eta_c \\
-\iff \mathtt{0x9.F} &\ge \mathtt{0xA.0 - 0x0.1}
-\end{aligned}
+\bar v_{10} + \delta \ge 10 + \eta_c \iff \mathtt{0x9.F} \ge \mathtt{0xA.0 - 0x0.1}
 $$
 
 Both sides are `0x9.F`. The predicate ties, fires, and yy emits `2e2`.
