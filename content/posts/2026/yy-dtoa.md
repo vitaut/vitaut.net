@@ -7,12 +7,12 @@ enableLaTeX: true
 [Żmij](https://github.com/vitaut/zmij), the binary-to-decimal conversion
 library I wrote about [a few posts back]({{< relref "faster-dtoa.md" >}}),
 started as an optimized port of Schubfach. Later I switched its core to a different
-algorithm: [`yy_double.c`](
+algorithm, defined in [`yy_double.c`](
 https://github.com/ibireme/c_numconv_benchmark/blob/master/vendor/yy_double/yy_double.c)
 from [yyjson](https://github.com/ibireme/yyjson) by
-[ibireme](https://github.com/ibireme). yy has no paper, no name beyond
-the file it lives in, and almost no public profile outside the JSON
-performance crowd. It also happens to be one of the
+[ibireme](https://github.com/ibireme). It has no paper, no name beyond
+the file it lives in (I'll refer to it as yy), and almost no public
+profile outside the JSON performance crowd. It also happens to be one of the
 [fastest](https://fmtlib.github.io/dtoa-benchmark/results/apple-m5-max_macos_clang21.0_ab145b9.html)
 `dtoa` implementations.
 
