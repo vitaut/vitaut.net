@@ -187,9 +187,8 @@ In exact arithmetic the interval reaches $u_0$ exactly:
 
 $$
 \begin{aligned}
-\bar v + \delta
-  &= 192 \cdot 10^{-1} + \tfrac12 \cdot 2^{4} \cdot 10^{-1} \\
-  &= 19.2 + 0.8 = 20.0,
+\bar v + \delta &= 19.2 + \tfrac12 \cdot 2^{4} \cdot 10^{-1} \\
+&= 19.2 + 0.8 = 20.0,
 \end{aligned}
 $$
 
@@ -202,7 +201,10 @@ product back into Q4.4 is what turns a true `10.0` into `0x9.F`, and
 $\eta_c$ subtracts the same LSB from the threshold to match:
 
 $$
-\bar v_{10} + \delta \ge 10 + \eta_c \iff \mathtt{0x9.F} \ge \mathtt{0xA.0 - 0x0.1}
+\begin{aligned}
+\bar v_{10} + \delta &\ge 10 + \eta_c \\
+\iff \mathtt{0x9.F} &\ge \mathtt{0xA.0 - 0x0.1}
+\end{aligned}
 $$
 
 Both sides are `0x9.F`. The predicate ties, fires, and yy emits `2e2`.
