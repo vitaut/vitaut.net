@@ -223,6 +223,6 @@ of the ones that ship with papers. yy is worth knowing about anyway.
 
 The smallest normal `double`, $2^{-1022}$, is regular: its predecessor
 sits exactly one ULP below. Schubfach-family algorithms (yy, Dragonbox,
-Żmij) all flag "irregular" with `sig_bin == 1ULL << 52`, which fires
-on every power of two including this one. Harmless, but as far as I
-know nobody special-cases it.
+Żmij) flag the "irregular" case by checking whether the significand has
+all fraction bits zero, which is exactly the powers of two, this one
+included. Harmless, but as far as I know nobody special-cases it.
