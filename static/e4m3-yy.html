@@ -648,7 +648,10 @@
      titles in a sibling overlay, not a `<foreignObject>`.  Keeps them at
      native pixel size and lets Y-axis titles rotate via CSS, avoiding the
      Mobile Safari bug that misplaces rotated KaTeX in a `<foreignObject>`. */
-  .grid-wrap   { position: relative; }
+  /* Exclude the grid from scroll anchoring: hovering churns its dots/tooltip,
+     which disrupts a nearby anchor node and jumps the page when the grid is
+     partially scrolled above the top. */
+  .grid-wrap   { position: relative; overflow-anchor: none; }
   .grid-labels {
     position: absolute;
     inset: 0;
@@ -1984,6 +1987,11 @@ function mathText(el, s) {
 }
 
 function render() {
+  // Above-grid content (bit summary) changes height with the value; record the
+  // grid's viewport position so we can keep it fixed under the cursor.
+  const anchorEl = $("#grid");
+  const anchorBefore = anchorEl.getBoundingClientRect().top;
+
   const d = decode(state.enc);
   setBits(state.enc);
 
@@ -2777,13 +2785,21 @@ function render() {
   $("#hexInput").value = "0x" + state.enc.toString(16).toUpperCase().padStart(2, "0");
 
   renderGridOverlay();
+
+  // Compensate scroll so the grid stays visually fixed. Skip when at the top
+  // (scrollY 0), which also covers the initial render, to avoid auto-scrolling.
+  const anchorDelta = anchorEl.getBoundingClientRect().top - anchorBefore;
+  if (anchorDelta && window.scrollY > 0) window.scrollBy(0, anchorDelta);
 }
 
 // SVG-only updates (dot fade, selection ring/band, tooltip).  `hoverEnc`
 // calls just this so hovering doesn't re-render the KaTeX panels — that
 // reflow made the page jump around.
 function renderGridOverlay() {
-  // dot visibility + selection
+  // dot visibility + selection.  Only write when the value changes so hovering
+  // doesn't churn every dot each mousemove (extra DOM writes can disturb scroll
+  // anchoring and cost paint work).
+  const hoverPos = state.hover === null ? -1 : (state.hover & 0x7F);
   for (const dd of ALL) {
     if (dd.s === 1) continue;
     const el = dotEls.get(dd.enc);
@@ -2791,9 +2807,9 @@ function renderGridOverlay() {
     const hidden =
       (!state.filters.zero && dd.kind === "zero")      ||
       (!state.filters.sub  && dd.kind === "subnormal");
-    el.style.display = hidden ? "none" : "";
-    el.classList.toggle("faded",
-      state.hover !== null && dd.enc !== (state.hover & 0x7F));
+    const display = hidden ? "none" : "";
+    if (el.style.display !== display) el.style.display = display;
+    el.classList.toggle("faded", hoverPos !== -1 && dd.enc !== hoverPos);
   }
 
   // ring on selected (map negative selection to positive grid).  Hide
