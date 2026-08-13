@@ -104,6 +104,13 @@
     font: 14px/1.45 -apple-system, BlinkMacSystemFont, "SF Pro Display",
           "Segoe UI", Inter, system-ui, sans-serif;
     font-feature-settings: "tnum" 1, "cv11" 1;
+    /* Pin the document to the viewport width so a stray wide child
+       can't make the whole page scroll sideways — that horizontal
+       overflow broke vertical scrolling on phones.  `clip` contains
+       the width without creating a scroll container or grabbing touch
+       gestures.  Wide blocks scroll inside their own container (see
+       `.p10-scroll` and the mobile row rules). */
+    overflow-x: clip;
   }
 
   /* Bit-layout sizing.  The header bar's geometry is derived entirely
@@ -484,7 +491,17 @@
      top border. */
   .compute-e10-row { margin-bottom: 10px; }
 
-  /* p10 reference table */
+  /* The p10 table is wider than a phone viewport, so it scrolls inside
+     this wrapper instead of widening the page.  `touch-action: pan-x
+     pan-y` keeps vertical swipes scrolling the page; only horizontal
+     drags move the table. */
+  .p10-scroll {
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    touch-action: pan-x pan-y;
+    -webkit-overflow-scrolling: touch;
+  }
   .p10-table {
     margin-bottom: 14px;
     border-collapse: collapse;
@@ -993,11 +1010,27 @@
       max-width: 100%;
       overflow-x: clip;
     }
-    /* Chained-equation rows (`\bar v`, `\delta`, `\bar v_{10}`) opt
-       out: their per-`=` segments wrap naturally so there's nothing
-       to scroll, and `overflow-x: auto` would clip the bin-tooltips
-       that hang above the now-multi-line content. */
-    .compute-row-flow { overflow-x: visible; }
+    /* The summary rows hold a single `nowrap` equation ending in the
+       decimal value — clipping it (as `.compute-row` does) would hide
+       the answer, so scroll it instead. */
+    .bit-summary-row {
+      max-width: 100%;
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      touch-action: pan-x pan-y;
+      -webkit-overflow-scrolling: touch;
+    }
+    /* Chained rows wrap at each `=`, but one segment can still be
+       wider than the viewport and won't break — scroll it rather than
+       clip it.  The bin-hint tooltips this used to protect are
+       `(hover: hover)`-only, so they never render on touch anyway. */
+    .compute-row-flow {
+      max-width: 100%;
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      touch-action: pan-x pan-y;
+      -webkit-overflow-scrolling: touch;
+    }
     /* Per-group decoded labels above the bit boxes (`e₂ = E − bias
        − 3 = …`, `c = 1.001₂·2³ = …`).  Each label sits in a
        fixed-width track sized to its bit group, so on phones the
@@ -1158,18 +1191,20 @@
     <div class="compute-row compute-e10-row">
       <span class="compute-expr" id="cE10"></span>
     </div>
-    <table class="p10-table" id="p10Table">
-      <thead>
-        <tr>
-          <th data-k="e10"></th>
-          <th data-k="pow"></th>
-          <th data-k="p10"></th>
-          <th data-k="bin"></th>
-          <th data-k="approx"></th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+    <div class="p10-scroll">
+      <table class="p10-table" id="p10Table">
+        <thead>
+          <tr>
+            <th data-k="e10"></th>
+            <th data-k="pow"></th>
+            <th data-k="p10"></th>
+            <th data-k="bin"></th>
+            <th data-k="approx"></th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
     <div class="compute-grid">
       <div class="compute-phase">Scale by a power of 10</div>
       <div class="compute-row compute-row-flow">
