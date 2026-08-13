@@ -41,8 +41,7 @@
     --bit-exp-on-bg:   #1d3324;  --bit-exp-on-border:  #2e5a3b;
     --bit-mant-on-bg:  #102944;  --bit-mant-on-border: #1f4a7a;
 
-    /* Lighter than page bg so it reads as a floating overlay, with a
-       brighter border and a strong shadow for depth. */
+    /* Floating-overlay look: lighter than page bg, bright border, strong shadow. */
     --tooltip-bg:     rgba(48, 54, 61, 0.98);
     --tooltip-fg:     #f0f6fc;
     --tooltip-border: rgba(205, 217, 229, 0.35);
@@ -83,8 +82,7 @@
     --bit-exp-on-bg:   #dafbe1;  --bit-exp-on-border:  #6fdd8b;
     --bit-mant-on-bg:  #ddf4ff;  --bit-mant-on-border: #54aeff;
 
-    /* Google-Charts-style tooltip: solid white card, no visible border,
-       soft drop shadow.  Reads as a floating "card" over the page. */
+    /* Google-Charts-style: solid white card, no border, soft drop shadow. */
     --tooltip-bg:     #ffffff;
     --tooltip-fg:     #202124;
     --tooltip-border: rgba(60, 64, 67, 0.12);
@@ -104,20 +102,16 @@
     font: 14px/1.45 -apple-system, BlinkMacSystemFont, "SF Pro Display",
           "Segoe UI", Inter, system-ui, sans-serif;
     font-feature-settings: "tnum" 1, "cv11" 1;
-    /* Pin the document to the viewport width so a stray wide child
-       can't make the whole page scroll sideways — that horizontal
-       overflow broke vertical scrolling on phones.  `clip` contains
-       the width without creating a scroll container or grabbing touch
-       gestures.  Wide blocks scroll inside their own container (see
-       `.p10-scroll` and the mobile row rules). */
+    /* Pin the page to the viewport width — a stray wide child scrolling
+       the page sideways broke vertical scrolling on phones.  `clip`
+       contains it without creating a scroll container or grabbing touch
+       gestures; wide blocks scroll in their own container instead. */
     overflow-x: clip;
   }
 
-  /* Bit-layout sizing.  The header bar's geometry is derived entirely
-     from these two values: the 8 bit boxes (4 exp + 3 sig + 1 sign)
-     and the per-group decode/label tracks above and below them all
-     scale together via calc(), so shrinking them on mobile keeps the
-     three rows perfectly aligned. */
+  /* Bit-layout sizing.  Bit boxes and the decode/label tracks above and
+     below derive from these via calc(), so shrinking them on mobile keeps
+     all three rows aligned. */
   :root {
     --bit-w:   44px;
     --bit-gap: 6px;
@@ -150,21 +144,10 @@
     margin-bottom: 20px;
   }
 
-  /* "How yy converts a float to decimal" intro callout — a `<details>`
-     collapsible nested inside `.panel.compute`, between the subtitle
-     and the first formula row.  Closed by default: the formula chain
-     is the main content of that panel, so the intro advertises itself
-     via its summary line and stays out of the way until clicked.  No
-     `.panel` framing of its own (would be a panel-in-panel against
-     the surrounding compute panel) — instead a thin left accent +
-     small inset distinguish it from the formula rows that sit flush
-     beneath.
-
-     Custom disclosure triangle (▸) instead of the browser default —
-     the WebKit/Firefox markers vary in size, position, and style
-     enough that they read as foreign next to KaTeX-rendered math.
-     A single ▸ glyph rotated 90° on `[open]` matches the page's
-     overall typographic restraint. */
+  /* Collapsible intro callout inside `.panel.compute`, closed by default.
+     A thin left accent (not its own `.panel`) sets it off from the formula
+     rows.  Custom ▸ marker (rotated on `[open]`) since the native ones look
+     foreign next to KaTeX. */
   details.intro {
     margin: 4px 0 14px;
     border-left: 2px solid var(--line);
@@ -201,14 +184,10 @@
     font-size: 0.92em;
     color: var(--fg);
   }
-  /* Inline math inside the intro inherits the dim body colour by
-     default — KaTeX renders into nested spans whose own `color` is
-     unset, but `color: inherit` propagates `--fg-dim` down into the
-     math glyphs so they read as part of the prose. */
+  /* `inherit` propagates the dim body colour into the KaTeX math glyphs
+     so inline math reads as part of the prose. */
   details.intro .katex { color: inherit; font-size: 1em; }
-  /* Subtle underlined link, same affordance shape as
-     `.compute-subtitle a` so cross-panel link styling stays
-     consistent. */
+  /* Subtle underlined link, matching `.compute-subtitle a`. */
   details.intro a {
     color: inherit;
     text-decoration: underline;
@@ -369,16 +348,10 @@
     border-top: 1px dashed var(--line);
     flex-wrap: wrap;
   }
-  /* Two-row decode block:
-       row 1: c = 1.M₂·2³ = …,   e₂ = E − bias − 3 = …
-       row 2: v = c · 2^{e₂} = … = <decimal>
-     The inline-flex form we used to have only worked when the whole
-     summary was a single equation; once we stacked the c/e₂ derivation
-     above v we need block flow so the rows actually break to separate
-     lines (and so individual rows can still wrap their KaTeX spans at
-     comma `<wbr>` opportunities on narrow viewports).  `flex: 1`
-     still applies — the parent `.bit-summary` is the flex container
-     that lays this block out next to the kind-chip. */
+  /* Two stacked rows (c/e₂ derivation, then v = …).  Block flow (not
+     inline-flex) so the rows break to separate lines and can wrap at
+     `<wbr>` on narrow viewports.  `flex: 1` lays it out next to the
+     kind-chip in the `.bit-summary` flex container. */
   .bit-summary-main {
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 14px;
@@ -397,19 +370,12 @@
   .compute-title {
     font-weight: 600;
     color: var(--fg);
-    /* Tightened from 10px so the title + subtitle below read as a
-       single header block; the subtitle (`.compute-subtitle`) owns
-       the gap down to the first row. */
+    /* Tight so title + subtitle read as one header block; the subtitle
+       owns the gap down to the first row. */
     margin-bottom: 2px;
   }
-  /* Section subtitle directly under `.compute-title` — names the
-     underlying algorithm and links to the canonical source so a
-     curious reader can chase the implementation.  Muted + slightly
-     smaller (matches `.compute-phase` labels) so it reads as
-     metadata rather than competing with the section title itself.
-     `<code>yy</code>` keeps the identifier identity it has
-     throughout the source comments (where it abbreviates the
-     `yy_double` reference implementation). */
+  /* Names the algorithm and links its source.  Muted + small so it reads
+     as metadata under the title. */
   .compute-subtitle {
     color: var(--fg-dim);
     font-size: 0.9em;
@@ -434,10 +400,8 @@
     flex-direction: column;
     gap: 6px;
   }
-  /* Phase label — a muted heading that separates steps of the
-     decimal-conversion algorithm (Scale, Bracket, Round, Emit).
-     Non-first labels get extra top margin so adjacent phases read
-     as distinct groups rather than one long list of rows. */
+  /* Muted heading separating algorithm steps (Scale, Bracket, Round,
+     Emit).  Non-first labels get top margin to group the phases. */
   .compute-phase {
     color: var(--fg-dim);
     font-size: 0.9em;
@@ -453,28 +417,13 @@
     color: var(--fg);
   }
   .compute-row .katex { font-size: 1em; color: inherit; }
-  /* Wrappable equation chains (see `kxChain` in the script).  Each
-     `compute-row-flow` row contains a `.compute-expr` laid out as a
-     two-column grid: column 1 holds the LHS (`\bar v`, `\delta`,
-     `\bar v_{10}`), column 2 holds all the `\;=\;` segments inside
-     a single `.kx-rhs` container.  The RHS segments are `nowrap`
-     inline-blocks separated by `<wbr>`, so on a wide screen they
-     sit on a single visual line (KaTeX's own binary-relation
-     spacing handles the visual `=` margins) while a narrow
-     viewport line-wraps inside column 2 at every `=` boundary —
-     and since every wrapped line starts at the same left edge
-     (the column-2 origin), the leading `\;=\;` of each segment
-     lines up vertically across rows.  This is the LaTeX
-     `\begin{aligned}` look without the rigid layout — the chain
-     reflows fluidly while keeping its `=` column.
-
-     `align-items: baseline` baselines the LHS with the first line
-     of the RHS so subscripts (`\bar v_{10}`'s `_{10}`) hang
-     normally below; bumped `line-height` keeps wrapped RHS lines
-     from feeling cramped (KaTeX's inline-block default leaves no
-     room between rows).  No explicit `column-gap` — the leading
-     `\;` inside each segment provides the LHS↔RHS spacing, so
-     adding grid gap on top would double up. */
+  /* Wrappable equation chains (see `kxChain`).  Two-column grid: LHS in
+     column 1, the `\;=\;` segments in column 2.  Segments are `nowrap`
+     + `<wbr>`, so a wide screen keeps them on one line while a narrow one
+     wraps at each `=` — and since wrapped lines share the column-2 origin,
+     the `=` signs stay aligned (the `\begin{aligned}` look, but fluid).
+     `align-items: baseline` hangs subscripts normally; no `column-gap`
+     since each segment's leading `\;` already spaces LHS↔RHS. */
   .compute-row-flow .compute-expr {
     display: grid;
     grid-template-columns: auto minmax(0, 1fr);
@@ -485,10 +434,8 @@
     display: inline-block;
     white-space: nowrap;
   }
-  /* The e_{10} formula sits between the section title and the p_{10}
-     reference table — give it a small bottom margin so it reads as a
-     leading preamble rather than visually merging with the table's
-     top border. */
+  /* Small gap so the e_{10} formula reads as a preamble above the p_{10}
+     table rather than merging with its top border. */
   .compute-e10-row { margin-bottom: 10px; }
 
   /* The p10 table is wider than a phone viewport, so it scrolls inside
@@ -514,8 +461,7 @@
     text-align: right;
     border-bottom: 1px solid var(--border);
   }
-  /* 10^{…} column — left-align so the "10" bases line up and the
-     varying-width exponents extend to the right. */
+  /* 10^{…} column — left-align so the bases line up. */
   .p10-table th:nth-child(2),
   .p10-table td:nth-child(2) { text-align: left; }
   .p10-table th {
@@ -530,54 +476,32 @@
   }
   .p10-table .katex { font-size: 1em; color: inherit; }
 
-  /* Low-order bits of intermediate values that can differ if the
-     mathematically-exact (infinite-bit) p10 had been used instead of
-     the P10_BITS-wide truncation.  Used inside the binary hover-tooltips
-     to shade the uncertain tail. */
+  /* Shades the uncertain tail (bits that a full-precision p10 could
+     change) in the binary hover-tooltips. */
   .uncertain, .uncertain * { color: var(--fg-dimmer) !important; }
 
-  /* Hex intermediates in the v̄ computation expose a bit-level view
-     on hover — dotted underline signals "more info below", tooltip
-     pops up above and renders the binary with uncertain bits dim. */
-  /* `position: relative` + `z-index` promotes the hint into its own
-     stacking context so hit-testing reaches it.  Without the z-index,
-     the outer KaTeX `\begin{aligned}` vlist cell (a later-painted
-     sibling, also relatively positioned) wins `elementFromPoint` over
-     most of the row's vertical extent, and `:hover` only fires for the
-     top couple of pixels of the text. */
+  /* Hex intermediates open a bit-level tooltip on hover.  `z-index`
+     gives the hint its own stacking context so hit-testing reaches it —
+     otherwise the outer KaTeX vlist cell wins `elementFromPoint` and
+     `:hover` fires only on the top few pixels. */
   .bin-hint {
     position: relative;
     z-index: 1;
   }
-  /* Dotted-underline hoverability cue, applied explicitly via the
-     `.bin-hint-cue` marker.  Omitted on hints that already carry a
-     stronger visual marker (p10 and imprecise intermediates both
-     use a solid `\underline`), so we never stack two underlines. */
+  /* Dotted-underline hover cue.  Omitted where a solid `\underline`
+     already marks the hint, so we never stack two underlines. */
   .bin-hint-cue {
     border-bottom: 1px dotted var(--fg-dimmer);
   }
   .bin-tooltip > div + div { margin-top: 4px; }
-  /* Footer "note" line — narrates *why* a value is truncated, only
-     attached to tooltips that sit at the origin of an error source
-     (the p_{10} table itself; the c·p_{10} → Q.16 narrowing).
-     Downstream tooltips inherit their imprecision from one of those
-     two and the dim-bit visual carries the rest of the story, so
-     they're left noteless.  Dim foreground reads as annotation
-     rather than primary content; a slightly wider top gap separates
-     the "what" lines (binary + interval) from the "why" line.
-     Italic was previously stacked on top of dim to push the
-     annotation feel further, but the italic system-sans prose
-     visually clashed with KaTeX math (upright serif) once notes
-     started embedding `$…$` fragments — the dim alone carries the
-     "secondary" signal cleanly, and prose now blends with inline
-     math instead of switching weights mid-sentence. */
+  /* Footer note explaining *why* a value is truncated, only on tooltips
+     at an error source (the p_{10} table; the c·p_{10} → Q.16 narrowing).
+     Dim foreground marks it as annotation — no italic, which clashed with
+     the inline KaTeX. */
   .bin-tooltip > .bin-tooltip-note {
     color: var(--fg-dim);
-    /* Note text matches the size of KaTeX-rendered content elsewhere
-       in the tooltip (`.bin-tooltip .katex { font-size: 0.95em }`);
-       the previous 0.85em deliberately undersized prose to make it
-       feel "secondary", but dim foreground already carries that
-       signal and the smaller body actively hurt readability. */
+    /* Matches the tooltip's KaTeX size; smaller hurt readability and the
+       dim colour already signals "secondary". */
     font-size: 0.95em;
     margin-top: 6px;
     white-space: normal;
@@ -593,19 +517,10 @@
     padding: 6px 10px;
     border-radius: 4px;
     white-space: nowrap;
-    /* Without an explicit width, `position: absolute` shrink-to-fit
-       races against the *containing block* (the `.bin-hint` host
-       span, which can be as narrow as a single math glyph for the
-       `\stackrel{?}{≥}` uncertainty cue).  Binary-line tooltips dodge
-       this because their `white-space: nowrap` content forces a wide
-       intrinsic width regardless of available space — but for
-       note-only tooltips the prose is `white-space: normal` and
-       collapses to one-word-per-line.  `width: max-content` makes the
-       tooltip ignore the cramped containing block and size to its
-       own max-content; the soft cap then limits the longest note
-       from running off-viewport.  56em comfortably accommodates
-       every current note (longest is the `Intervals overlap; tighter
-       bounds could flip ✓/✗.` predicate cue) on one line at 0.95em. */
+    /* `max-content` so the tooltip sizes to its content, not the (often
+       one-glyph-wide) `.bin-hint` host — otherwise `white-space: normal`
+       notes collapse to one word per line.  The cap keeps long notes
+       on-viewport. */
     width: max-content;
     max-width: 56em;
     opacity: 0;
@@ -648,47 +563,23 @@
   .chk-fired, .chk-fired * { color: var(--fg)     !important; }
   .chk-false, .chk-false * { color: var(--fg)     !important; }
   .chk-skip,  .chk-skip  * { color: var(--fg-dim) !important; opacity: 0.5; }
-  /* Greys out the rest of a skip row (the candidate letter and the
-     entire `if … ⟺ …` body) so the row reads at a glance as
-     "short-circuited — don't spend attention here".  The checkbox
-     column already uses `.chk-skip` + opacity 0.5; the row body is
-     kept slightly more readable (plain `fg-dim`, no extra opacity)
-     since a reader who's tracing *why* a row was skipped should
-     still be able to scan its predicate without squinting. */
+  /* Greys out a skipped row so it reads as "short-circuited"; the body
+     stays plain `fg-dim` (no extra opacity) so its predicate is still
+     legible when tracing why it was skipped. */
   .row-skip, .row-skip * { color: var(--fg-dim) !important; }
-  /* Every chk-* cell contains a `\phantom{\checkmark}` that reserves
-     a uniform column width so the letter column stays rectangular
-     regardless of which glyph fires; every predicate row body wraps a
-     `\mathrlap{ifBody}\hphantom{widestIfBody}` whose `\hphantom` is
-     supposed to be invisible width-only padding.  KaTeX marks the
-     phantom/hphantom's inner glyphs as `color: transparent`, but the
-     `!important` colour rules above beat that inline style and would
-     reveal both a ghost checkmark next to every ✓ / × / – AND a
-     ghost copy of widestIfBody behind the actual if-body (visible as
-     a `\bar v \bmod 1 \ge 10 + \eta_c` shadow inside skipped u_1
-     rows).  Restore transparency on phantom-bearing spans so the
-     width-reserving content stays hidden. */
+  /* KaTeX phantoms (width-only `\phantom`/`\hphantom` padding) are
+     `color: transparent`, but the `!important` rules above would beat
+     that and reveal ghost glyphs.  Restore transparency on them. */
   .chk-fired [style*="transparent"], .chk-fired [style*="transparent"] *,
   .chk-false [style*="transparent"], .chk-false [style*="transparent"] *,
   .chk-skip  [style*="transparent"], .chk-skip  [style*="transparent"] *,
   .row-skip  [style*="transparent"], .row-skip  [style*="transparent"] *
   { color: transparent !important; }
 
-  /* Tooltips on skipped rows render at full contrast — same as on
-     fired/false rows.  The blanket `.row-skip *` / `.chk-skip *`
-     colour rules above propagate into any `.bin-tooltip` that hangs
-     off a hex-hint span inside the skipped row body (the tooltip is
-     a DOM child of `.bin-hint`, which is itself wrapped by
-     `.row-skip`), painting the tooltip text dim-grey and making it
-     noticeably harder to read than the same tooltip on a non-skipped
-     row.  Reset *colour only* to the tooltip palette at higher
-     specificity; `.uncertain` re-asserts its own dim shade below so
-     dim binary bits inside the tooltip body continue to read as
-     truncated/uncertain.  Crucially, do NOT override `opacity` here:
-     the default `.bin-tooltip { opacity: 0 }` rule is what keeps the
-     tooltip hidden until hover, and bumping it to 1 with `!important`
-     pinned the tooltip permanently visible above every skipped row's
-     hex literals. */
+  /* Keep tooltips on skipped rows at full contrast — the blanket
+     `.row-skip *` colour rules above would otherwise dim them.  Reset
+     colour only (not opacity — that's what keeps the tooltip hidden
+     until hover); `.uncertain` re-dims truncated bits below. */
   .row-skip .bin-tooltip, .row-skip .bin-tooltip *,
   .chk-skip .bin-tooltip, .chk-skip .bin-tooltip * {
     color: var(--tooltip-fg) !important;
@@ -697,10 +588,8 @@
   .chk-skip .bin-tooltip .uncertain, .chk-skip .bin-tooltip .uncertain * {
     color: var(--fg-dimmer) !important;
   }
-  /* Same exception for the italicised "why" footer: the colour reset
-     above pushes it to `--tooltip-fg` (full contrast), but the note
-     is annotation, not primary content, and reads better at the
-     same `--fg-dim` shade it has on non-skip tooltips. */
+  /* Keep the footer note dim (the reset above would push it to full
+     contrast) since it's annotation, not primary content. */
   .row-skip .bin-tooltip .bin-tooltip-note,
   .chk-skip .bin-tooltip .bin-tooltip-note {
     color: var(--fg-dim) !important;
@@ -755,16 +644,10 @@
     fill: var(--fg);
   }
 
-  /* Main grid axis titles use the same HTML-overlay pattern as the
-     candidate diagram (see `.cd-labels`).  Wrapping the SVG in a
-     positioning container and placing KaTeX-rendered titles in a
-     sibling overlay keeps the labels at native CSS-pixel size on
-     phones and lets the rotated Y-axis titles rotate via plain CSS
-     `transform: rotate(...)`, sidestepping Mobile Safari's
-     long-standing bug where KaTeX inside a `<foreignObject>` carrying
-     an SVG `transform: rotate(...)` floats off to the wrong place.
-     With the overlay model rotation happens at the HTML level, after
-     KaTeX has already laid itself out in normal coordinates. */
+  /* Axis titles use the HTML-overlay pattern (see `.cd-labels`): KaTeX
+     titles in a sibling overlay, not a `<foreignObject>`.  Keeps them at
+     native pixel size and lets Y-axis titles rotate via CSS, avoiding the
+     Mobile Safari bug that misplaces rotated KaTeX in a `<foreignObject>`. */
   .grid-wrap   { position: relative; }
   .grid-labels {
     position: absolute;
@@ -775,23 +658,17 @@
     font-size: 11px;
     white-space: nowrap;
   }
-  /* `translate(-50%, -50%)` centres the rendered span on its
-     percentage anchor; the rotation modifiers compose with that
-     centring so the visual centre lands on the anchor regardless
-     of orientation. */
+  /* `translate(-50%, -50%)` centres the span on its % anchor; rotation
+     modifiers compose with it so the centre lands on the anchor either way. */
   .grid-labels .grid-lbl       { position: absolute; transform: translate(-50%, -50%); line-height: 1; }
   .grid-labels .grid-lbl-rot-l { transform: translate(-50%, -50%) rotate(-90deg); }
   .grid-labels .grid-lbl-rot-r { transform: translate(-50%, -50%) rotate( 90deg); }
-  /* KaTeX inherits the prose colour but keeps its default 1.21em
-     font-size scale-up — math fonts (serif italic) read visually
-     smaller than monospace at the same nominal size, so the 21%
-     bump is what makes `e_2` look the same height as the
-     surrounding "binary exponent" prose. */
+  /* Inherit prose colour; KaTeX's default 1.21em bump makes `e_2` match
+     the height of the surrounding monospace prose. */
   .grid-labels .grid-lbl .katex { color: inherit; }
 
-  /* Scientific-figure style: axes + ticks are crisp black / white
-     (full --fg), gridlines are a faint dashed scaffold, labels are
-     full-contrast.  Color is reserved for the data itself. */
+  /* Scientific-figure style: crisp full-contrast axes/ticks, faint
+     dashed gridlines; colour is reserved for the data. */
   svg .grid-line {
     stroke: var(--fg-dim);
     stroke-width: 0.5;
@@ -825,24 +702,16 @@
   svg .dot.subnormal { fill: var(--subnorm); }
   svg .dot.nan       { fill: var(--nan); }
   svg .dot.zero      { fill: var(--zero); }
-  /* Hover spotlight: when one dot is hovered the rest dim slightly so
-     the hovered one (with its tooltip + halo) reads as the focus,
-     but the fade stays light enough that neighbouring dots remain
-     clearly visible — losing the local context around the hovered
-     dot defeats the point of inspecting it.  Gated behind
-     `(hover: hover)` so it doesn't apply on touch-only devices,
-     where tapping a dot fires mouseenter, sets state.hover, and then
-     never fires a clean mouseleave — leaving every other dot
-     permanently faded after the first tap.  Touch users still get
-     the selection halo + ring on the tapped dot to mark focus. */
+  /* Hover spotlight: dim the other dots (lightly, to keep context) so the
+     hovered one reads as focus.  Gated to `(hover: hover)` — on touch a tap
+     fires mouseenter with no clean mouseleave, which would leave every dot
+     faded; touch users get the halo/ring instead. */
   @media (hover: hover) {
     svg .dot.faded   { opacity: 0.7; }
   }
 
-  /* Halo around the selected dot and the rounding-interval band along
-     its row share the same visual language — both mark "this is the
-     value v̄ rounds to" so they render with identical fill / opacity,
-     and the band simply extends the halo outward along the row. */
+  /* Halo (selected dot) and round-band (its row) share one visual
+     language — both mark "what v̄ rounds to" — so same fill/opacity. */
   svg .halo,
   svg .round-band {
     fill: var(--highlight);
@@ -857,16 +726,9 @@
     pointer-events: none;
   }
 
-  /* Hide the dot-hover tooltip (value + bits readout) on touch-only
-     devices.  The render() pass keeps setting `opacity: 1` inline
-     whenever `state.hover` is non-null — which on touch fires from a
-     tap and never clears, leaving the tooltip permanently hovering
-     above whichever dot was most recently tapped.  `!important` on
-     `opacity: 0` overrides the inline style so the readout stays
-     hidden on touch; the tap still sets `state.hover` (so selection,
-     halo, p_{10}-row highlight, and the rest of the recompute fire),
-     it just doesn't paint the SVG-overlay tooltip.  Mirrors the
-     same (hover: none) gating used for the bin-hint tooltips. */
+  /* Hide the dot-hover readout on touch: a tap sets `state.hover` and the
+     render leaves `opacity: 1` inline forever, so `!important` overrides it.
+     The tap still drives selection/halo/highlight — just no SVG tooltip. */
   @media (hover: none) {
     svg .hover-label,
     svg .tooltip-bg {
@@ -887,46 +749,32 @@
 
   svg.cd-svg { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
   svg.cd-svg .cd-axis      { stroke: var(--fg); stroke-width: 1; shape-rendering: crispEdges; }
-  /* Reuse the main-diagram .decade-tick style; minor = shorter (6px) and
-     major (at d₀/u₀) = full (10px).  Both hang below the axis. */
-  /* Matches the main-diagram halo / round-band opacity so the selected
-     point reads as one highlight across both views. */
+  /* Matches the main-diagram halo/round-band opacity so the selected point
+     reads as one highlight across both views. */
   svg.cd-svg .cd-band      { fill: var(--highlight); opacity: 0.45; stroke: none; }
   svg.cd-svg .cd-bracket   { stroke: var(--highlight); stroke-width: 1.5; fill: none; }
   svg.cd-svg .cd-vbar      { stroke: var(--accent);  stroke-width: 2.5; }
   svg.cd-svg .cd-cand-dot  { fill: var(--fg);        stroke: none; }
-  /* Dim class: applied to the dot, numeric value, and symbol label of
-     candidates the rounding algorithm did NOT pick, so the selected
-     candidate reads as the focus of the diagram. */
+  /* Dims the dot/value/label of candidates the algorithm didn't pick. */
   svg.cd-svg .cd-cand-dot.cd-dim { fill: var(--fg-dim); }
   svg.cd-svg .cd-val.cd-dim      { fill: var(--fg-dim); }
   svg.cd-svg text          { fill: var(--fg); stroke: none; font-size: 12px; }
   svg.cd-svg .cd-sub       { fill: var(--fg-dim); font-size: 11px; }
-  /* Numeric value labels default to the regular foreground colour so
-     the selected candidate's value reads at full contrast; the
-     `.cd-dim` modifier (set on unselected groups by renderCandDiag)
-     is what dims the non-picked labels. */
+  /* Full-contrast by default; `.cd-dim` (set by renderCandDiag) dims the
+     non-picked labels. */
   svg.cd-svg .cd-val       { fill: var(--fg); font-size: 11px; }
   svg.cd-svg .cd-eps       { fill: var(--highlight); font-size: 11px; }
-  /* Candidate / v̄ symbol labels live in an HTML overlay (`.cd-labels`)
-     above the SVG, not inside it, so KaTeX can render them as real
-     formulas at native CSS-pixel size.  Two earlier attempts didn't
-     work: KaTeX inside <foreignObject> sized itself independent of
-     the SVG scale (overflowed or vanished on phones), and native SVG
-     <text> with Unicode subscripts didn't carry the formula-style
-     italic typography of the rest of the page's math.  The overlay
-     decouples the two coordinate systems: SVG handles geometry, HTML
-     handles typography. */
+  /* Symbol labels live in an HTML overlay (`.cd-labels`), not the SVG, so
+     KaTeX renders them as real formulas at native size — SVG handles
+     geometry, HTML handles typography. */
   .cd-wrap   { position: relative; }
   .cd-labels {
     position: absolute;
     inset: 0;
     pointer-events: none;
   }
-  /* Each label is positioned via top/left percentages of the overlay
-     box, then translate(-50%, -50%) centres the rendered KaTeX on
-     that point.  white-space: nowrap keeps multi-token labels (e.g.
-     "d_0 = d_1") from wrapping mid-formula. */
+  /* Positioned via top/left %, then centred with translate(-50%, -50%);
+     nowrap keeps multi-token labels from wrapping mid-formula. */
   .cd-labels .cd-lbl {
     position: absolute;
     transform: translate(-50%, -50%);
@@ -964,15 +812,10 @@
   footer a { color: var(--fg-dim); }
 
   /* ---------- Mobile / narrow-viewport tuning ----------
-     The bit-layout panel at the top of the page is the widest
-     fixed-size element on the page (8 bit boxes + 7 gaps + the
-     decode/label tracks above and below).  At its desktop size
-     (--bit-w: 44px, --bit-gap: 6px) the row is 394px wide, which
-     exceeds the content area on phones once the wrap+panel padding
-     is accounted for.  Shrinking the two CSS variables rescales the
-     entire bit panel — bit boxes and their decode/label tracks —
-     in lockstep, while the rest of the page (which already uses
-     flex-wrap or width:100% SVGs) needs only minor padding tweaks. */
+     The bit-layout panel is the widest fixed-size element (~394px at
+     desktop size), too wide for phones.  Shrinking the two bit vars
+     rescales the whole panel in lockstep; the rest of the page already
+     flex-wraps or uses width:100% SVGs. */
   @media (max-width: 600px) {
     :root {
       --bit-w:   36px;
@@ -984,27 +827,11 @@
     .controls { padding: 10px 14px; }
     .compute { padding: 12px 14px; }
     h1 { font-size: 22px; }
-    /* KaTeX renders as a rigid inline-block with no line breaking, so
-       the candidate / flag tables (which use `\begin{aligned}` and
-       can't be split into independent segments without losing their
-       column alignment) run past the panel border on phones.  Shrink
-       the math a notch so the common case still fits within the
-       panel.
-       
-       `overflow-x: clip` (rather than `auto`): we want to clip
-       overflow if it ever happens, but never establish a touch-scroll
-       container.  iOS Safari grabs horizontal-drag gestures on any
-       `overflow-x: auto` element regardless of whether content
-       actually overflows, and KaTeX's rendered width tends to be a
-       fractional pixel wider than the panel — together they made the
-       predicate block feel "draggable" even when it visually fit.
-       `clip` (unlike `hidden`) lets `overflow-y` stay `visible`
-       instead of getting forced to `auto`, so we don't accidentally
-       create a vertical scroller either.  Bin-tooltips are already
-       gated behind `(hover: hover)` so they don't render on touch
-       anyway, which means the old "needs auto so scroll works on
-       overflow" trade-off is moot here too — touch users wouldn't be
-       able to actually drag the scroll on a small hint glyph. */
+    /* The `\begin{aligned}` candidate/flag tables can't be split into
+       wrappable segments, so shrink the math a notch to fit.  `clip`
+       (not `auto`): iOS Safari makes any `overflow-x: auto` element feel
+       draggable even when content only fractionally overflows, and `clip`
+       (unlike `hidden`) leaves `overflow-y` visible. */
     .compute-row {
       font-size: 13px;
       max-width: 100%;
@@ -1031,24 +858,10 @@
       touch-action: pan-x pan-y;
       -webkit-overflow-scrolling: touch;
     }
-    /* Per-group decoded labels above the bit boxes (`e₂ = E − bias
-       − 3 = …`, `c = 1.001₂·2³ = …`).  Each label sits in a
-       fixed-width track sized to its bit group, so on phones the
-       label outgrows its track and — with the desktop `nowrap` —
-       overflows into the neighbouring track, visually overlapping
-       the next group's decode.  Allow wrapping so the text breaks
-       at its natural word boundaries (spaces around `=`, `−`, `·`)
-       and stacks centred within its track instead.
-
-       Bumped `min-height` reserves enough vertical room for the
-       common two-line case so all three tracks share the same y
-       and their bit boxes line up below.  `display: flex` +
-       `justify-content: flex-end` bottom-aligns the wrapped text
-       inside each track — without it the short sign label (`+` /
-       `−`) hugs the top of its 28px track and looks visually
-       detached from its bit box, while the wrapped exp / sig
-       labels reach the bottom; flex-end aligns the *last* line of
-       every label flush with the row of bit boxes. */
+    /* Let the per-group decode labels wrap instead of overflowing their
+       fixed-width tracks into the neighbour.  `min-height` reserves room
+       for the two-line case so the tracks align, and flex-end bottom-aligns
+       each label's last line with the bit boxes below. */
     .bit-decode {
       white-space: normal;
       line-height: 1.2;
@@ -1139,10 +952,8 @@
     <button id="themeBtn" class="btn" title="Toggle light / dark mode">theme</button>
   </div>
 
-  <!-- Main diagram (full width, matches the number line below).
-       Axis titles live in the sibling `.grid-labels` overlay rather
-       than inside the SVG so KaTeX renders at native CSS-pixel size
-       (same rationale as the candidate diagram further below). -->
+  <!-- Main diagram.  Axis titles live in the sibling `.grid-labels`
+       overlay (not the SVG) so KaTeX renders at native pixel size. -->
   <div class="main">
     <div class="panel" style="padding:12px 10px 10px;">
       <div class="grid-wrap">
@@ -1167,18 +978,9 @@
          target="_blank" rel="noopener"><code>yy</code></a>
       Schubfach-family algorithm at E4M3 scale
     </div>
-    <!-- High-level orientation block: explains the four-candidate /
-         trim-vs-keep framing once, in prose, just above the dense
-         formula chain it summarises.  Closed by default so the
-         formulas remain front-and-centre on repeat visits; the ▸
-         summary advertises that more context is available without
-         spending vertical space.  Body text is populated by
-         `renderStaticLabels()` via `mathText()` so inline `$…$`
-         segments render through KaTeX in the same typeface as the
-         rest of the page (footer, formula chain).  The static link
-         to verify.py and the parenthetical `<code>` predicate names
-         live directly in markup since `mathText()` emits plain text
-         for non-math segments. -->
+    <!-- Prose orientation for the four-candidate / trim-vs-keep framing,
+         closed by default.  Body populated by `renderStaticLabels()` via
+         `mathText()` so inline `$…$` renders through KaTeX. -->
     <details class="intro">
       <summary>How yy converts a float to decimal</summary>
       <p id="introIntro"></p>
@@ -1241,19 +1043,11 @@
         <span class="compute-expr" id="cFinal"></span>
       </div>
     </div>
-    <!-- 4-candidate neighborhood diagram.  The SVG carries the
-         structural geometry (axis, ticks, band, candidate dots,
-         numeric values); symbol labels (d₀, d₁, u₁, u₀, v̄) live in
-         the sibling `.cd-labels` overlay so they can render via
-         KaTeX at native CSS-pixel size — placing them inside the
-         SVG's <foreignObject> made them either overflow or vanish on
-         narrow viewports because KaTeX sizes itself in CSS pixels
-         independent of the SVG viewBox scale.  The overlay is
-         absolutely positioned with `inset: 0` so it covers exactly
-         the SVG's drawn area; per-label percentages map 1-to-1 to
-         viewBox coordinates because the SVG fills its container with
-         no letterboxing (width:100% + height:auto preserves the
-         viewBox aspect). -->
+    <!-- 4-candidate neighborhood diagram.  SVG carries the geometry;
+         symbol labels (d₀, d₁, u₁, u₀, v̄) live in the `.cd-labels`
+         overlay for native-size KaTeX.  The overlay's `inset: 0` covers
+         the SVG exactly, so per-label percentages map 1-to-1 to viewBox
+         coords (SVG fills its box with no letterboxing). -->
     <div class="cd-wrap" style="margin-top:18px;">
       <svg id="candDiag" class="cd-svg" viewBox="0 0 1000 130"
            preserveAspectRatio="xMidYMid meet"
@@ -1262,16 +1056,12 @@
     </div>
   </div>
 
-  <!-- Correctness verification — placeholder panel.  Mirrors the
-       structure of `.panel.compute` (title + subtitle + body) so
-       whatever visualization lands here will sit visually flush
-       with the Decimal conversion panel above.  Body is intentionally
-       empty for now; populate via `#verifyBody`. -->
+  <!-- Correctness verification — placeholder panel mirroring
+       `.panel.compute`.  Empty for now; populate via `#verifyBody`. -->
   <div class="panel verify" hidden>
     <div class="compute-title">Correctness</div>
     <div class="compute-subtitle">
-      <!-- Replace with a one-line description of what the panel
-           visualizes once the content lands. -->
+      <!-- One-line description once the content lands. -->
     </div>
     <div id="verifyBody"></div>
   </div>
@@ -1300,14 +1090,8 @@
 
 // ---------- Data model ----------
 // E4M3-FN (Finite + NaN). Bias = 7. S.EEEE.MMM layout.
-//   e == 0:        subnormal  value = (-1)^s * 2^(1-bias) * m/8
-//   e in 1..15:    normal     value = (-1)^s * 2^(e-bias) * (1 + m/8)
-//   e == 15, m == 7: NaN
-//   e == 0,  m == 0: zero (±0)
-//
-// For each encoding we also compute:
-//   e2    : binary exponent when value written as m' * 2^e2, m' in 1..15
-//   gridM : the integer m' (1..15)
+//   e == 0, m == 0: zero;  e == 0: subnormal (0.M);  e == 15, m == 7: NaN;
+//   else normal (1.M).  Also derives e2/gridM: value = gridM · 2^e2, gridM 1..15.
 
 const BIAS = 7;
 
@@ -1423,23 +1207,13 @@ function mk(tag, attrs = {}, parent = GRID) {
 }
 
 // ───────────────────────── yy @ E4M3: architecture ───────────────────────
+// Reproduces `yy_double.c::f64_bin_to_dec` (yyjson's Schubfach-family fast
+// path) scaled from f64 to E4M3.  All the logic is yy's; only the final
+// word narrowing (`>> 12` / `>> 8`) is re-derived from yy's 192→128
+// `u128_mul_add` at the 8-bit scale.
 //
-// This visualization reproduces the float-to-decimal algorithm in
-// `yy_double.c::f64_bin_to_dec` (the yyjson fast path, a member of the
-// Schubfach algorithm family), scaled down from f64 to E4M3.  Every
-// decision — how `c` is decomposed, which parity drives which tie, how
-// the tie zone is encoded, how the product is narrowed — is yy's; the
-// only step we re-derive rather than copy is the final 8-bit-word
-// narrowing (`>> 12` / `>> 8`), which is yy's 192→128 `u128_mul_add`
-// pattern scaled down to the 8-bit FP word.
-//
-// The invariant yy preserves across word widths, and which this file
-// preserves at its own scale, is:
-//
-//   working word = FP width
-//
-// Every predicate (`round_d0`, `round_u0`, `round_u1`) evaluates in an
-// integer word whose width equals the target FP format:
+// The invariant, preserved at this scale: working word = FP width.  Every
+// predicate evaluates in an integer word as wide as the target format:
 //
 //                            yy_double (f64)        this viz (E4M3)
 //   FP total width           64 bits                 8 bits
@@ -1451,97 +1225,46 @@ function mk(tag, attrs = {}, parent = GRID) {
 //   c · p_{10} product       192-bit, keep top 128   24-bit, keep top 16
 //   Tie-zone width           one word-ULP (2⁻⁶⁰)     one word-ULP (2⁻⁴)
 //
-// Two consequences worth calling out:
+// So the small Q.4 word is no precision loss — it does what the u64 does at
+// its own scale, and ε_c / η_c / ε_u stay raw ±1-LSB integers regardless of
+// width (their hex rendering is cosmetic).
 //
-//   * The coarse-looking "Q.4 vs yy's Q.60" ratio is NOT a precision loss.
-//     The 8-bit word does exactly what the 64-bit word does, at its native
-//     scale.  Every `>> 12` / `>> 8` in this file is the downscaled twin of
-//     yy's own narrowing — a u64 at Q.4.60 already "narrows" from the
-//     original 192-bit `cb · p10` product by discarding 64 low bits (see
-//     `u128_mul_add` in yy_double).
+// Two honest, non-precision gaps from yy:
+//   * yy's `k == 0` guard on the exact u_0 tie isn't mirrored (η_c applied
+//     uniformly); the affected Q.4.4 cell isn't hit by any E4M3 input.
+//   * yy's irregular-u_1 asymmetry is mirrored in reduced single-threshold
+//     form `frac > min(½, δ/2)` (see "keep level, irregular" below).
 //
-//   * ε_c (for d_0), η_c = 2ε_c − 1 (for u_0), and ε_u (for u_1) are all
-//     "±1 LSB of the working word" and stay raw 0/1 integers in the code
-//     regardless of word width.  Their hex rendering (`0x0.1` here,
-//     `0x00.00…01` at Q.4.60) is purely cosmetic — the algebraic role is
-//     the same "flip one bit".
-//
-// Residual non-architectural gaps from `yy` (honest, not precision-
-// related):
-//
-//   * `yy`'s `k == 0` guard on the *exact* u_0 tie isn't mirrored.  The
-//     viz applies η_c uniformly; yy applies it only when `k == 0` OR the
-//     sum lands at the one-below-tie cell.  At 8-bit-word precision the
-//     affected cell is a single Q.4.4 bucket that no E4M3 input has been
-//     observed to hit.
-//
-//   * `yy`'s irregular-u_1 asymmetry IS mirrored, but in a single-
-//     threshold form.  yy spells out three pieces — strict `>` against
-//     `½`, an auxiliary `round_d1 = (half_ulp/2 ≥ sig_lo>>4)` predicate,
-//     and a "force u_1 if not d_1" override — for an asymmetric rounding
-//     interval `[v̄ − δ/2, v̄ + δ]`.  Algebraically those three flags
-//     reduce to `frac > min(½, δ/2)` (strict, no parity bias), which is
-//     what the irregular u_1 row renders.  See "keep level, irregular"
-//     in the predicate block for the per-step derivation; the d_0 row
-//     keeps the matching `half_ulp/2 ≥ c` form independently.
-//
-// Everything below — constants, Q.P10_BITS arithmetic, the predicate
-// block, the uncertainty-check block — is one continuous application of
-// the "working word = FP width" invariant.  If you change `P10_BITS` the
-// pre-narrowing scale moves; the word and ε biases do not.
+// Change `P10_BITS` and the pre-narrowing scale moves; the word and ε
+// biases don't.
 // ──────────────────────────────────────────────────────────────────────────
 const LOG10_2 = Math.log10(2);
-// log₁₀(3/4) ≈ -0.12494 — bias used by yy's decimal-exponent formula
-// for "irregular" values (c = 8, i.e. powers of 2), whose left-
-// neighbour sits 1/2 · ulp away instead of 1 · ulp, shifting the
-// floor-threshold down by log₁₀(4/3) = -log₁₀(3/4).  Directly
-// reproduces the irregular branch of yy_double's
-// `k = (i32)(exp_bin * 315653 - (irregular ? 131237 : 0)) >> 20`
-// (`131237 / 2²⁰ ≈ log₁₀(4/3)`).
+// log₁₀(3/4) ≈ -0.12494 — yy's decimal-exponent bias for "irregular"
+// values (c = 8, powers of 2), whose left neighbour is ½·ulp away.
+// Mirrors the `irregular ? 131237 : 0` term in yy_double's `k = …`.
 const LOG10_3_4 = Math.log10(3 / 4);
 
-// Bit-width of the fixed-point p_{10} approximation.  The table of
-// 10^{-e_{10}} ≈ p_{10} · 2^{e_p} values uses a P10_BITS-wide integer
-// p_{10}, and v̄ / δ / the rounding predicates all work in Q.P10_BITS
-// fixed point (integer_part · 2^{-P10_BITS}).  Widening P10_BITS
-// shrinks the p_{10} truncation error by 2^(Δbits) and is the main
-// knob for "how many digits does this converter resolve correctly" —
-// yy_double uses 128-bit p_{10} (so its 64-bit working word has 64
-// bits of multiplicative slack); this E4M3 demo uses 16 (2-byte), i.e.
-// the same 2× ratio relative to its 8-bit working word.  The concrete
-// number was chosen so E4M3's c·p10 products fit comfortably
-// in 32-bit JS integer arithmetic at that width while still exposing
-// every inexact row in the p_{10} table (a 1-byte p_{10} was too
-// coarse to tell interesting stories about tie-breaking error).
+// Bit-width of the fixed-point p_{10} approximation; v̄ / δ / predicates all
+// work in Q.P10_BITS.  16 keeps the same 2× ratio to the 8-bit word that
+// yy's 128-bit p_{10} has to its u64, fits c·p10 in 32-bit JS ints, and is
+// wide enough to expose every inexact p_{10} row.
 const P10_BITS = 16;
-// Mask, scale, and half-point of the Q.P10_BITS fractional encoding,
-// cached so the hot paths don't recompute them every call.  At
-// P10_BITS = 16 these are 0xFFFF, 0x10000, and 0x8000 respectively.
-// (Pow2-of-2 to keep `<< P10_BITS` happy — JS bitwise ops are 32-bit
-// signed, so P10_BITS stays well below 31.)
+// Mask/scale/half of the Q.P10_BITS encoding (0xFFFF, 0x10000, 0x8000),
+// cached off the hot paths.
 const P10_MASK  = (1 << P10_BITS) - 1;
 const P10_SCALE = 1 << P10_BITS;
 const P10_HALF  = 1 << (P10_BITS - 1);
-// Number of hex chars needed to render a P10_BITS-wide unsigned
-// value (2 for 1-byte, 4 for 2-byte, 8 for 4-byte).  Used by the
-// Q.P10_BITS hex formatters to pad integer and fractional parts
-// to a consistent width.
+// Hex chars to render a P10_BITS-wide value, for consistent padding.
 const P10_HEX_CHARS = P10_BITS / 4;
-// Decimal exponent for a binary FP number m · 2^e₂.  Regular values
-// use ⌊e₂·log₁₀2⌋; irregular ones add log₁₀(3/4) inside the floor,
-// which can knock the result one step lower (e.g. c = 8, e₂ = -3:
-// regular = ⌊-0.903⌋ = -1, irregular = ⌊-1.028⌋ = -2).
+// Decimal exponent of m · 2^e₂: ⌊e₂·log₁₀2⌋, with the irregular bias added
+// inside the floor (can drop the result one step lower).
 const computeE10 = (e2, irregular) =>
   Math.floor(e2 * LOG10_2 + (irregular ? LOG10_3_4 : 0));
 
-// Axis titles in the `.grid-labels` HTML overlay (see the CSS
-// comment for the rationale).  All three render via `mathText`
-// so prose stays in monospace and `$…$` math segments hand off
-// to KaTeX with proper italic/serif Math typography.  The Y-axis
-// titles get back full KaTeX rendering (the previous foreignObject
-// + SVG-rotate approach had to fall back to plain Unicode `e₂` /
-// `⌊⌋` because Mobile Safari refuses to compose KaTeX with an SVG
-// rotate transform).
+// Axis titles in the `.grid-labels` overlay (see the CSS comment).  All
+// render via `mathText` so prose stays monospace and `$…$` hands off to
+// KaTeX — including the rotated Y-axis titles, which the old foreignObject
+// approach couldn't (Mobile Safari won't compose KaTeX with an SVG rotate).
 (function axisTitles() {
   const labels = $("#gridLabels");
   const place = (cx, cy, cls, tmpl) => {
@@ -1553,22 +1276,17 @@ const computeE10 = (e2, irregular) =>
     labels.appendChild(span);
   };
 
-  // Bottom (X-axis): centred horizontally on the chart, sitting just
-  // inside the bottom edge.  Same anchor point as the original
-  // foreignObject's visual centre (G.H − 22 + 10 = G.H − 12).
+  // X-axis: centred, just inside the bottom edge.
   const xCx = G.left + (G.W - G.left - G.right) / 2;
   place(xCx, G.H - 12, null,
         "significand $c$   (value = $c \\cdot 2^{e_2}$)");
 
-  // Left (Y-axis): rotated -90°, anchored midway between top and
-  // bottom margins.  `cx = 16` matches the original pivot.
+  // Left Y-axis: rotated -90°, centred between the top/bottom margins.
   const yCy  = (G.top + G.H - G.bottom) / 2;
   place(16, yCy, "grid-lbl-rot-l",
         "binary exponent $e_2$");
 
-  // Right axis: rotated +90° on the opposite side.  Same vertical
-  // anchor; horizontal anchor mirrors the left side from the right
-  // edge.
+  // Right Y-axis: rotated +90°, mirroring the left.
   place(G.W - 31, yCy, "grid-lbl-rot-r",
         "decimal exponent $e_{10} = \\lfloor e_2 \\log_{10} 2 \\rfloor$");
 })();
@@ -1579,13 +1297,8 @@ function renderStaticLabels() {
     "E4M3-FN as specified by the OFP8 / NVIDIA/Arm/Intel FP8 paper. " +
     "Max normal ≈ 448, smallest subnormal = $2^{-9}$ ≈ $1.95 \\times 10^{-3}$.");
 
-  // Intro panel — populates the math-bearing paragraphs of the
-  // "How yy converts a float to decimal" `<details>` block above
-  // the bit layout.  Each $…$ segment is handed off to KaTeX by
-  // `mathText`, so the symbols ($v$, $\bar v$, $\varepsilon_c$, …)
-  // render in the same typeface as the formula chain below — the
-  // intro reads as a prose summary of the same algorithm, not a
-  // separate vocabulary.
+  // Intro panel — the math-bearing paragraphs of the "How yy converts…"
+  // `<details>`.  `$…$` renders via KaTeX so the symbols match the chain below.
   mathText($("#introIntro"),
     "For each binary float $v = c \\cdot 2^{e_2}$, yy picks the shortest " +
     "decimal $\\sigma \\cdot 10^{e_{10}}$ that parses back to $v$. " +
@@ -1607,15 +1320,14 @@ function renderStaticLabels() {
     "$\\varepsilon_u$) for round-half-to-even at exact ties.");
 }
 
-// All grid content that depends on layout (stretched vs normal) goes into
-// this group so it can be cleared and rebuilt when the filter toggles.
+// Layout-dependent grid content (stretched vs normal), cleared and rebuilt
+// when the filter toggles.
 const dynGrp = mk("g", { class: "dyn" });
 const rowLineEls = new Map();          // e2 -> line element
 const dotEls     = new Map();          // enc -> dot element
 
-// Halo behind the selected dot + highlight span along the row line
-// within the rounding interval.  Persistent elements re-attached to
-// dynGrp just before the dots so they draw under them.
+// Halo behind the selected dot + rounding-interval band along its row.
+// Persistent, re-attached just before the dots so they draw under them.
 const SVG_NS = "http://www.w3.org/2000/svg";
 const halo = (() => {
   const el = document.createElementNS(SVG_NS, "circle");
@@ -1736,16 +1448,13 @@ function buildGrid() {
           "text-anchor": "middle",
           class: "decade-label",
         }, dynGrp);
-        // Format with enough decimal places to reflect the major-tick
-        // scale (10^(e10+1)), e.g. "0.10" on the e10=-3 row whose majors
-        // are at 0.01 spacing.
+        // Decimal places matching the major-tick scale (10^(e10+1)).
         lbl.textContent = v.toFixed(Math.max(0, -(e10 + 1)));
       }
     }
   }
 
-  // Place halo + rounding-band just before the dots so the dots draw
-  // on top of them.
+  // Halo + band just before the dots so the dots draw on top.
   dynGrp.appendChild(roundBand);
   dynGrp.appendChild(halo);
 
@@ -1767,10 +1476,6 @@ function buildGrid() {
 }
 buildGrid();
 
-// Selection marker (see `halo` + `roundBand` above, drawn under dots):
-// a filled band spanning the halfway-to-neighbors positions that
-// delimit the rounding interval — same visual language as the
-// candidate-neighborhood diagram's ±δ band.
 roundBand.style.opacity = "0";
 
 // Positive, non-NaN, value-sorted list for neighbor lookups.
@@ -1834,55 +1539,28 @@ function bitsString(enc) {
 
 function kx(el, tex) {
   if (typeof katex === "undefined") { el.textContent = tex; return; }
-  // `trust: true` enables \htmlClass{…}{…} so we can tag spans of
-  // KaTeX output (e.g. hex intermediates that open a binary tooltip
-  // on hover).
+  // `trust: true` enables \htmlClass{…}{…} for tagging output spans
+  // (e.g. hex intermediates with hover tooltips).
   katex.render(tex, el, {
     throwOnError: false, output: "html", trust: true,
   });
 }
 
-// Render an equation chain (`lhs = rhs_1 = rhs_2 = …`) so it can
-// reflow on narrow viewports while keeping the `=` signs aligned
-// across wrap lines.  Layout:
+// Render an equation chain (`lhs = rhs_1 = rhs_2 = …`) that reflows on
+// narrow viewports while keeping the `=` signs aligned:
 //
 //   ┌─────────┬──────────────────────────────────────────────────┐
 //   │   LHS   │ = rhs_1   = rhs_2   = rhs_3   …                  │
 //   │         │ = rhs_4   = rhs_5   …                            │   (wrap)
 //   └─────────┴──────────────────────────────────────────────────┘
 //
-// `el` is set up as a 2-column CSS grid: column 1 holds the bare
-// LHS, column 2 holds *all* the `\;=\; …` segments inside a single
-// RHS container.  When the RHS overflows its cell on a phone, the
-// segments wrap *inside* the cell — every wrapped line starts at
-// the left edge of column 2, so the leading `\;=\;` of each segment
-// lines up vertically across rows (the classic LaTeX `aligned`
-// look, achieved without `\begin{aligned}`).
-//
-// `rows` is an array-of-arrays: each inner array is one *intended*
-// visual row of segments.  A `<br>` is inserted between rows, so
-// the row boundary is honoured on every viewport (including
-// desktop, where it's the only way to force a break the panel
-// would otherwise be wide enough to skip).  Within a row, `<wbr>`
-// between segments is the only point the browser is allowed to
-// add a wrap — KaTeX's own inline-block math never breaks
-// mid-formula because each segment is `white-space: nowrap`.
-// Single-row chains pass `[[…]]`; multi-row chains pass one inner
-// array per intended visual row (e.g. `cScaled` keeps its old
-// 3-`=`-then-break-then-rest shape from the previous
-// `\begin{aligned}` rendering).
-//
-// Tooltip wiring (`attachBinTooltip`, `attachP10Tooltip`) is
-// unaffected: those helpers find their target via
-// `hostEl.querySelector('.' + markerClass)`, which descends through
-// however many child segments / containers the host now contains.
-//
-// Contract: every segment must start with its leading relation
-// (`\;=\;` / `\;\approx\;`).  That's what produces both the
-// visual gap before the relation glyph and — because each segment
-// starts with the same `\;` — the consistent left-offset that
-// makes the `=` column line up at wrap points and at forced
-// `<br>` boundaries.
+// 2-column grid: LHS in column 1, all `\;=\; …` segments in column 2.
+// Wrapped lines share the column-2 origin, so the `=` signs align
+// (`\begin{aligned}` look without it).  `rows` is an array-of-arrays —
+// one inner array per forced visual row (joined by `<br>`); within a row,
+// `<wbr>` between `nowrap` segments is the only allowed break point.
+// Contract: every segment starts with its relation (`\;=\;` / `\;\approx\;`),
+// which supplies both the gap and the aligned left offset.
 function kxChain(el, lhs, rows) {
   el.textContent = "";
   const lhsSpan = document.createElement("span");
@@ -1905,15 +1583,9 @@ function kxChain(el, lhs, rows) {
   el.appendChild(rhsSpan);
 }
 
-// P10_BITS-wide fixed-point approximation of 10^decExp, mirroring
-// test/gen-pow10.py with num_bits = P10_BITS.  Returns
-// { hex, binExp, approx, result, exact, delta } where
-//   10^decExp ≈ hex · 2^binExp,  hex is a P10_BITS-bit unsigned integer,
-// and
-//   10^decExp · 2^{-binExp} = result + delta,  delta ∈ [0, 1)
-// is the fractional tail that was thrown away by the P10_BITS-bit
-// floor.  Knowing `delta` exactly lets downstream code tighten
-// `c · δ` error bounds past the generic `[0, c)` worst case.
+// P10_BITS-wide fixed-point approximation of 10^decExp (mirrors
+// gen-pow10.py).  10^decExp ≈ hex · 2^binExp; `delta ∈ [0, 1)` is the
+// floored-off tail, which lets downstream code tighten `c · δ` bounds.
 function pow10Hex(decExp) {
   const LOG2_10 = Math.log2(10);
   const binExp = Math.floor(decExp * LOG2_10) - (P10_BITS - 1);
@@ -1938,9 +1610,8 @@ function pow10Hex(decExp) {
   return { hex, binExp, approx, result, exact, delta };
 }
 
-// The set of distinct -e_{10} values reachable from E4M3's e_2 ∈ [-9, 5].
-// For each one the runtime needs a single (p_{10}, binExp) pair, so the
-// table is small and fixed.
+// Distinct -e_{10} values reachable from E4M3's e_2 ∈ [-9, 5], one
+// (p_{10}, binExp) pair each — a small fixed table.
 function p10Rows() {
   const seen = new Set();
   const rows = [];
@@ -1954,22 +1625,16 @@ function p10Rows() {
   return rows.sort((a, b) => b.e10 - a.e10);   // largest e_{10} first
 }
 
-// TeX fragment for a p10 hex value.  Inexact p10's are P10_BITS-wide
-// floors of a non-terminating binary fraction — mark them with an
-// underline (reads as "trimmed from below") and a `bin-hint-p10`
-// class so a tooltip can reveal the exact infinite-precision value
-// on hover.
+// TeX for a p10 hex value.  Inexact ones (floors of a non-terminating
+// fraction) get an underline + `bin-hint-p10` class for the hover tooltip.
 function p10HexTex(hex, exact) {
   const lit = `\\texttt{${hex}}`;
   if (exact) return lit;
   return `\\htmlClass{bin-hint bin-hint-p10}{\\underline{${lit}}}`;
 }
 
-// Exact hex digits of the fractional tail of 10^decExp · 2^{-binExp}
-// (i.e. the bits thrown away by pow10Hex's P10_BITS-bit floor).  Uses
-// BigInt rationals so the digits are arithmetically correct, not
-// drifting from accumulated fp error.  Returns "" when the value is
-// exactly representable in P10_BITS bits (exact row).
+// Exact hex digits of the fractional tail floored off by pow10Hex, via
+// BigInt rationals (no fp drift).  "" when exact.
 function p10HexFrac(decExp, binExp, maxDigits = 8) {
   const BIG10 = 10n, BIG2 = 2n;
   // 10^decExp · 2^{-binExp}  =  num / den
@@ -1990,18 +1655,10 @@ function p10HexFrac(decExp, binExp, maxDigits = 8) {
   return out.join("");
 }
 
-// Find the `.bin-hint-p10` span inside `hostEl` and attach a tooltip
-// showing the exact hex expansion `0xHHHH.FFFF…` — the full-precision
-// 10^{-e10}·2^{-e_p} from which the P10_BITS-wide `hex` was floored.
-// The stored integer `0xHHHH` stays solid; the truncated fractional
-// tail (and its `…` continuation) is wrapped in `.uncertain` so it
-// reads as "these bits exist but we discarded them", matching the
-// dim style used elsewhere for uncertain bits.  Optional `noteText`
-// is a brief italic footer line — used by the p_{10} table where
-// the cell stands alone and a "why is this dim?" annotation helps,
-// but skipped in the v̄ computation chain where the same p_{10}
-// appears before the `\approx` step (notes attach to the *result*
-// of an approximation, not its inputs).
+// Attach a tooltip to the `.bin-hint-p10` span showing the exact expansion
+// `0xHHHH.FFFF…`: the stored integer solid, the floored-off tail dimmed via
+// `.uncertain`.  Optional `noteText` footer (used on the standalone p_{10}
+// table cell, skipped in the v̄ chain).
 function attachP10Tooltip(hostEl, decExp, binExp, hex, noteText) {
   const span = hostEl && hostEl.querySelector(".bin-hint-p10");
   if (!span || span.querySelector(".bin-tooltip")) return;
@@ -2029,12 +1686,9 @@ function attachP10Tooltip(hostEl, decExp, binExp, hex, noteText) {
   span.appendChild(tip);
 }
 
-// Render an integer in binary (0b-prefixed) with "\_" separators
-// every 4 bits, optional radix point, and the rightmost `dimBits`
-// bits wrapped in `.uncertain`.  Separators and the radix point
-// adopt the region of the bit below them, so the dim run stays a
-// single contiguous span.  Used inside the hover tooltips on hex
-// intermediates to expose per-bit uncertainty.
+// Render `n` in binary (0b, "\_" every 4 bits, optional radix point) with
+// the rightmost `dimBits` bits in `.uncertain`.  Separators adopt the
+// region of the bit below them so the dim run stays contiguous.
 function binTex(n, minBits, dimBits, radixAt) {
   let bits = n.toString(2);
   if (minBits && bits.length < minBits) {
@@ -2069,18 +1723,9 @@ function binTex(n, minBits, dimBits, radixAt) {
   return out;
 }
 
-// Find a KaTeX-rendered span tagged with `markerClass` inside `hostEl`
-// and attach a `.bin-tooltip` child that renders `binTex` (bit view)
-// as KaTeX on the first line and, if provided, `intervalTex` (error
-// interval) on the second.  An optional `noteText` is rendered as a
-// dim italic third line — used to annotate the *origin* of a value's
-// truncation (e.g. "16-bit floor of the p_{10} table").  Plain text,
-// not KaTeX, so prose reads naturally; inline math is supported via
-// `$…$` delimiters which we hand to KaTeX with `trust:true` to allow
-// the same rendering as the other lines.  The tooltip stays hidden
-// until the user hovers the tagged span.  Used by the v̄ computation
-// row to reveal per-bit uncertainty and the propagated error bound
-// side by side.
+// Attach a `.bin-tooltip` to the `markerClass` span: `binTex` (bit view) on
+// line 1, optional `intervalTex` (error bound) on line 2, optional `noteText`
+// footer on line 3.  Note is `$…$`-aware plain text; the rest is KaTeX.
 function attachBinTooltip(hostEl, markerClass, binTex, intervalTex,
                           noteText) {
   const span = hostEl && hostEl.querySelector("." + markerClass);
@@ -2108,14 +1753,9 @@ function attachBinTooltip(hostEl, markerClass, binTex, intervalTex,
   span.appendChild(tip);
 }
 
-// Attach a note-only tooltip to every element matching `markerClass`
-// inside `hostEl`.  Differs from `attachBinTooltip` in two ways:
-//   - no binary / interval lines, just the italic `.bin-tooltip-note`
-//     footer (used for explanatory tooltips like the `\stackrel{?}{≥}`
-//     uncertainty hint, where there's no operand to render);
-//   - matches *all* spans with the class, not just the first, so a
-//     single call wires up every uncertain comparison in a predicate
-//     block at once.  Skips spans that already carry a tooltip.
+// Note-only tooltip (no bit/interval lines) on *every* `markerClass` span
+// in `hostEl` — e.g. each `\stackrel{?}{≥}` uncertainty cue at once.
+// Skips spans that already carry a tooltip.
 function attachNoteTooltip(hostEl, markerClass, noteText) {
   if (!hostEl) return;
   const spans = hostEl.querySelectorAll("." + markerClass);
@@ -2131,11 +1771,8 @@ function attachNoteTooltip(hostEl, markerClass, noteText) {
   }
 }
 
-// Render a "$math$"-aware note string into `host`.  Splits on `$…$`
-// pairs; everything outside the pairs is plain text (for natural
-// prose reading), everything inside is handed to KaTeX so symbolic
-// fragments (`p_{10}`, `c \cdot p_{10}`, etc.) match the rest of the
-// page's typography.  Falls back to raw text when KaTeX isn't loaded.
+// Render a `$…$`-aware note into `host`: text outside the pairs stays plain,
+// text inside goes to KaTeX.  Falls back to raw text without KaTeX.
 function appendNoteText(host, text) {
   const parts = String(text).split("$");
   for (let i = 0; i < parts.length; i++) {
@@ -2189,27 +1826,15 @@ function buildP10Table() {
       tr.appendChild(td);
     }
     tbody.appendChild(tr);
-    // Inexact p10 cells carry a `.bin-hint-p10` span; attach a
-    // tooltip exposing the truncated fractional tail of 10^{-e10}·2^{-e_p}.
-    // Brief footer notes the storage width — the table cell stands
-    // alone (no `=` / `\approx` chain around it), so a one-line
-    // annotation here is the natural place to say "stored at 16
-    // bits, tail not kept".
+    // Inexact cells get a tooltip exposing the floored-off tail.
     if (!r.exact) attachP10Tooltip(tr, -r.e10, r.ep, r.hex,
       `Dim bits not stored in the table.`);
   }
 }
 
-// Draw the 4-candidate neighborhood diagram yy evaluates at each
-// float.  Shows the four candidates (d₀, d₁, u₁, u₀) on a number
-// line, v̄ between d₁ and u₁, and the half-ulp band (±δ) around v̄.
-// The `sel` argument is one of "d0" | "d1" | "u1" | "u0" and marks
-// which candidate the algorithm picked.
-//
-// Symbol labels (d_k, u_k, v̄) render as KaTeX in the sibling
-// `.cd-labels` overlay, positioned via percentages of the SVG's
-// viewBox — see the `.cd-labels` CSS comment for why HTML overlay
-// rather than SVG <text> or <foreignObject>.
+// Draw the 4-candidate diagram: d₀/d₁/u₁/u₀ on a number line, v̄ between
+// d₁/u₁, and the ±δ half-ulp band.  `o.sel` ("d0"|"d1"|"u1"|"u0") marks the
+// picked candidate; symbol labels render as KaTeX in the `.cd-labels` overlay.
 function renderCandDiag(o) {
   const svg    = $("#candDiag");
   const labels = $("#candDiagLabels");
@@ -2229,16 +1854,12 @@ function renderCandDiag(o) {
   const d1 = integral, u1 = integral + 1;
   const vbar     = integral + fractional / P10_SCALE;
   const halfUlp  = halfUlpQ16 / P10_SCALE;             // in v̄'s value scale
-  // For irregular (power-of-2) values the left half-ulp is halved:
-  // the rounding interval is asymmetric, wider on the right.
+  // Irregular (power-of-2) values have a half-width left half-ulp — the
+  // rounding interval is asymmetric, wider on the right.
   const halfUlpL = irregular ? halfUlp / 2 : halfUlp;
   const halfUlpR = halfUlp;
-  // The drawn band lives at [drawnL, drawnR], the p_{10}-approximated
-  // rounding interval edges.  We used to split it into a solid
-  // "guaranteed inside" inner band and a dim "possibly inside" outer
-  // band to visualise the p_{10} truncation error, but on E4M3 those
-  // wings span less than a pixel at this zoom — the distinction is
-  // imperceptible, so we collapse back to a single band.
+  // Single band at the interval edges (the p_{10}-truncation wings span
+  // <1px on E4M3, so no inner/outer split).
   const drawnL = vbar - halfUlpL;
   const drawnR = vbar + halfUlpR;
 
@@ -2246,18 +1867,15 @@ function renderCandDiag(o) {
   const lo = d0 - 5, hi = u0 + 5;
   const xOf = v => margin + (v - lo) / (hi - lo) * (W - 2 * margin);
 
-  // Axis terminates at half-intervals past the outermost ticks rather
-  // than running all the way to the SVG margins — gives the line a
-  // clear beginning and end flanking the tick sequence.
+  // Axis ends half an interval past the outermost ticks (not at the
+  // margins), so the line clearly brackets the tick sequence.
   const loTick = Math.ceil(lo), hiTick = Math.floor(hi);
   mk("line", {
     x1: xOf(loTick - 0.5), x2: xOf(hiTick + 0.5),
     y1: yAxis, y2: yAxis, class: "cd-axis",
   }, svg);
 
-  // Integer ticks hanging below the axis (decade-tick style from the
-  // main diagram).  Majors at d₀ and u₀ (multiples of 10), minors at
-  // the other integers.
+  // Integer ticks below the axis; majors at d₀/u₀ (×10), minors elsewhere.
   for (let v = loTick; v <= hiTick; v++) {
     const major = (v === d0 || v === u0);
     mk("line", {
@@ -2273,18 +1891,9 @@ function renderCandDiag(o) {
   mk("rect", { x: bx1, y: yAxis - 10, width: bx2 - bx1, height: 20,
                class: "cd-band" }, svg);
 
-  // Legend at top-left: swatch + description of the band.  For
-  // "irregular" values (c = 8) the left half of the interval is halved,
-  // so a plain "±δ" label next to the band would be misleading — spell
-  // the asymmetry out explicitly instead.
-  //
-  // Rendered as plain Unicode (±, δ) inside <foreignObject> rather than
-  // KaTeX: the math part would otherwise size itself in CSS pixels
-  // independently of the surrounding text, which on mobile (where the
-  // SVG is scaled down) leaves the "±δ" span rendering at near-desktop
-  // size while the surrounding "rounding interval (" shrinks with the
-  // viewBox — causing the math fragment to break out of the inline
-  // flow and float far to the right of its label.
+  // Top-left legend: swatch + band description, spelling out the asymmetry
+  // for irregular values.  Plain Unicode in a <foreignObject> (not KaTeX,
+  // which would size independently of the scaled-down SVG on mobile).
   const lx = margin, ly = 10;
   mk("rect", {
     x: lx, y: ly, width: 20, height: 10, class: "cd-band",
@@ -2312,13 +1921,8 @@ function renderCandDiag(o) {
   mk("line", { x1: vx, x2: vx, y1: yAxis - 14, y2: yAxis + 14,
                class: "cd-vbar" }, svg);
 
-  // Place a KaTeX-rendered label as an absolutely-positioned <span>
-  // on the `.cd-labels` overlay.  (cx, cy) are viewBox coordinates;
-  // we convert to percentages of the overlay box, which exactly
-  // matches the SVG's drawn area (no letterboxing, see the markup
-  // comment).  translate(-50%, -50%) in CSS centres the rendered
-  // KaTeX on the percentage anchor, mirroring the visual-centre
-  // semantics the old `cdFobj` helper used.
+  // Place a KaTeX label on the `.cd-labels` overlay.  (cx, cy) viewBox
+  // coords → % of the overlay box; CSS translate(-50%,-50%) centres it.
   const placeLabel = (cx, cy, tex, dimmed) => {
     const span = document.createElement("span");
     span.className = "cd-lbl" + (dimmed ? " cd-dim" : "");
@@ -2344,11 +1948,8 @@ function renderCandDiag(o) {
     groups.get(key).items.push(c);
   }
   for (const { cx, val, items } of groups.values()) {
-    // A group counts as selected when any of its co-located candidates
-    // is the one the algorithm picked — when d_0 = d_1 coincide, the
-    // shared label stays at full weight.  Unselected groups (dot,
-    // numeric value, and symbol) dim to --fg-dim so the viewer's eye
-    // lands on the chosen candidate.
+    // Selected if any co-located candidate was picked; unselected groups
+    // dim so the eye lands on the chosen one.
     const groupSelected = items.some(c => c.key === sel);
     const dimSuffix = groupSelected ? "" : " cd-dim";
     mk("circle", { cx, cy: yAxis, r: 3.5,
@@ -2359,15 +1960,11 @@ function renderCandDiag(o) {
       "text-anchor": "middle",
     }, svg);
     vt.textContent = val;
-    // Combined labels for coinciding candidates (e.g. d_0 = d_1 when
-    // `one = 0`) join the symbols with " = " so the chained equality
-    // sits naturally centred on the shared tick.
+    // Coinciding candidates share one " = "-joined label on the tick.
     const tex = items.map(c => c.sym).join(" = ");
     placeLabel(cx, yAxis + 44, tex, !groupSelected);
   }
 
-  // v̄ label placed visually symmetric to the numeric value labels
-  // below.
   placeLabel(vx, yAxis - 24, "\\bar{v}", false);
 }
 
@@ -2395,31 +1992,17 @@ function render() {
   chip.textContent = d.kind === "nan" ? "NaN"
                    : d.kind.charAt(0).toUpperCase() + d.kind.slice(1);
 
-  // Per-group decoded labels above the 8 bit boxes — show the *raw*
-  // 4-bit biased exponent field E and 3-bit mantissa field M as
-  // they're literally encoded in the bits below.  The interpretation
-  // (implicit leading 1, bias removal, ·2³ shift to get the integer
-  // significand c, kind chip) lives one row down in the summary
-  // formula, so the top box stays a clean read-out of "what's in the
-  // wire" and isn't kind-dependent.
+  // Labels above the bit boxes show the raw E and M fields as encoded;
+  // the interpretation lives in the summary formula one row down.
   $("#dSign").textContent = d.s ? "−" : "+";
   const eBits = d.e.toString(2).padStart(4, "0");
   const mBits = d.m.toString(2).padStart(3, "0");
   $("#dExp").textContent = `E = ${eBits}₂`;
   $("#dSig").textContent = `M = ${mBits}₂`;
 
-  // Summary block — two stacked rows:
-  //   row 1: derive c (integer significand) and e₂ (binary exponent)
-  //          from the raw E,M fields shown in the top box.
-  //   row 2: assemble v = c · 2^{e₂} in the grid's native form.
-  // Splitting "decode the components" from "assemble the value" gives
-  // each step its own line and avoids the long wrapping chain we'd
-  // get if all three equations sat on one row.  Naming the assembled
-  // quantity `v` here lets downstream panels (decimal conversion,
-  // ulp(v), δ = ½·ulp(v), …) refer to it without re-defining the
-  // float.  Within row 1 the c and e₂ equations are still separate
-  // KaTeX spans separated by ",⏎<wbr>" so they can break at the
-  // comma on narrow viewports.
+  // Summary block, two rows: row 1 derives c and e₂ from the raw E,M
+  // fields, row 2 assembles v = c · 2^{e₂}.  Row 1's two equations are
+  // separate spans joined by ",<wbr>" so they can break at the comma.
   const formEl = $("#dFormula");
   formEl.textContent = "";
   const sign = d.s ? "-" : "";
@@ -2428,8 +2011,7 @@ function render() {
   } else if (d.kind === "nan") {
     kx(formEl, `v \\;=\\; \\mathrm{NaN}`);
   } else {
-    // Subnormals: implicit leading 0 (vs 1 for normals); IEEE
-    // convention sets the effective biased exponent to 1, not 0.
+    // Subnormals: implicit leading 0, effective biased exponent 1 (not 0).
     const cLeading = d.kind === "subnormal" ? "0" : "1";
     const e2Lhs    = d.kind === "subnormal" ? "1" : "E";
     const row1 = document.createElement("div");
@@ -2443,14 +2025,8 @@ function render() {
         row1.appendChild(document.createTextNode(", "));
         row1.appendChild(document.createElement("wbr"));
       }
-      // `kx-chain-seg` (inline-block + nowrap) keeps each equation
-      // atomic — without it KaTeX's flat inline markup is free to
-      // break mid-formula on a narrow viewport (e.g. between
-      // `e_2 \;=\;` and `E - \text{bias} - 3`), which is the
-      // "part of it reflow" failure mode.  With nowrap, the only
-      // break opportunity in this row is the comma + <wbr> between
-      // the two segments — so when the row doesn't fit, the entire
-      // `e_2 = …` formula moves to the next line as one unit.
+      // `kx-chain-seg` (nowrap) keeps each equation atomic, so the row
+      // only breaks at the comma <wbr>, never mid-formula.
       const span = document.createElement("span");
       span.className = "kx-chain-seg";
       kx(span, row1Eqs[i]);
@@ -2467,16 +2043,8 @@ function render() {
     formEl.appendChild(row2);
   }
 
-  // Computations panel.
-  //
-  // Row 1: exact decimal value of 10^{-e_{10}}.
-  // Row 2: introduce p_{10} — the integer significand of 10^{-e_{10}} in
-  //        a P10_BITS-wide fixed-point representation (gen-pow10.py with
-  //        num_bits = P10_BITS).  Then 10^{-e_{10}} ≈ p_{10} · 2^{binExp}.
-  // Row 3: the core integer operation  (c · p_{10}), rescaled by an
-  //        exp_shift bit left shift to the Q.P10_BITS fixed-point form.
-  //        exp_shift = e_2 + floor(-e_{10} · log_2 10) + 1, mirroring
-  //        gen-pow10.py's gen_shifts().
+  // Computations panel: e_{10}, then p_{10} (10^{-e_{10}} ≈ p_{10}·2^{binExp}),
+  // then the core c·p_{10} rescaled by exp_shift to Q.P10_BITS.
   const cE10El      = $("#cE10");
   const cScaledEl   = $("#cScaled");
   const cCandsEl    = $("#cCands");
@@ -2496,28 +2064,18 @@ function render() {
     kx(cFinalEl,   `\\text{—}`);
     renderCandDiag({ hide: true });
   } else {
-    // `irregular` needed earlier than its old line-1847 definition so
-    // the e_{10} formula (and its downstream p_{10} lookup / exp_shift
-    // computation) can pick up the log₁₀(3/4) bias for powers of 2.
     const c         = d.gridM;
     const irregular = d.kind === "normal" && c === 8;
     const e10       = computeE10(d.e2, irregular);
-    // Render the e_{10} formula preamble above the p_{10} table with
-    // the current value's e_2 plugged in.  Shows both the symbolic
-    // form and the numeric substitution so the floor step is visible;
-    // switches to the `+ log₁₀(3/4)` form on irregular rows so the
-    // reader sees *why* the selected row sometimes differs from what
-    // ⌊e_2·log₁₀2⌋ alone would predict.
+    // e_{10} formula preamble: symbolic form + numeric substitution so the
+    // floor step is visible, switching to the `+ log₁₀(3/4)` form when irregular.
     {
       const fmt     = (x) => x.toFixed(5);
       const symForm = irregular
         ? `\\lfloor e_2 \\log_{10} 2 + \\log_{10}\\tfrac{3}{4} \\rfloor`
         : `\\lfloor e_2 \\log_{10} 2 \\rfloor`;
       const raw     = d.e2 * LOG10_2 + (irregular ? LOG10_3_4 : 0);
-      // Write the irregular bias as an explicit `− 0.12494` rather than
-      // `+ (-0.12494)` to keep the numeric line readable.  log₁₀(3/4)
-      // is negative by construction, so subtracting its absolute value
-      // is equivalent and visually cleaner.
+      // Write the (negative) irregular bias as `− 0.12494`, not `+ (-…)`.
       const numForm = irregular
         ? `\\lfloor ${d.e2} \\cdot ${fmt(LOG10_2)} - ${fmt(-LOG10_3_4)} \\rfloor`
         : `\\lfloor ${d.e2} \\cdot ${fmt(LOG10_2)} \\rfloor`;
@@ -2529,16 +2087,8 @@ function render() {
     // exp_shift from gen-pow10.py's gen_shifts(), adapted for E4M3.
     const pow10BinExp = Math.floor(-e10 * Math.log2(10));
     const expShift    = d.e2 + pow10BinExp + 1;
-    // Row 4: c · p_{10} with explicit ·2^n scale factors, showing how the
-    // shift rescales the integer to the Q.P10_BITS scale (2^{-P10_BITS}).
-    //
-    //   (c · p_{10}) · 2^{e_2+binExp}                 natural scale
-    //       = prod · 2^{e_2+binExp}                   integer × scale
-    //       ─ <<exp_shift ──→ shifted · 2^{-P10_BITS} Q.P10_BITS scale
-    //       = 0xHH.LLLL                               radix-point view
-    //
-    // All four forms are mathematically equal (same value, different
-    // integer/scale pair).
+    // c · p_{10}, then a shift by exp_shift that rescales the integer to
+    // the Q.P10_BITS scale (2^{-P10_BITS}); all forms are equal.
     const prod           = c * result;
     const prodHex        = "0x" + prod.toString(16).toUpperCase();
     const shifted        = expShift >= 0 ? prod << expShift
@@ -2546,15 +2096,9 @@ function render() {
     const shiftedHex     = "0x" + shifted.toString(16).toUpperCase();
     const integral       = shifted >> P10_BITS;
     const fractional     = shifted & P10_MASK;
-    // v̄ is presented at the end with its lowest byte truncated —
-    // exactly the scaled-down twin of yy_double's `u128_mul_add`
-    // sequence (yy_double.c:2487), which keeps only the top 128 bits
-    // of the 192-bit `cb · p10` product and discards the low 64.  At
-    // E4M3 we discard the low 8 of a 24-bit product, keeping the
-    // same "drop one word's worth of low bits" architecture.  Only
-    // the high byte of the Q.P10_BITS fractional survives to the
-    // display; the discarded low byte is tracked in `droppedLow` so
-    // the tooltip can fold it into the error interval.
+    // v̄ keeps only the high byte of the Q.P10_BITS fractional, dropping
+    // the low byte — the E4M3 twin of yy_double's `u128_mul_add` keeping
+    // the top 128 of 192 bits.  `droppedLow` tracks it for the error interval.
     const integralHex    = integral.toString(16).toUpperCase()
                                    .padStart(2, "0");
     const fractionalHi   = (fractional >> 8) & 0xFF;
@@ -2563,28 +2107,12 @@ function render() {
                                         .padStart(2, "0");
     const scaleBefore    = d.e2 + binExp;
     const scaleAfter     = scaleBefore - expShift;       // always -P10_BITS
-    // Keep e_2 symbolic in the first term (binExp already substituted
-    // from the p_{10} table): for a regular value with e_{10} = 0 at
-    // P10_BITS = 16, binExp = floor(0·log₂10) − (P10_BITS − 1) = −15,
-    // giving 2^{e_2 + binExp} → 2^{e_2 − 15}.
+    // Keep e_2 symbolic in the first term (binExp already substituted).
     const binExpTerm = binExp < 0 ? `- ${-binExp}` : `+ ${binExp}`;
-    // When p10 is inexact (a P10_BITS-bit floor of 10^{-e10}·2^{e_p}),
-    // every downstream value inherits a bounded, non-negative error.
-    // We *know* δ = 10^{-e10}·2^{-e_p} − p10 exactly (it's the fractional
-    // tail truncated by the P10_BITS-bit floor, reported by pow10Hex), so
-    // the `c · δ` error is a specific real number, not a worst-case
-    // generic [0, c) range.  Tighten every interval to the smallest
-    // integer bound that still contains the real error:
-    //
-    //   prod_true    = prod    + c·δ,                         real error ∈ [0, c·δ]
-    //   shifted_true = shifted + c·δ·2^expShift,               real error ∈ [0, ·]
-    //   v̄_true      = 0xHH.LL   + (droppedLow + c·δ·2^expShift) · 2^{−P10_BITS}
-    //
-    // The final line carries an extra integer addend (`droppedLow`,
-    // the low byte of `shifted` that we discard for display) — that
-    // shift converts the "Q.16 v̄" interval into the narrower
-    // "Q.8 truncated v̄" interval the tooltip reports.  Display
-    // ceil(·) of each real as the exclusive upper bound.
+    // When p10 is inexact, `δ` (the floored-off tail from pow10Hex) is known
+    // exactly, so every `c·δ` error is a specific real, not a generic [0, c)
+    // range.  Tighten each interval to the smallest integer bound (ceil) that
+    // still contains the real error; the final line adds `droppedLow`.
     const hexLit = (n) => `\\texttt{0x${n.toString(16).toUpperCase()}}`;
     const errRealProd    = exact ? 0 : c * delta;
     const errRealShifted = exact
@@ -2592,10 +2120,8 @@ function render() {
       : errRealProd * Math.pow(2, expShift);
     const errProd    = Math.ceil(errRealProd);
     const errShifted = Math.ceil(errRealShifted);
-    // Error carried by the truncated v̄ display: the p10-derived
-    // `errShifted` Q.16 units plus the exactly-known `droppedLow`
-    // low-byte we stripped from the display.  `errFinalQ16 === 0`
-    // iff p10 is exact *and* the low byte happened to be zero.
+    // Error in the truncated v̄: p10-derived `errShifted` plus the stripped
+    // `droppedLow`.  Zero iff p10 is exact and the low byte was zero.
     const errFinalQ16 = errShifted + droppedLow;
     const finalExact  = errFinalQ16 === 0;
     const errFinalInt  = errFinalQ16 >> P10_BITS;
@@ -2603,25 +2129,17 @@ function render() {
     const errFinalTex  = `\\texttt{0x${
         errFinalInt.toString(16).toUpperCase()}.${
         errFinalFrac.toString(16).toUpperCase().padStart(P10_HEX_CHARS, "0")}}`;
-    // Second line of each intermediate's tooltip: the value itself
-    // paired with its `+ [0, err)` interval — a self-contained
-    // "value + uncertainty" statement that reads without glancing
-    // back to the formula.  Empty when p10 is exact (no error line).
+    // Tooltip line 2: value + its `+ [0, err)` interval.  Empty when exact.
     const intervalLine = (valTex, errTex) => exact
       ? ""
       : `${valTex} + [0,\\, ${errTex})`;
-    // The final v̄ hint has its own "did we lose anything?" predicate
-    // because truncating the low byte introduces error even when p10
-    // itself is exact.  Drops the line only when *both* contributions
-    // are zero.
+    // The final v̄ uses `finalExact` (low-byte truncation adds error even
+    // when p10 is exact), so it drops the line only when both are zero.
     const intervalLineFinal = (valTex, errTex) => finalExact
       ? ""
       : `${valTex} + [0,\\, ${errTex})`;
-    // Wrap each hex intermediate for hover-tooltip discovery.  When
-    // p10 is imprecise we also add a solid `\underline` so the value
-    // reads as "approximate, details on hover" without needing the
-    // dotted cue (which we reserve for exact rows that otherwise
-    // lack any visible hoverability signal).
+    // Wrap each hex intermediate for tooltip discovery: dotted cue when
+    // exact, solid `\underline` when imprecise ("approximate, details on hover").
     const hint = (mark, tex) => {
       const cls = exact
         ? `bin-hint bin-hint-cue bin-hint-${mark}`
@@ -2631,16 +2149,9 @@ function render() {
     };
     const prodTex    = hint("prod",    `\\texttt{${prodHex}}`);
     const shiftedTex = hint("shifted", `\\texttt{${shiftedHex}}`);
-    // Display the truncated v̄: keep only the high byte of the Q.16
-    // fractional, dropping the low byte exactly like yy_double's
-    // `u128_mul_add` keeps only the top 128 bits of its 192-bit
-    // `cb · p10` product and drops the low 64 (yy_double.c:2487).  The
-    // connecting operator switches to `≈` and the hex literal gets
-    // the solid `\underline{}` "hover for details" cue whenever the
-    // truncation (or a separate p10 imprecision) makes the display
-    // approximate — keyed off `finalExact` instead of the p10-level
-    // `exact`, so a precise p10 with a non-zero dropped low byte
-    // still reads as approximate at this step.
+    // Truncated v̄ display (high byte of the fractional kept).  Keyed off
+    // `finalExact`, so `≈` and the underline cue appear whenever the low-byte
+    // truncation or p10 imprecision makes it approximate.
     const finalBody  = `\\texttt{0x${integralHex}.${fractionalHiHex}}`;
     const finalCls   = finalExact
       ? `bin-hint bin-hint-cue bin-hint-final`
@@ -2648,40 +2159,23 @@ function render() {
     const finalMark  = finalExact ? finalBody : `\\underline{${finalBody}}`;
     const finalTex   = `\\htmlClass{${finalCls}}{${finalMark}}`;
     const finalRel   = finalExact ? "=" : "\\approx";
-    // Equation chain rendered as LHS + per-`=` RHS segments via
-    // `kxChain` so it reflows on narrow viewports while keeping its
-    // `=` column aligned (see kxChain's docstring for the layout).
-    // Phases of the chain:
-    //   v̄ = c·2^{e_2}·p_{10}·2^{e_p}                  (definition)
-    //     = (c·p_{10})·2^{e_2+e_p}                     (regroup)
-    //     = (${c}·${p10hex})·2^{…}                     (substitute)
-    //     = prod·2^{scaleBefore}  (shift by N)         (Q.P10 integer)
-    //     = shifted·2^{scaleAfter}                     (post-shift)
-    //     ≈ final                                      (low-byte truncation)
-    //     = integral + 0x0.fractional                  (int/frac split)
-    // The trailing `=` is strict equality — `0xII.HH = II + 0x0.HH`
-    // is a lossless split, no approximation is introduced — but it's
-    // the piece that makes the `v̄_{10} = v̄ mod 10` step below
-    // visually obvious (mod-10 just strips the tens digit from the
-    // decimal integer and keeps the fractional as-is).
+    // v̄ equation chain via `kxChain`.  Phases:
+    //   v̄ = c·2^{e_2}·p_{10}·2^{e_p}  (def) = (c·p_{10})·2^{e_2+e_p} (regroup)
+    //     = substitute → prod·2^{scaleBefore} → shifted·2^{scaleAfter}
+    //     ≈ final (low-byte truncation) = integral + 0x0.fractional (split).
+    // The trailing `=` is a lossless int/frac split that sets up the mod-10 step.
     kxChain(cScaledEl,
       `\\bar{v}`,
       [
-        // Row 1 — algebraic identity + numeric substitution.  Three
-        // `=`s, ending at the substituted product before the
-        // mechanical-rearrangement work begins.  The forced row
-        // boundary here matches the `\\` break in the previous
-        // `\begin{aligned}` rendering, so even on a panel wide
-        // enough to fit the whole chain on one line, the visual
-        // split between "what v̄ is" and "how we narrow it" stays.
+        // Row 1 — algebraic identity + numeric substitution (3 `=`s).  The
+        // forced break keeps "what v̄ is" separate from "how we narrow it".
         [
           `\\;=\\; c \\, 2^{e_2} \\cdot p_{10} \\, 2^{e_p}`,
           `\\;=\\; (c \\cdot p_{10}) \\cdot 2^{e_2 + e_p}`,
           `\\;=\\; (${c} \\cdot ${p10HexTex(hex, exact)}) \\cdot 2^{${d.e2} ${binExpTerm}}`,
         ],
-        // Row 2 — group → shift → narrow → split.  Four steps,
-        // ending at the integer/fractional decomposition that the
-        // `v̄_{10}` row below keys off of.
+        // Row 2 — group → shift → narrow → split (the int/frac form the
+        // `v̄_{10}` row keys off).
         [
           `\\;=\\; ${prodTex} \\cdot 2^{${scaleBefore}} ` +
             `\\;\\text{(shift by ${expShift})}`,
@@ -2691,9 +2185,8 @@ function render() {
         ],
       ]);
 
-    // Exact bit-counts of the tail that could differ if we had used
-    // the full-precision p10 — mirrors the error intervals shown
-    // inline, but expressed at bit granularity for the tooltip.
+    // Bit-count of the tail that a full-precision p10 could change — the
+    // inline error intervals expressed at bit granularity for the tooltip.
     const uncBits = (reported, maxAddend) => {
       if (maxAddend <= 0) return 0;
       const diff = reported ^ (reported + maxAddend);
@@ -2701,17 +2194,9 @@ function render() {
     };
     const uncBitsProd    = exact ? 0 : uncBits(prod, c - 1);
     const uncBitsShifted = exact ? 0 : uncBits(shifted, errShifted - 1);
-    // The truncated display hides the whole low byte of `shifted`,
-    // so the tooltip's binary view dims at least those 8 bits.  When
-    // p10 is also inexact the error can bubble higher, so we widen
-    // the dim band to whichever contribution is larger.  Same caveat
-    // as `uncBitsDeltaQ4` below: pass only the propagated `errShifted`
-    // (the p_{10}-derived component) to `uncBits`, NOT the combined
-    // `errFinalQ16 = errShifted + droppedLow`.  The 8 dropped low
-    // bits are already covered by the `Math.max(8, …)` floor; feeding
-    // them to `uncBits` as additive uncertainty causes the byte-add
-    // carry to incorrectly flag higher bits as flippable when
-    // `shifted` itself is exact.
+    // The truncated display hides `shifted`'s low byte, so dim at least those
+    // 8 bits plus any higher bits p10 error can flip.  Pass only `errShifted`
+    // to `uncBits` (not the combined error) so exact high bits aren't flagged.
     const uncBitsFinal   = finalExact
       ? 0
       : Math.max(8, uncBits(shifted, Math.max(0, errShifted - 1)));
@@ -2725,26 +2210,11 @@ function render() {
                      binTex(shifted, shiftedWidth, uncBitsShifted),
                      intervalLine(`\\texttt{${shiftedHex}}`,
                                   hexLit(errShifted)));
-    // The footer note attaches *here* — `bin-hint-final` is the
-    // value on the right of the chain's only `\approx`, where a
-    // truncation is actually introduced (the displayed hex drops the
-    // low byte of the Q.16 form).  Upstream values (`p_{10}`,
-    // `prod`, `shifted`) are already approximate by inheritance from
-    // `p_{10}`, but they sit on the left of `=` operators in this
-    // chain, so per the convention "annotate the result of an
-    // approximation, not its inputs" they stay note-less.
-    //
-    // Note text: the low byte gets dropped because at typical p_{10}
-    // precision its bits are dominated by p_{10}'s floor error and
-    // carry no reliable information about v̄ — direct analog of
-    // yy_double's `u128_mul_add` keeping only the top 128 bits of
-    // its 192-bit `cb · p10` product (the low 64 sit below yy's
-    // noise floor).  In the rare configuration where p_{10} is
-    // exact but the dropped low byte is non-zero (e.g. E4M3 7·2⁻⁹,
-    // e_{10} = -3) those bits *are* exactly known, just below the
-    // display threshold — the note slightly overclaims there but
-    // stays accurate for the typical case, which is the right
-    // trade-off for tooltip-grade copy.
+    // The footer note attaches here — the right side of the chain's only
+    // `\approx`, where the low-byte truncation is actually introduced
+    // (upstream values are left-of-`=`, so stay note-less).  The dropped
+    // low byte is usually dominated by p_{10} floor error (yy's 192→128
+    // narrowing); the note slightly overclaims only when p_{10} is exact.
     attachBinTooltip(cScaledEl, "bin-hint-final",
                      binTex(shifted, shiftedWidth, uncBitsFinal, P10_BITS),
                      intervalLineFinal(
@@ -2755,216 +2225,77 @@ function render() {
                        : `Dim bits dominated by $p_{10}$ approximation.`);
     if (!exact) attachP10Tooltip(cScaledEl, -e10, binExp, hex);
     // --- yy full-path rounding (mirrors yy_double.c::f64_bin_to_dec) -------
+    // Two scales (see the top-of-file note): the Q.P10_BITS scale for v̄,
+    // v̄_{10}, δ, and the 8-bit working word the predicates evaluate at
+    // (Q.P10_BITS operands shifted down `>> 12` / `>> 8`; tie bias = ±1 LSB).
     //
-    // Two scales live in this block — see the top-of-file architecture
-    // note for the "working word = FP width" framing:
+    // Decomposition at Q.P10_BITS:
+    //   one    = ⌊v̄⌋ mod 10;   ten = ⌊v̄⌋ − one  (d_0, trailing-zero form)
+    //   cQ16   = one·2^{P10_BITS} + frac  ∈ [0, 10·2^{P10_BITS})  (yy's `c`)
+    //   δ      = ½·ulp(v) in v̄'s scale                            (yy's `half_ulp`)
     //
-    //   Q.P10_BITS scale  (here Q.16; analog of yy's Q.4.60): used to
-    //     compute v̄, v̄_{10}, and δ from the p_{10} table.  This is
-    //     "pre-narrowing" — every byte of the 2 × word-wide p_{10}
-    //     still contributes.  An operand at this scale is stored as a
-    //     ≤ 20-bit integer whose low 16 bits are the fraction.
+    // Predicates (at the 8-bit word), written `LHS ≥ RHS + bias` where the
+    // bias implements round-half-to-even:
+    //   round_d0 = [δ          ≥ v̄_{10} + ε_c]   → trim
+    //   round_u0 = [v̄_{10} + δ ≥ 10     + η_c]   → trim+10
+    //   round_u1 = [v̄ mod 1    ≥ ½      + ε_u]   → u_1        (regular)
+    //   round_u1 = [v̄ mod 1    > min(½, δ/2)]    → u_1        (irregular)
     //
-    //   8-bit working word (analog of yy's u64 for u_0/d_0 and u64 for
-    //     u_1): the scale the rounding predicates actually evaluate at.
-    //     Q.P10_BITS operands are shifted down to this word (`>> 12`
-    //     for the 4.4 split used by v̄_{10}, `>> 8` for the 0.8 split
-    //     used by v̄ mod 1) and the tie bias is "±1 LSB of the word".
-    //
-    // Shared decomposition at the Q.P10_BITS scale:
-    //
-    //   one  = ⌊v̄⌋ mod 10       last decimal digit of the integer part
-    //   ten  = ⌊v̄⌋ − one        everything above it (= d_0, trailing-
-    //                           zero form)
-    //   v̄_{10} = v̄ mod 10       sub-decade slice of v̄ encoded as
-    //   cQ16 = one·2^{P10_BITS} + frac  a Q.P10_BITS integer in `cQ16`;
-    //                                   ∈ [0, 10·2^{P10_BITS}); direct
-    //                                   scale-down of yy's `c` (yy's
-    //                                   u64 Q.4.60 built from `one`
-    //                                   and `sig_lo` the same way).
-    //   δ    = ½·ulp(v) in v̄'s scale
-    //        = 2^{e_2−1} · 10^{−e_{10}} · 2^{P10_BITS}  — v̄'s rounding-
-    //                                   interval radius, same quantity
-    //                                   yy stores as `half_ulp`.
-    //
-    // Predicates (evaluated at the 8-bit working word):
-    //
-    //   round_d0 = [δ          ≥ v̄_{10} + ε_c]      v̄ − δ reaches d_0   → trim
-    //   round_u0 = [v̄_{10} + δ ≥ 10     + η_c]      v̄ + δ crosses u_0   → trim+10
-    //   round_u1 = [v̄ mod 1    ≥ ½      + ε_u]      v̄ past [d_1, u_1] ½ → u_1
-    //                                                  (regular)
-    //   round_u1 = [v̄ mod 1    > min(½, δ/2)]        v̄ past asymmetric ½ → u_1
-    //                                                  (irregular)
-    //
-    // The `LHS ≥ RHS + bias` form is how yy writes these comparisons;
-    // the bias is what implements round-half-to-even, flipping tie
-    // rows into `LHS ≥ LHS + bias` whose verdict depends only on the
-    // sign and magnitude of the bias.  Three biases, one per landmark:
-    //
-    //   ε_c = c mod 2           binary parity of c; {0, +1} bias on d_0.
-    //                           Trim ties fire when c is even
-    //                           (ε_c = 0), fall through when odd.
-    //                           Directly mirrors yy's
-    //                           `if (half_ulp == c) round_d0 = !(sig_bin & 1)`
-    //                           tie override, just relocated from an
-    //                           `if` branch onto the RHS of the base
-    //                           comparison.  Fixes E4M3 96/104 at the
-    //                           100 tie: only 96 (c = 12, ε_c = 0)
-    //                           shortens to "1·10²" since "100" parses
-    //                           back to 96, not 104.
-    //   η_c = 2·ε_c − 1         signed {−1, +1} bias on u_0.  c even →
-    //                           lower the "10" threshold by one LSB
-    //                           (one-below-tie still fires); c odd →
-    //                           raise it (exact tie stays).  See the
-    //                           `η_c` comment at the predicate block.
-    //   ε_u = (u_1 + 1) mod 2   decimal parity of u_1 = integral + 1;
-    //                           {0, +1} bias on u_1.  Both candidates
-    //                           round-trip at a keep-level tie, so pick
-    //                           whichever ends in an even last digit.
-    //                           Mirrors yy's
-    //                           `if (sig_lo == 1<<63) round_u1 = sig_hi & 1`
-    //                           tie override (binary parity of `sig_hi`
-    //                           and decimal parity of `integral + 1`
-    //                           agree because multiplication by 10 is
-    //                           parity-preserving).  Makes E4M3 3.75
-    //                           (v̄ mod 1 = ½, integral = 37, u_1 = 38
-    //                           even → ε_u = 0) render as "3.8" rather
-    //                           than "3.7".
-    //
-    // All three biases are "±1 LSB of the 8-bit working word" (= `0x0.1`
-    // at Q.4.4, `0x01` at Q.0.8).  Raw value in code stays 0 or ±1
-    // regardless of word width — the hex formatting is cosmetic.
+    // Biases (all ±1 LSB of the word; raw 0/±1, hex is cosmetic):
+    //   ε_c = c mod 2            binary parity of c, {0,+1} on d_0
+    //   η_c = 2·ε_c − 1          signed {−1,+1} on u_0
+    //   ε_u = (u_1 + 1) mod 2    decimal parity of u_1, {0,+1} on u_1
+    // Each relocates a yy tie-override `if` onto the RHS; e.g. ε_c fixes the
+    // E4M3 96/104-at-100 tie, ε_u renders 3.75 → "3.8".
     //
     //   trim = round_d0 ∨ round_u0
-    //   sig_dec = trim ? ten + 10·round_u0 : ⌊v̄⌋ + round_u1
-    //   exp_dec = e_{10}
+    //   sig_dec = trim ? ten + 10·round_u0 : ⌊v̄⌋ + round_u1;  exp_dec = e_{10}
     //
-    // The full path additionally handles the irregular case (c = 8, the
-    // power-of-2 significand at the low end of each cohort) by halving δ
-    // for the downward comparison, shifting k by log₁₀(¾), and replacing
-    // the symmetric `½ + ε_u` u_1 threshold with the asymmetric `min(½,
-    // δ/2)` (strict `>`, no parity bias — see "keep level, irregular" in
-    // the predicate block below for the algebraic derivation that
-    // collapses yy's three-flag dance into a single threshold).  All
-    // three together render the asymmetric rounding interval already
-    // drawn on the main grid.
+    // Irregular case (c = 8): halve δ downward, shift k by log₁₀(¾), and use
+    // the asymmetric `min(½, δ/2)` u_1 threshold (see "keep level, irregular").
     const one      = integral % 10;
     const ten      = integral - one;              // trailing-zero form
     const cQ16      = (one << P10_BITS) | fractional;  // one·2^{P10_BITS} + frac
     const t0Q16     = 10 << P10_BITS;                   // 10 at Q.P10_BITS
-    // δ = ½·ulp(v̄), v̄'s rounding-interval radius (yy's `half_ulp`),
-    // expressed in v̄'s Q.P10_BITS scale.  Since v̄ uses the p_{10}
-    // approximation throughout, we derive δ from the *same* approximation
-    // for consistency — exactly what yy does via `half_ulp = p10_hi >> (4-h)`:
-    //     ½·ulp(v)   = 2^{e_2 − 1}                              (native scale)
-    //     ½·ulp(v̄)  = 2^{e_2 − 1} · p_{10} · 2^{e_p}            (v̄'s value scale)
-    //                = p_{10} · 2^{e_2 + e_p − 1}
-    //     δ_Q      = p_{10} · 2^{e_2 + e_p + P10_BITS − 1}      (Q.P10_BITS integer)
-    // The Q.P10_BITS integer form is an exact integer shift of p_{10} —
-    // no further rounding — which keeps the written `δ = p_{10} · 2^{…}`
-    // equation a strict equality, matching yy's own shift-only derivation.
+    // δ = ½·ulp(v̄) at Q.P10_BITS, derived from the same p_{10} for consistency
+    // (yy's `half_ulp = p10_hi >> (4-h)`):
+    //     δ_Q = p_{10} · 2^{e_2 + e_p + P10_BITS − 1}
+    // An exact integer shift of p_{10}, so `δ = p_{10}·2^{…}` stays strict.
     const halfUlpShift = d.e2 + binExp + (P10_BITS - 1);
     const halfUlpQ16    = halfUlpShift >= 0
                            ? result << halfUlpShift
                            : result >> -halfUlpShift;
-    // Full Q.P10_BITS display hex (`0xHH.HHHH` at P10_BITS=16) — δ's
-    // mid-row view is the exact Q.16 value, no truncation.  The
-    // compact `0xI.F` form that matches `\bar v_{10}` is derived
-    // further down the δ block as a separate `≈`-linked step so the
-    // reader still sees a one-byte summary, but only at the final
-    // rounding point.
+    // Full Q.P10_BITS display hex — δ's mid-row view is exact, no truncation.
+    // The compact `0xI.F` form is derived later as a separate `≈` step.
     const halfUlpHex   = "0x" +
       (halfUlpQ16 >> P10_BITS).toString(16).toUpperCase()
                               .padStart(2, "0") + "." +
       (halfUlpQ16 & P10_MASK).toString(16).toUpperCase()
                              .padStart(P10_HEX_CHARS, "0");
     const halfUlpDn   = irregular ? halfUlpQ16 / 2 : halfUlpQ16;
-    // Round-half-to-even at ties.  Two different "even" tests apply,
-    // one per precision level — both directly mirror the tie-override
-    // branches yy_double.c:2538-2542 runs for the regular (non-
-    // irregular) case:
-    //
-    //   trim level (d_0 / u_0): keyed on c's binary parity via
-    //     ε_c = c mod 2.  Fires when ε_c = 0 (c even, parsed-back
-    //     value has even last binary bit), falls through when ε_c =
-    //     1 (c odd, would corrupt round-trip).  Relocates yy's
-    //     `if (half_ulp == c) round_d0 = !(sig_bin & 1)` override
-    //     from a separate `if` onto the RHS of the base comparison,
-    //     so the predicate reads as the classical `δ ≥ v̄ mod 10 +
-    //     ε_c`.  Fixes the E4M3 96/104 case: both sit at the 100
-    //     tie but only 96 (c = 12, ε_c = 0) shortens to "1 · 10²";
-    //     "100" parses back to 96, not 104.
-    //
-    //   keep level, regular (u_1): keyed on the decimal parity of
-    //     u_1 = integral + 1 via ε_u = u_1 mod 2.  Both candidates
-    //     round-trip at a keep-level tie, so we pick whichever ends
-    //     in an even last digit — ε_u = 0 (u_1 even) fires, ε_u = 1
-    //     falls through to d_1.  Relocates yy's
-    //     `if (sig_lo == 1<<63) round_u1 = sig_hi & 1` override
-    //     onto the RHS of the `≥ ½` comparison.  Makes E4M3 3.75
-    //     (integral = 37, u_1 = 38 even) render as "3.8" rather
-    //     than "3.7".
-    //
-    //   keep level, irregular (u_1): the rounding interval is
-    //     asymmetric — `[v̄ − δ/2, v̄ + δ]` instead of `v̄ ± δ` —
-    //     because v's left binary neighbour is half as far away
-    //     (one binade lower → one bit narrower ulp).  yy spells
-    //     this out as three separate flags:
-    //       round_u1  = (sig_lo > 1<<63)         // strict, no tie bias
-    //       round_d1  = (half_ulp/2 >= sig_lo>>4)
-    //       if (!round_d1) round_u1 = true;
-    //     Algebraically u_1 fires iff
-    //       frac > ½         ∨   frac > δ/2
-    //     ⇔ frac > min(½, δ/2),
-    //     and ε_u is dropped because the strict `>` already
-    //     disambiguates the (now off-centre) midpoint
-    //     deterministically.  We render the collapsed single-
-    //     threshold form (Option B in the design notes), with the
-    //     `min(½, δ/2)` written symbolically on the if-body side and
-    //     resolved to a concrete Q.0.8 byte on the numeric side.
+    // Round-half-to-even at ties (mirrors yy_double.c:2538-2542):
+    //   trim (d_0/u_0): ε_c = c mod 2 relocated onto the RHS as `δ ≥ v̄ mod 10
+    //     + ε_c`; fires when c is even (fixes the 96/104-at-100 case).
+    //   keep, regular (u_1): ε_u = u_1 mod 2 on the RHS of `≥ ½`; picks the
+    //     even last digit (renders 3.75 → "3.8").
+    //   keep, irregular (u_1): asymmetric interval `[v̄ − δ/2, v̄ + δ]`.  yy's
+    //     three flags reduce to `frac > min(½, δ/2)` (strict, no ε_u), which
+    //     is the single-threshold form rendered here.
     const epsC = c & 1;
     const epsU = 1 - (integral & 1);
-    // u_1 keep-level threshold and comparison shape, parametrised
-    // on `irregular`.  The Q.16 threshold lives at the same scale as
-    // `fractional` so the right shift to Q.0.8 in `roundU1` below
-    // narrows both operands together; the strict-vs-non-strict
-    // relation is mirrored in `roundU1`, `uncU1`, and the row's
-    // LaTeX so the three stay in lockstep.  See the "keep level,
-    // irregular" comment block above for the algebraic derivation
-    // of `min(½, δ/2)`.
+    // u_1 keep-level threshold + relation, parametrised on `irregular`.  Q.16
+    // scale matches `fractional` so the `>> 8` in `roundU1` narrows both; the
+    // strict-vs-non-strict relation stays in lockstep across roundU1/uncU1/LaTeX.
     const u1ThresholdQ16 = irregular
       ? Math.min(P10_HALF, halfUlpDn)
       : P10_HALF;
     const u1Strict       = irregular;
     const u1Bias         = irregular ? 0 : epsU;
-    // Signed-parity bias used by u_0.  d_0 and u_0 encode the same
-    // round-half-to-even rule (pick the trim whose parse-back has
-    // even binary parity), but the bias moves in opposite directions
-    // because the predicates compare against different landmarks:
-    //
-    //   d_0 :  δ                 ≥ v̄_{10} + ε_c          ε_c ∈ {0, +1}
-    //   u_0 :  v̄_{10} + δ        ≥ 10      + η_c          η_c ∈ {-1, +1}
-    //
-    // c even ⇒ fire the tie (trimmed result has even last bit); c odd
-    // ⇒ fall through (keep ⌊v̄⌋, even last bit).  For d_0 that means
-    // "+1 on RHS when c odd" (blocks fire at exact tie); for u_0 that
-    // means "−1 on RHS when c even, +1 when c odd" — a *signed* bias,
-    // since u_0's tie zone has two sides (at 10 and at 10-1) that must
-    // move together.
-    //
-    // Both biases are the same physical quantity — ±1 LSB of the 8-bit
-    // working word (see the top-of-file architecture note).  At
-    // `yy_double`'s 64-bit scale it's the same ±1, just one u64 LSB =
-    // 2⁻⁶⁰.  yy splits the tie logic into a base comparison plus an
-    // explicit `if (t0 - t1 <= 1) { … }` override branch; the η_c
-    // encoding collapses that branch into a single `≥ 10 + η_c`
-    // inequality whose outcome agrees with yy on both tie-zone cells
-    // (exact tie, sum = 10; one-below-tie, sum = 10 − 1).
-    //
-    // Non-architectural gap (also flagged at the top of file): yy's
-    // extra `k == 0` qualifier on the exact-tie cell is not mirrored.
-    // At 8-bit-word precision the affected cell is a single Q.4.4
-    // bucket; no E4M3 input has been observed to land on it.
+    // Signed-parity bias for u_0.  Same round-half-to-even rule as d_0, but
+    // η_c ∈ {−1,+1} is signed because u_0's tie zone has two sides (10 and
+    // 10−1) that move together.  Collapses yy's `if (t0 - t1 <= 1)` override
+    // into a single `≥ 10 + η_c`.  (yy's extra `k == 0` qualifier isn't
+    // mirrored; no E4M3 input hits the affected cell — see top-of-file note.)
     const epsCsigned = 2 * epsC - 1;
     const roundD0 = (halfUlpDn >> 12)           >= (cQ16 >> 12)         + epsC       ? 1 : 0;
     const roundU0 = ((cQ16 + halfUlpQ16) >> 12) >= (t0Q16 >> 12)        + epsCsigned ? 1 : 0;
@@ -2978,20 +2309,9 @@ function render() {
     const selCand = trim ? (roundU0 ? "u0" : "d0")
                          : (roundU1 ? "u1" : "d1");
 
-    // Rows: 4-candidate picture, grouped by precision level k.  Each
-    // line is one rounding interval [d_k, u_k] at that precision.
-    //   k = 0 (trim):  nearest multiples of 10 bracketing v̄
-    //   k = 1 (keep):  nearest integers bracketing v̄
-    //
-    // Rendered as a single `\begin{aligned}` block with four alignment
-    // points per row so every `=` lines up vertically:
-    //
-    //   col 1 (r): d_k / u_k letter
-    //   col 2 (l): = (definition)
-    //   col 3 (r): empty — forces col 4 into left-align territory
-    //   col 4 (l): = (numerical value)  ← rightmost `=` aligns here
-    //
-    // Same four-column layout repeated for the u-half of the row.
+    // 4-candidate picture by precision: k=0 (trim) = multiples of 10, k=1
+    // (keep) = integers bracketing v̄.  One `\begin{aligned}` with four
+    // alignment points per row so the definition and value `=`s line up.
     kx(cCandsEl,
        `\\begin{aligned}` +
        `d_0 &= 10 \\lfloor \\bar v / 10 \\rfloor & &= ${ten}, ` +
@@ -3000,21 +2320,11 @@ function render() {
        `& u_1 &= d_1 + 1 & &= ${integral + 1}` +
        `\\end{aligned}`);
 
-    // Row: the rounding-interval radius, written as ½·ulp(v) scaled
-    // into v̄'s representation by the same p_{10}·2^{e_p} factor used
-    // to build v̄.  Grouping collapses to a single integer shift of
-    // p_{10}, which is exactly what the algorithm computes.
-    //
-    // δ inherits the same p_{10} truncation error as v̄: its Q.P10_BITS
-    // integer is p_{10}·2^{halfUlpShift}, while the mathematically
-    // exact value uses (p_{10}+δ_{p_{10}})·2^{halfUlpShift}, so the
-    // real error is δ_{p_{10}}·2^{halfUlpShift} — bounded, non-
-    // negative, and known exactly from `delta` returned by pow10Hex.
-    // That's the ONLY error present in δ's mid-row hex view: the row
-    // shows the full Q.P10_BITS value (`0xHH.HHHH`) without any
-    // display-side truncation, so rounding enters only at the final
-    // Q.4 step further down.  The tooltip therefore reports a single
-    // `[0, errHalfUlp)` interval keyed off the p_{10} error alone.
+    // Rounding-interval radius δ = ½·ulp(v) scaled into v̄'s form by the same
+    // p_{10}·2^{e_p} — a single integer shift of p_{10}.  δ inherits only v̄'s
+    // p_{10} truncation error (δ_{p_{10}}·2^{halfUlpShift}, known from
+    // `delta`); the mid-row view is the full Q.P10_BITS value, so this is its
+    // only error until the final Q.4 step.
     const errRealHalfUlp = exact
       ? 0
       : delta * Math.pow(2, halfUlpShift);
@@ -3025,20 +2335,13 @@ function render() {
     const errHalfUlpTex = `\\texttt{0x${
         errHUInt.toString(16).toUpperCase()}.${
         errHUFrac.toString(16).toUpperCase().padStart(P10_HEX_CHARS, "0")}}`;
-    // `+ [0, err)` tooltip line emitted whenever the Q.P10_BITS value
-    // carries any p_{10} imprecision; otherwise empty.
+    // Tooltip line, empty unless the Q.P10_BITS value carries p_{10} error.
     const intervalLineDelta = (valTex, errTex) => deltaQ16Exact
       ? ""
       : `${valTex} + [0,\\, ${errTex})`;
-    // Hint styling for the Q.P10_BITS view: dotted hover-cue when
-    // p_{10} is exact (so δ's Q.P10_BITS hex is exact too), solid
-    // `\underline{}` otherwise.  The relation into this step is
-    // always `=` — multiplying the already-substituted p_{10} hex
-    // literal by 2^{e_2+e_p−1} is an exact shift, not a rounding
-    // operation.  Whatever imprecision the literal itself carries is
-    // conveyed by the underline + hover tooltip on the literal; the
-    // `≈` symbol is reserved for the final Q.4 step where actual
-    // rounding happens.
+    // Q.P10_BITS hint: dotted cue when p_{10} is exact, solid underline
+    // otherwise.  The relation in is always `=` (an exact shift); `≈` is
+    // reserved for the final Q.4 rounding step.
     const deltaBody    = `\\texttt{${halfUlpHex}}`;
     const deltaCls     = deltaQ16Exact
       ? `bin-hint bin-hint-cue bin-hint-delta`
@@ -3047,26 +2350,13 @@ function render() {
       ? deltaBody
       : `\\underline{${deltaBody}}`;
     const deltaTex     = `\\htmlClass{${deltaCls}}{${deltaMark}}`;
-    // Plugged-in numerical step: combined exponent e_2 + e_p − 1 with
-    // the actual values substituted, mirroring the shape cScaled uses
-    // for `(c · p10) · 2^{e_2 + binExp}`.
+    // Numerical step: combined exponent e_2 + e_p − 1 substituted.
     const deltaExpNum  = d.e2 + binExp - 1;
     const deltaExpStr  = deltaExpNum < 0 ? `-${-deltaExpNum}`
                                          : `${deltaExpNum}`;
-    // Final narrowing step: chain a Q.4 (one-byte, decimal-in-middle)
-    // view of δ onto the end of the row via a separate `≈` relation,
-    // mirroring the treatment `\bar v_{10}` receives in the preamble
-    // row below.  This is the ONLY step where δ gets rounded — the
-    // middle step above is the full Q.P10_BITS value, so every bit
-    // of display-side truncation happens here and all of it shows up
-    // in `errDeltaQ4Q16` as dropped-bit mass.
-    //
-    // Error accounting for the Q.4 view: twelve fractional bits are
-    // dropped at this step, so the dropped-bit contribution is
-    // `halfUlpQ16 & 0xFFF`.  Combine with the propagated `errHalfUlp`
-    // in Q.16 units and narrow to Q.4 by dividing by 2^{12} with
-    // ceiling to keep `[0, err)` an exclusive upper bound at the
-    // coarser precision.
+    // Final narrowing: a Q.4 view of δ chained on via `≈` — the only step
+    // where δ rounds.  It drops 12 fractional bits (`halfUlpQ16 & 0xFFF`),
+    // combined with the propagated `errHalfUlp` and ceiled to Q.4.
     const deltaIntQ4     = (halfUlpQ16 >> P10_BITS) & 0xF;
     const deltaFracQ4    = (halfUlpQ16 >> 12)       & 0xF;
     const deltaHexQ4     = `0x${deltaIntQ4.toString(16).toUpperCase()}.${
@@ -3075,14 +2365,11 @@ function render() {
     const errDeltaQ4Q16  = errHalfUlp + deltaDropped12;
     const deltaQ4Exact   = errDeltaQ4Q16 === 0;
     const errDeltaQ4     = Math.ceil(errDeltaQ4Q16 / 0x1000);
-    // Q.4 error formatter: natural integer width + one fractional
-    // hex digit, matching the `0xI.F` operand shape.
+    // Q.4 error formatter (`0xI.F` shape).
     const errDeltaQ4Tex  = `\\texttt{0x${
         (errDeltaQ4 >> 4).toString(16).toUpperCase()}.${
         (errDeltaQ4 & 0xF).toString(16).toUpperCase()}}`;
-    // Step relation between the Q.P10_BITS and Q.4 renderings of δ:
-    // `=` only when the combined Q.4 error is zero (no dropped bits
-    // survive AND the p_{10} error was already zero).  Otherwise `≈`.
+    // `=` only when the Q.4 error is zero (no dropped bits, exact p_{10}).
     const deltaQ4Rel     = deltaQ4Exact ? "=" : "\\approx";
     const deltaQ4Body    = `\\texttt{${deltaHexQ4}}`;
     const deltaQ4Cls     = deltaQ4Exact
@@ -3092,9 +2379,7 @@ function render() {
       ? deltaQ4Body
       : `\\underline{${deltaQ4Body}}`;
     const deltaQ4Tex     = `\\htmlClass{${deltaQ4Cls}}{${deltaQ4Mark}}`;
-    // Same LHS + per-`=` RHS segmentation as the v̄ chain above (see
-    // `kxChain`): single intended row on desktop, line-wraps at
-    // every `=` on phones with the `=` column kept aligned.
+    // Same LHS + per-`=` segmentation as the v̄ chain (see `kxChain`).
     kxChain(cDeltaEl,
       `\\delta`,
       [[
@@ -3104,10 +2389,8 @@ function render() {
         `\\;=\\; ${deltaTex}`,
         `\\;${deltaQ4Rel}\\; ${deltaQ4Tex}`,
       ]]);
-    // Dim band for the Q.P10_BITS view: only the bits the p_{10}
-    // error can actually perturb — nothing is truncated at this step
-    // so there is no "invisible tail" to blanket-dim.  Zero when
-    // p_{10} is exact.
+    // Dim band for the Q.P10_BITS view: only the bits p_{10} error can
+    // perturb (nothing truncated here).  Zero when p_{10} is exact.
     const uncBitsHalfUlp = deltaQ16Exact
       ? 0
       : uncBits(halfUlpQ16, Math.max(0, errHalfUlp - 1));
@@ -3118,24 +2401,10 @@ function render() {
                             P10_BITS),
                      intervalLineDelta(`\\texttt{${halfUlpHex}}`,
                                        errHalfUlpTex));
-    // Q.4 tooltip: dim at least the twelve fractional bits the Q.4
-    // display doesn't print, plus any higher bits the propagated
-    // error can perturb.  Radix point stays at `P10_BITS` because
-    // the underlying integer is still the Q.16 `halfUlpQ16`.
-    //
-    // Pass *only* `errHalfUlp` (the propagated p_{10} component) to
-    // `uncBits`, NOT the combined `errDeltaQ4Q16 = errHalfUlp +
-    // deltaDropped12`.  The dropped 12 low bits are already covered
-    // by the `Math.max(12, …)` floor — they're visible-but-dim in
-    // the binary view, exactly known, not uncertain — and feeding
-    // them to `uncBits` as if they were additive uncertainty causes
-    // carry to propagate into much higher bits, claiming they could
-    // flip when in fact `halfUlpQ16` is exactly known whenever
-    // p_{10} is exact.  Concrete failure: E4M3 7·2⁻⁹ (= 0.013671875,
-    // m=7 subnormal) lands on e_{10} = −3 where p_{10} = 0xFA00 is
-    // exact; `halfUlpQ16 = 0xFA00`, `deltaDropped12 = 0xA00`, and
-    // `uncBits(0xFA00, 0xA00−1)` returned 17 — dimming every
-    // visible bit of an exactly-known operand.
+    // Q.4 tooltip: dim the 12 unprinted fractional bits plus any higher bits
+    // the propagated error can flip.  Pass *only* `errHalfUlp` to `uncBits`
+    // (not the combined error) — the dropped 12 bits are exactly known, and
+    // treating them as uncertainty would carry into and dim exact high bits.
     const uncBitsDeltaQ4 = deltaQ4Exact
       ? 0
       : Math.max(12, uncBits(halfUlpQ16, Math.max(0, errHalfUlp - 1)));
@@ -3147,29 +2416,11 @@ function render() {
                        : `\\texttt{${deltaHexQ4}} + [0,\\, ${errDeltaQ4Tex})`);
     if (!exact) attachP10Tooltip(cDeltaEl, -e10, binExp, hex);
 
-    // Row: the three rounding decisions as explicit Q.P10_BITS inequalities.
-    // For each predicate we render three columns, aligned at their
-    // `=` signs: the symbolic condition, the condition with actual
-    // hex Q.P10_BITS values substituted, and the 0/1 result.  Readers
-    // can verify each comparison by eye since every hex literal also
-    // appears in the δ / v̄ rows above.
-    //
-    // Irregular (c = 8) halves δ on the down-side; we bake that into
-    // the round_d0 row by showing δ/2 and the halved Q.P10_BITS value.
-    // Predicate hex literals render at the 8-bit working word of the
-    // "word = FP width" invariant — same word for every row, two
-    // different splits to match each row's operand range:
-    //   d_0, u_0 — Q.4.4 (one hex digit integer + one hex digit
-    //              fractional, i.e. an 8-bit byte with the decimal
-    //              point in the middle).  v̄_{10} ∈ [0, 10) and
-    //              v̄_{10} + δ < 10.5 both fit in the four integer
-    //              bits; 10 becomes `0xA.0`.  Matches the δ and
-    //              v̄_{10} values shown in the standalone rows above.
-    //   u_1     — Q.0.8 fractional only (`0xHH`).  u_1 compares
-    //              v̄ mod 1 ∈ [0, 1) against ½; no integer bits
-    //              needed, so the whole byte is fractional.  ½
-    //              becomes `0x80`.
-    // Same 8-bit word in both splits, same ±1 LSB tie bias.
+    // Row: the three rounding decisions as Q.P10_BITS inequalities, rendered
+    // in three `=`-aligned columns (symbolic / substituted / 0-1 result).
+    // Irregular (c = 8) shows δ/2 on the down-side.  Predicates evaluate at
+    // the 8-bit word in two splits: d_0/u_0 use Q.4.4 (10 = `0xA.0`), u_1
+    // uses Q.0.8 (½ = `0x80`).  Same word, same ±1 LSB bias.
     const fmtQ4 = (n) => `0x${
         ((n >> P10_BITS) & 0xF).toString(16).toUpperCase()}.${
         ((n >> 12)       & 0xF).toString(16).toUpperCase()}`;
@@ -3182,36 +2433,13 @@ function render() {
     const sumHex   = fmtQ4(cQ16 + halfUlpQ16);
     const d0LhsSym = irregular ? "\\delta/2" : "\\delta";
     const d0LhsHex = fmtQ4(halfUlpDn);
-    // Wrap each predicate-row hex for the binary-view tooltip and
-    // the `\underline{}` "approximate, details on hover" cue.  See
-    // the `predHint` definition below for the per-operand logic —
-    // keyed on each operand's combined (p_{10} + dropped-bit) error,
-    // not the global `exact` flag — so an operand whose dropped low
-    // bits are zero and whose p_{10} is exact renders as a clean
-    // literal with just the dotted hover cue.  The algorithmic
-    // constants 10 (= `0xA.0` at Q.4) and ½ (= `0x80` at Q.8) stay
-    // as plain `\texttt{…}` — no uncertainty, no meaningful
-    // bit-view to reveal.
+    // Constants 10 (`0xA.0`) and ½ (`0x80`) stay plain — no uncertainty.
     const texHex = (hex) => `\\texttt{${hex}}`;
-    // Per-operand error bounds.  Two contributions stack into each
-    // combined Q.P10_BITS bound:
-    //
-    //   1) p_{10}-truncation error (same as before, expressed in
-    //      Q.P10_BITS units via `errShifted` / `errHalfUlp`).
-    //   2) Low-bit truncation of the narrow-to-working-word step.  The
-    //      bits shifted off to reach the 8-bit working word are added
-    //      exactly (not conservatively): knowing the operand at the
-    //      full Q.P10_BITS scale lets us report its actual dropped
-    //      tail.  The two shifts correspond directly to yy's own
-    //      192→128 narrowing — both discard one word's worth of low
-    //      bits when moving to the predicate scale.
-    //
-    // d_0 / u_0 narrow from Q.P10_BITS to Q.4.4, so they drop
-    // `P10_BITS − 4` low bits (twelve at P10_BITS = 16) — masked by
-    // `& 0xFFF` — and their errors are reported in Q.4-unit steps via
-    // `ceil(/ 0x1000)`.  u_1 narrows from Q.P10_BITS to Q.0.8 so it
-    // drops `P10_BITS − 8` bits (eight at P10_BITS = 16) — masked by
-    // `& 0xFF` — with errors in Q.0.8 units via `ceil(/ 0x100)`.
+    // Per-operand Q.P10_BITS error = p_{10}-truncation (errShifted/errHalfUlp)
+    // + the exactly-known low bits dropped narrowing to the working word
+    // (yy's 192→128 narrowing).  d_0/u_0 → Q.4.4 drop 12 bits (`& 0xFFF`,
+    // errors in Q.4 via `ceil(/0x1000)`); u_1 → Q.0.8 drops 8 (`& 0xFF`,
+    // Q.0.8 via `ceil(/0x100)`).
     const d0LhsShift = halfUlpShift - (irregular ? 1 : 0);
     const errRealD0Lhs = exact
       ? 0
@@ -3227,12 +2455,8 @@ function render() {
     const errCQ16Q4    = q16ToQ4(errCQ16Q16);
     const errSumQ4     = q16ToQ4(errSumQ16);
     const errFracQ8    = q16ToQ8(errFracQ16);
-    // Binary-view dim bands: always cover the truncated portion of
-    // the display (invisible to the reader regardless of its value),
-    // plus any higher bits the combined error can flip.  d_0 / u_0
-    // operands live at Q.4 so their minimum dim band is the twelve
-    // fractional bits they don't print; u_1 stays at Q.8 so its
-    // minimum is eight.
+    // Dim bands cover the truncated display bits plus any higher bits the
+    // error can flip.  Min band: 12 for Q.4 (d_0/u_0), 8 for Q.8 (u_1).
     const dimFor = (val, errQ16, minBits) => errQ16 === 0
       ? 0
       : Math.max(minBits, uncBits(val, Math.max(0, errQ16 - 1)));
@@ -3244,25 +2468,16 @@ function render() {
                                   P10_BITS + 1);
     const d0LhsWidth   = Math.max(halfUlpDn.toString(2).length,
                                   P10_BITS + 1);
-    // Error-interval formatters — one per precision level, each
-    // matching the shape of its operand so tooltips line up nicely:
-    //   errQ4Tex     → `0xI.F` (d_0 / u_0 operands), natural integer
-    //                  width so an error bigger than one unit isn't
-    //                  hidden.
-    //   errFracQ8Tex → `0xHH` (u_1's pure-fractional operand).  Its
-    //                  tooltip reads `0xFF + [0, 0x02)` — three
-    //                  same-width hex literals in a row.
+    // Error-interval formatters matching each operand's shape:
+    //   errQ4Tex     → `0xI.F` (d_0 / u_0)
+    //   errFracQ8Tex → `0xHH`  (u_1)
     const errQ4Tex     = (eQ4) => `\\texttt{0x${
         (eQ4 >> 4).toString(16).toUpperCase()}.${
         (eQ4 & 0xF).toString(16).toUpperCase()}}`;
     const errFracQ8Tex = (eQ8) => `\\texttt{0x${
         eQ8.toString(16).toUpperCase().padStart(2, "0")}}`;
-    // Per-operand hint styling: `\underline{}` + plain bin-hint class
-    // whenever THIS operand's combined error is non-zero; dotted
-    // hover-cue + bin-hint-cue when it really is exact at its row's
-    // precision.  Needed because truncating the displayed low bits
-    // introduces uncertainty even for operands derived from an
-    // otherwise-exact p_{10}.
+    // Per-operand hint: solid underline when this operand's combined error
+    // is non-zero, dotted cue when exact at its row's precision.
     const predHint = (mark, tex, errQ16) => {
       const isExact = errQ16 === 0;
       const cls = isExact
@@ -3275,24 +2490,11 @@ function render() {
     const predCQ16Tex  = predHint("predcq16",  texHex(cQ16Hex),  errCQ16Q16);
     const predSumTex   = predHint("predsum",   texHex(sumHex),   errSumQ16);
     const predFracTex  = predHint("predfrac",  texHex(fracHex),  errFracQ16);
-    // Comparison uncertainty at each row's precision.  A predicate
-    // `LHS ≥ RHS + ε` on the displayed operands (each carrying a
-    // `[0, err)` upper-bound in that row's Q.X units) is certain only
-    // when the intervals don't meet:
-    //   certain true   if  LHS_min        ≥ RHS_max + ε
-    //   certain false  if  LHS_max        <  RHS_min + ε
-    //   uncertain      otherwise.
-    // Because the displayed operand underestimates the true value
-    // (both truncation and p_{10} error are one-sided non-negative),
-    // the check reduces to "LHS < RHS + ε + errRHS  &&  LHS + errLHS
-    // ≥ RHS + ε".  All three rows narrow their Q.P10_BITS operands to
-    // the 8-bit working word of the "word = FP width" invariant:
-    //   d_0 / u_0 : Q.4.4   (4 integer bits for v̄_{10} ∈ [0, 10) + 4
-    //               fractional bits) via `>> (P10_BITS − 4)` = `>> 12`.
-    //   u_1       : Q.0.8   (pure fractional, v̄ mod 1 ∈ [0, 1)) via
-    //               `>> (P10_BITS − 8)` = `>> 8`.
-    // Different split, same 8-bit word.  ε / η stay raw 0/±1 because
-    // at an 8-bit word, 1 IS one LSB regardless of the 4.4 / 0.8 split.
+    // Comparison uncertainty at each row's precision.  Since displayed
+    // operands underestimate the truth (error is one-sided non-negative),
+    // uncertain ⇔ `LHS < RHS + ε + errRHS  &&  LHS + errLHS ≥ RHS + ε`.
+    // All rows narrow to the 8-bit word: d_0/u_0 to Q.4.4 (`>> 12`), u_1 to
+    // Q.0.8 (`>> 8`).  ε / η stay raw 0/±1 (1 = one LSB either way).
     const halfUlpDnQ4    = halfUlpDn >> 12;
     const cQ16Q4         = cQ16 >> 12;
     const sumQ4          = (cQ16 + halfUlpQ16) >> 12;
@@ -3300,12 +2502,8 @@ function render() {
     const fractionalQ8   = fractional >> 8;
     const halfQ8         = P10_HALF >> 8;
     const u1ThresholdQ8  = u1ThresholdQ16 >> 8;
-    // Threshold-side error contribution for u_1.  Regular: `½` is an
-    // exact constant, no error.  Irregular: when `δ/2` is the binding
-    // leg of the `min(½, δ/2)`, its truncation error propagates into
-    // the comparison; when ½ wins, the threshold is exact even though
-    // δ/2 itself isn't.  We use `errD0LhsQ16` (the Q.16 error band on
-    // δ/2 = halfUlpDn) narrowed to Q.0.8.
+    // u_1 threshold error: 0 for regular (½ exact); for irregular, the δ/2
+    // error (errD0LhsQ16 → Q.0.8) only when δ/2 is the binding leg of min.
     const u1ErrThresholdQ8 = (irregular && halfUlpDn < P10_HALF)
       ? Math.ceil(errD0LhsQ16 / 0x100)
       : 0;
@@ -3313,47 +2511,23 @@ function render() {
                   halfUlpDnQ4 + errD0LhsQ4   >= cQ16Q4 + epsC;
     const uncU0 = sumQ4                      <  t0Q4   + epsCsigned              &&
                   sumQ4       + errSumQ4     >= t0Q4   + epsCsigned;
-    // u_1 uncertainty: `LHS ▷ RHS + ε` with `▷` = `>` (irregular) or
-    // `≥` (regular).  Strict `>` becomes uncertain when the worst-case
-    // intervals just touch (`LHS ≤ RHS + ε + errRHS  &&  LHS + errLHS
-    // > RHS + ε`); non-strict `≥` keeps the original `<` / `≥` boundary
-    // pair from the d_0 / u_0 rows.
+    // u_1 uncertainty: strict `>` (irregular) uses `≤ … && > …`; non-strict
+    // `≥` (regular) uses the `< … && ≥ …` pair like d_0/u_0.
     const uncU1 = u1Strict
       ? fractionalQ8                <= u1ThresholdQ8 + u1Bias + u1ErrThresholdQ8 &&
         fractionalQ8 + errFracQ8    >  u1ThresholdQ8 + u1Bias
       : fractionalQ8                <  u1ThresholdQ8 + u1Bias + u1ErrThresholdQ8 &&
         fractionalQ8 + errFracQ8    >= u1ThresholdQ8 + u1Bias;
-    // u_0's bias-sensitivity flag: would the predicate's truth value
-    // flip if we swapped η_c (epsCsigned) for ε_c (epsC) on the RHS?
-    // The two biases differ only when c is even (η_c = −1 vs ε_c = 0),
-    // which moves the RHS by 1 Q.4 unit; so the substitution flips
-    // exactly the round-half-to-even tie-down cell on u_0's lower
-    // edge (sumQ4 == t0Q4 − 1, c even).  Marked by recomputing u_0
-    // with ε_c on the RHS and comparing to the canonical η_c result —
-    // independent of whether the canonical result itself is precision-
-    // uncertain, so the two flags compose orthogonally below.
+    // u_0 bias-sensitivity: would swapping η_c for ε_c flip the result?
+    // They differ only when c is even, flipping the tie-down cell on u_0's
+    // lower edge.  Composes orthogonally with precision-uncertainty below.
     const biasSensitiveU0 =
       roundU0 !== (sumQ4 >= t0Q4 + epsC ? 1 : 0);
-    // `\stackrel` with a phantom question mark reserves the same
-    // vertical space as the loaded variants, so rows stay baseline-
-    // aligned whether or not any of them stacks a real `?`.  The `?`
-    // is rendered when the displayed comparison is *contingent* in
-    // either of two senses:
-    //
-    //   precUncertain — operand intervals overlap at the row's
-    //                   working precision (Q.4.4 / Q.0.8); tighter
-    //                   bounds could flip ✓/✗.
-    //   biasSens      — η_c → ε_c (or symmetric) substitution would
-    //                   flip ✓/✗ at this exact cell.  Currently only
-    //                   wired for u_0, where the η_c signed bias is
-    //                   the active design choice.
-    //
-    // Both meanings share the unified reading "the displayed result
-    // is on a tipping point".  We emit one of three marker classes
-    // (`cmp-uncertain`, `cmp-bias`, `cmp-both`) so the per-class
-    // tooltip below can give a precise diagnosis instead of a single
-    // generic one; the certain branch stays plain since there's
-    // nothing to disambiguate.
+    // `\stackrel` with a phantom `?` keeps rows baseline-aligned whether or
+    // not a real `?` stacks.  The `?` shows when the result is contingent —
+    // precUncertain (operand intervals overlap at the row's precision) or
+    // biasSens (η_c → ε_c would flip it, u_0 only) — via one of three marker
+    // classes so the per-class tooltip can diagnose it precisely.
     const cmpTex = (precUncertain, biasSens, op) => {
       if (precUncertain && biasSens) {
         return `\\htmlClass{bin-hint cmp-both}{\\stackrel{?}{${op}}}`;
@@ -3366,32 +2540,19 @@ function render() {
       }
       return `\\stackrel{\\phantom{?}}{${op}}`;
     };
-    // Rendered with `aligned` for its built-in `\jot` row spacing.
-    // The leftmost cell of each predicate row is a three-state
-    // checkbox that mirrors the algorithm's short-circuit chain:
-    //   fired → the predicate was evaluated and returned true; since
-    //           the chain is `if d_0 elif u_0 elif u_1 else d_1`,
-    //           the firing row is also the winner.
-    //   false → the predicate was evaluated and returned false.
-    //   skip  → the predicate was short-circuited; an earlier row
-    //           fired, so this one never ran.  Distinguishing this
-    //           from `false` solves the old all-grey scheme's worst
-    //           ambiguity (u_1 looked identical whether trim fired
-    //           without it or trim didn't fire and u_1 was false).
+    // Each row's leftmost cell is a three-state checkbox mirroring the
+    // short-circuit chain `if d_0 elif u_0 elif u_1 else d_1`:
+    //   fired → evaluated true (also the winner);  false → evaluated false;
+    //   skip  → short-circuited (an earlier row fired), distinct from false.
     const trimFires = roundD0 || roundU0;
     const d1Picked  = !trimFires && !roundU1;
     const d0State = roundD0  ? "fired" : "false";
     const u0State = roundD0  ? "skip"  : (roundU0 ? "fired" : "false");
     const u1State = trimFires ? "skip" : (roundU1 ? "fired" : "false");
     const d1State = d1Picked ? "fired" : "skip";
-    // Unbracketed glyph in a width-normalised slot: `\mathrlap` renders
-    // the glyph at zero width and then `\phantom{\checkmark}` reserves
-    // a fixed column width equal to the widest of the three glyphs.
-    // The letter column therefore never shifts when the state changes,
-    // even though ✓ / × / – each have different natural widths.  Skip
-    // uses an en-dash (narrower + visually quieter than em-dash) and
-    // the `.chk-skip` rule further fades it with `opacity: 0.5` so it
-    // clearly reads as a de-emphasised placeholder rather than a hit.
+    // `\mathrlap{glyph}\phantom{\checkmark}` renders the glyph at zero width
+    // in a fixed-width slot, so the letter column never shifts across states
+    // despite ✓ / × / – differing in width.
     const chkTex = (s) => {
       const glyph =
         s === "fired" ? `\\checkmark` :
@@ -3399,136 +2560,47 @@ function render() {
                         `\\text{–}`;
       return `\\htmlClass{chk-${s}}{\\mathrlap{${glyph}}\\phantom{\\checkmark}}`;
     };
-    // Row content styling:
-    //   fired / false → default foreground (checkmark/cross glyphs
-    //                   alone carry the win / false signal).
-    //   skip          → letter AND body greyed via `.row-skip`, so the
-    //                   whole short-circuited line reads as "don't
-    //                   attend to me" without relying on the tiny dash
-    //                   glyph as the sole cue.  `\htmlClass` has to be
-    //                   applied per cell (letter / body) because the
-    //                   `&` column separator of `aligned` can't sit
-    //                   inside a math group.
+    // Skip rows grey letter AND body via `.row-skip`, applied per cell
+    // because `aligned`'s `&` separator can't sit inside a math group.
     const skipWrap = (state, body) =>
       state === "skip" ? `\\htmlClass{row-skip}{${body}}` : body;
     const rowHead = (state, ltr) =>
       `${chkTex(state)} \\, ${skipWrap(state, ltr)}`;
     const rowBody = (state, body) => skipWrap(state, body);
-    // ε_c / η_c / ε_u are parity biases that implement round-half-
-    // to-even by nudging the threshold by a single LSB of the host
-    // row's fixed-point representation.  They differ in shape:
-    //
-    //   ε_c ∈ {0, 1}        non-negative bias for d_0.  Added to v̄_{10}
-    //                       in `δ ≥ v̄_{10} + ε_c` (c odd raises the
-    //                       trim-to-d_0 threshold by one ULP).
-    //   η_c ∈ {−1, +1}      signed bias for u_0.  Added to 10 in
-    //                       `sum ≥ 10 + η_c` (c even lowers the trim-
-    //                       to-u_0 threshold by one ULP, widening the
-    //                       firing zone; c odd raises it, shrinking it).
-    //   ε_u ∈ {0, 1}        non-negative bias for u_1 (keep level).
-    //                       Regulars only — irregulars use a strict
-    //                       `>` against an asymmetric `min(½, δ/2)`
-    //                       threshold instead, where the strict
-    //                       comparison alone disambiguates the
-    //                       midpoint deterministically and ε_u
-    //                       drops out (see "keep level, irregular"
-    //                       comment in the predicate block).
-    //
-    // Rendered at each row's Q.X precision so the addition reads
-    // naturally.  `η_c` shows up as either `+0x0.1` or `−0x0.1` next
-    // to the `10` literal — the sign is the visible signal that u_0's
-    // bias is signed.  `where` legend at the bottom unpacks the
-    // abstract definitions (parity or parity-derived sign).  The
-    // `\varepsilon_u` line in the legend appears for regulars only,
-    // matching the row above it.
+    // Parity biases (one LSB each) implementing round-half-to-even:
+    //   ε_c ∈ {0, 1}    d_0, added to v̄_{10} in `δ ≥ v̄_{10} + ε_c`
+    //   η_c ∈ {−1, +1}  u_0, added to 10 in `sum ≥ 10 + η_c` (signed)
+    //   ε_u ∈ {0, 1}    u_1, regulars only (irregulars use strict `min(½,δ/2)`)
+    // Rendered at each row's Q.X precision; η_c shows its ± sign next to `10`.
     const epsCTex  = texHex(`0x0.${epsC ? "1" : "0"}`);
     const etaCOp   = epsC ? "+" : "-";
     const etaCAbs  = texHex(`0x0.1`);
     const epsUTex  = texHex(`0x${epsU ? "01" : "00"}`);
-    // ½ in the Q.0.8 working-word fractional = `0x80` (= 128 / 256).
-    // Rendered as a same-width literal as `fractional` and `epsU`
-    // so u_1's predicate `frac ≥ ½ + ε_u` reads as three Q.0.8
-    // bytes of identical width.
+    // ½ at Q.0.8 = `0x80`, same width as `fractional`/`epsU` so u_1's
+    // `frac ≥ ½ + ε_u` reads as three equal-width bytes.
     const halfTex = texHex(
       `0x${halfQ8.toString(16).toUpperCase().padStart(2, "0")}`);
-    // u_1's RHS varies by `irregular`:
-    //   regular   — `½ + ε_u` with the parity bias rendered as a
-    //               separate Q.0.8 byte.
-    //   irregular — `min(½, δ/2)` written symbolically on the
-    //               if-body side, resolved on the numeric side to a
-    //               concrete Q.0.8 byte (whichever of `½` and `δ/2`
-    //               is smaller at the displayed precision).
-    // `u1RhsHex` is that resolved byte for the numeric column.
+    // u_1's RHS: regular `½ + ε_u`, or irregular `min(½, δ/2)` symbolic on the
+    // if-body side and resolved to this Q.0.8 byte on the numeric side.
     const u1RhsHex = `0x${u1ThresholdQ8.toString(16).toUpperCase()
                                        .padStart(2, "0")}`;
     const u1RhsTex = texHex(u1RhsHex);
-    // Symbol used inside the if-body's `LHS ▷ RHS` text: regular
-    // u_1 uses `\ge`, irregular u_1 uses strict `>`.  Same op feeds
-    // `cmpTex` on the numeric side so both ends of the row stay in
-    // step.
+    // if-body relation: regular u_1 `\ge`, irregular strict `>`; same op
+    // feeds `cmpTex` on the numeric side.
     const u1RelTex = u1Strict ? `>` : `\\ge`;
-    // `\iff` — standard arrow with default `\;…\;` padding.  Sits
-    // inside col 2 (no inter-column gutter to fight) and its leading
-    // `\;` is the only space between a row's padded if-body and the
-    // arrow, giving a uniform sub-0.3em arrow-to-body margin.
     const iffTex = `\\iff`;
-    // Widest if-body across all predicate rows.  With the `\bar v_{10}`
-    // shorthand in place u_0 and u_1 are close in width:
-    //   d_0 (regular):     `\delta \ge \bar v_{10} + \varepsilon_c`
-    //   d_0 (irregular):   `\delta/2 \ge \bar v_{10} + \varepsilon_c`
-    //   u_0:               `\bar v_{10} + \delta \ge 10 + \eta_c`
-    //   u_1 (regular):     `\bar v \bmod 1 \ge \tfrac12 + \varepsilon_u`
-    //   u_1 (irregular):   `\bar v \bmod 1 > \min(\tfrac12, \delta/2)`
-    // u_1's `\bmod` is the widest LHS; u_1 irregular's
-    // `\min(\tfrac12, \delta/2)` is the widest RHS (wider than
-    // u_0's `10 + \eta_c` because `\min(...)` adds the operator
-    // glyph and a comma-separated argument list).  Combining them
-    // yields a synthetic if-body strictly ≥ every real row's width —
-    // no font/version slack to worry about.  An earlier attempt used
-    // u_0's body plus a trailing `\;\;` buffer; KaTeX strips
-    // trailing thick-spaces at the end of a `\hphantom` argument
-    // (treating them as boundary spacing rather than typeset width),
-    // so the buffer added zero width and u_1 overflowed the slot —
-    // its `\varepsilon_u` glyph then painted on top of the `\iff`
-    // arrow.  The combined-widest form needs no buffer.
+    // Widest if-body (u_1 irregular has the widest LHS `\bmod` and RHS
+    // `\min`), used to reserve a fixed col-2 slot so the `\iff` arrows align.
     const widestIfBody =
       `\\; \\text{if}\\; \\bar v \\bmod 1 ` +
       `> \\min(\\tfrac12, \\delta/2)`;
-    // Pad a shorter if-body to `widestIfBody`'s width.
-    // `\mathrlap{body}` renders body at zero layout width so the
-    // following `\hphantom{widestIfBody}` reserves a fixed col-2
-    // prefix width regardless of the actual body length.  Every row
-    // therefore starts col 2 with an identical-width slot, so the
-    // `\iff` arrow lands at the same x and arrows align vertically
-    // across rows — without reintroducing the empty-column gutter
-    // that the 4-cell layout had and which was producing a gap
-    // "comparable to formula width".
+    // `\mathrlap{body}\hphantom{widestIfBody}` renders body at zero width in
+    // that fixed slot, so every row's `\iff` lands at the same x.
     const padIfBody = (body) =>
       `\\mathrlap{${body}}\\hphantom{${widestIfBody}}`;
-    // d_1 is the implicit fall-through: selected iff none of the
-    // three explicit conditions above fire.  Render it as a fourth
-    // row with `\text{otherwise}` in place of a predicate so the
-    // "default" nature is visually explicit.
-    // Preamble row that introduces `\bar v_{10}` with its numeric
-    // value plugged in.  Displayed at Q.4 — one hex digit of integer
-    // followed by one hex digit of fractional, i.e. a single byte
-    // with the decimal point in the middle.  The leading integer
-    // nibble of the Q.8 form was always zero (v̄_{10} < 10 < 16, so
-    // fits in four bits) and the trailing fractional nibble added
-    // noise without moving any tie-break, so both are dropped from
-    // this standalone view.  The d_0 / u_0 predicate rows below
-    // consume this same Q.4 value, so the preamble and those
-    // comparisons share an identical hex literal; u_1 stays at Q.8
-    // because it compares against v̄'s fractional part directly.
-    //
-    // Error accounting: twelve fractional bits are now discarded at
-    // display time (the old low byte plus the next nibble above it),
-    // so the dropped-bit contribution to the combined interval is
-    // `cQ16 & 0xFFF` instead of `cQ16 & 0xFF`.  The propagated
-    // `errShifted` bound is expressed in Q.16 units and then
-    // narrowed to Q.4 by dividing by 2^{12} with ceiling so the
-    // displayed `[0, err)` stays an exclusive upper bound at the
-    // coarser precision.
+    // Preamble row introducing `\bar v_{10}` at Q.4 (one int + one frac
+    // nibble); d_0 / u_0 reuse this literal.  It drops 12 bits at display
+    // (`cQ16 & 0xFFF`), with `errShifted` narrowed to Q.4 via ceil.
     const vbar10Int        = (cQ16 >> P10_BITS) & 0xF;
     const vbar10Frac       = (cQ16 >> 12)       & 0xF;
     const vbar10Hex        = `0x${vbar10Int.toString(16).toUpperCase()}.${
@@ -3537,23 +2609,14 @@ function render() {
     const errVbar10Q16     = errShifted + vbar10DroppedLow;
     const vbar10Exact      = errVbar10Q16 === 0;
     const errVbar10Q4      = Math.ceil(errVbar10Q16 / 0x1000);
-    // Q.4 error formatter: natural integer width (so an error bigger
-    // than one unit isn't hidden) plus a single fractional hex digit,
-    // matching the shape of the operand itself (`0xI.F`).
+    // Q.4 error formatter (`0xI.F`).
     const errVbar10Tex     = `\\texttt{0x${
         (errVbar10Q4 >> 4).toString(16).toUpperCase()}.${
         (errVbar10Q4 & 0xF).toString(16).toUpperCase()}}`;
-    // Dim band: at least the twelve fractional bits that the Q.4
-    // display never prints, plus any higher bits the propagated
-    // `errShifted` can actually flip.  Using `Math.max(12, …)` keeps
-    // the invisible portion dim even when p_{10} is exact.
-    // Same propagated-vs-dropped caveat as `uncBitsFinal` and
-    // `uncBitsDeltaQ4`: feed only the propagated `errShifted` to
-    // `uncBits`, not the combined `errVbar10Q16 = errShifted +
-    // vbar10DroppedLow`.  The 12 dropped low bits are already covered
-    // by the `Math.max(12, …)` floor; including them in `uncBits`'
-    // addend lets the carry propagate into bits that `cQ16` knows
-    // exactly when p_{10} is exact.
+    // Dim band: the 12 unprinted fractional bits plus any higher bits
+    // `errShifted` can flip.  Feed only `errShifted` to `uncBits` (not the
+    // combined error) so exact high bits aren't dimmed by carry — same
+    // caveat as `uncBitsDeltaQ4`.
     const uncBitsVbar10    = vbar10Exact
       ? 0
       : Math.max(12, uncBits(cQ16, Math.max(0, errShifted - 1)));
@@ -3566,12 +2629,7 @@ function render() {
       : `\\underline{${vbar10Body}}`;
     const vbar10Tex  = `\\htmlClass{${vbar10Cls}}{${vbar10Mark}}`;
     const vbar10Rel  = vbar10Exact ? "=" : "\\approx";
-    // Same LHS + per-`=` RHS segmentation as the v̄ / δ chains above
-    // (see `kxChain`): single intended row on desktop, line-wraps
-    // at every `=` on phones with the `=` column kept aligned.
-    // Short enough that wrapping rarely fires in practice but kept
-    // consistent with its siblings so the whole "Scale by a power
-    // of 10" / "Select the candidate" panel reflows uniformly.
+    // Same LHS + per-`=` segmentation as the v̄ / δ chains (see `kxChain`).
     kxChain(cVbar10El,
       `\\bar v_{10}`,
       [[
@@ -3583,23 +2641,12 @@ function render() {
                      vbar10Exact
                        ? ""
                        : `\\texttt{${vbar10Hex}} + [0,\\, ${errVbar10Tex})`);
-    // `\;` leading space before `\text{...}` — KaTeX/LaTeX `aligned`
-    // inserts column spacing at `&` boundaries only when the adjoining
-    // math content has natural spacing (e.g. a relation like `=`).
-    // `\text{...}` is in text mode, so no binary-relation spacing is
-    // synthesized and the label and `if` would visually collide
-    // without the explicit `\;`.
+    // Leading `\;` before `\text{...}` — text mode gets no relation spacing
+    // at the `&`, so the label and `if` would otherwise collide.
     kx(cFlagsEl,
-       // 2-cell aligned with hphantom-padded if-bodies: col 1 =
-       // `[chk] \, letter` (right-aligned), col 2 = padded if-body +
-       // `\iff` + numeric body (left-aligned).  Every row's if-body
-       // is `\mathrlap`'d over a `\hphantom{widestIfBody}` slot so
-       // the arrow lands at the same x across rows — arrows
-       // vertically aligned, no empty middle column, no point-to-
-       // point gutter.  Shorter rows (d_0 regular, u_1) have a
-       // visible gap between their body and the arrow equal to
-       // `widestIfBody − own if-body`; this is the irreducible cost
-       // of vertical alignment and is what the reader is trading for.
+       // 2-cell aligned: col 1 = `[chk] \, letter`, col 2 = padded if-body +
+       // `\iff` + numeric body.  Each if-body is `\mathrlap`'d over a
+       // `\hphantom{widestIfBody}` slot so the arrows align across rows.
        `\\begin{aligned}` +
        `${rowHead(d0State, "d_0")} ` +
        `& ${rowBody(d0State,
@@ -3611,15 +2658,8 @@ function render() {
             `${iffTex} ${predSumTex} ${cmpTex(uncU0, biasSensitiveU0, `\\ge`)} ${texHex(t0Hex)} ${etaCOp} ${etaCAbs}`)} \\\\ ` +
        `${rowHead(u1State, "u_1")} ` +
        `& ${rowBody(u1State,
-            // u_1's body is the only row whose shape changes with
-            // `irregular`: the regular form keeps the symmetric
-            // `½ + ε_u` threshold, while the irregular form collapses
-            // the asymmetric rounding interval to a single
-            // `min(½, δ/2)` threshold with strict `>` (ε_u is dropped
-            // — see "keep level, irregular" above).  Numeric body
-            // mirrors the same shape: regular shows `½ + ε_u` as two
-            // separate Q.0.8 bytes; irregular shows the resolved min
-            // as a single byte.
+            // u_1's body changes with `irregular`: regular `½ + ε_u`, or
+            // irregular strict `> min(½, δ/2)` (ε_u dropped).
             (irregular
               ? `${padIfBody(`\\; \\text{if}\\; \\bar v \\bmod 1 > \\min(\\tfrac12, \\delta/2)`)} ` +
                 `${iffTex} ${predFracTex} ${cmpTex(uncU1, false, u1RelTex)} ${u1RhsTex}`
@@ -3630,36 +2670,11 @@ function render() {
        `\\vphantom{\\stackrel{?}{\\ge}}` +
        `\\end{aligned}`);
 
-    // Definition row for ε_c / η_c / ε_u parity biases, sitting
-    // between v̄_{10} and the predicate table (see HTML markup) so
-    // the values are introduced *before* they're referenced in the
-    // predicate RHSs.  The `\bar v_{10}` shorthand is introduced on
-    // its own preamble row above (with values plugged in), so it's
-    // not repeated here.  η_c is derived from ε_c but gets its own
-    // definition line so the reader can read off the signed value
-    // (−1 or +1) directly without having to do the `2ε_c − 1`
-    // arithmetic in their head.
-    //
-    // Rendered as a `kxChain` row in its own `compute-row-flow`
-    // grid rather than as a tail row of `cFlags`'s `\begin{aligned}`
-    // block — the predicate table needs a wide column layout to
-    // keep its `\iff` arrows aligned and overflows horizontally on
-    // phones, which dragged the `where` definitions along for the
-    // scroll.  Pulling them out into their own LHS-(`where`) +
-    // per-definition-RHS grid lets each comma-separated definition
-    // become its own `nowrap` segment that wraps independently on
-    // narrow viewports while still sitting on one line on desktop.
-    //
-    // No LHS label (`""`): the row is a bare list of definitions,
-    // sitting between v̄_{10} and the predicate table where its
-    // top-down position already conveys "these constants are about
-    // to be used".  Each segment after the first leads with `\quad`
-    // to provide the inter-definition gap (matching the original
-    // `\\quad` separators) and to give wrapped lines a small left
-    // indent so continuation rows visually distinguish from the
-    // first definition.  ε_u only appears for regular values —
-    // the irregular `min(½, δ/2)` branch below doesn't use it, so
-    // listing it would be a phantom symbol with no anchor.
+    // Definitions of ε_c / η_c / ε_u, introduced before the predicate rows
+    // reference them.  Its own `kxChain` row (not a tail of the `aligned`
+    // block) so each comma-separated definition wraps independently on
+    // phones instead of scrolling with the wide predicate table.  ε_u is
+    // regular-only (the irregular branch doesn't use it).
     kxChain(cWhereEl, ``, [[
       `\\varepsilon_c = c \\bmod 2 = ${epsC},`,
       `\\quad \\eta_c = 2\\varepsilon_c - 1 ` +
@@ -3669,17 +2684,9 @@ function render() {
         ? []
         : [`\\quad \\varepsilon_u = u_1 \\bmod 2 = ${epsU}`]),
     ]]);
-    // Hover tooltips for each inexact hex literal — binary form with
-    // low uncertain bits dimmed on line 1, the `val + [0, err)`
-    // interval on line 2 (empty line 2 when exact).  Mirrors the
-    // prod / shifted / v̄ / δ tooltips attached above so the
-    // predicate row reads as a seamless continuation of that chain.
-    // Every tooltip interval line emits whenever EITHER contribution
-    // to that operand's error is non-zero — i.e. whenever either p10
-    // is imprecise (`!exact`) OR the dropped low bits carried
-    // actually-known values.  Each pred operand keys off its own
-    // combined `err…Q16` so p_{10}-exact operands whose dropped tail
-    // happened to be zero render as clean literals.
+    // Hover tooltips for each inexact predicate literal: dimmed binary on
+    // line 1, `val + [0, err)` on line 2 (empty when exact).  Each keys off
+    // its own combined `err…Q16` so a clean operand renders as a plain literal.
     const predLineD0Lhs = errD0LhsQ16 === 0
       ? ""
       : `${texHex(d0LhsHex)} + [0,\\, ${errQ4Tex(errD0LhsQ4)})`;
@@ -3706,62 +2713,29 @@ function render() {
     attachBinTooltip(cFlagsEl, "bin-hint-predfrac",
                      binTex(fractional, P10_BITS, uncBitsFrac),
                      predLineFrac);
-    // Hover-tooltip on every uncertain comparison operator (the
-    // `\stackrel{?}{\ge}` / `\stackrel{?}{>}` glyphs in the predicate
-    // rows).  The `?` is the *visible* uncertainty cue; the tooltip
-    // explains *what* uncertainty the `?` is reporting.
-    //
-    // IMPORTANT: the row's ✓/✗ does NOT reflect a higher-precision
-    // tiebreak — `roundD0`, `roundU0`, and `roundU1` above all
-    // compute with the same `>> 12` / `>> 8` narrowed operands the
-    // row prints (the whole "working word = FP width" invariant).
-    // So the displayed-precision pick is exactly what ✓/✗ shows, and
-    // when the propagated `[0, err)` bands overlap, that pick could
-    // legitimately have gone the other way given tighter bounds
-    // anywhere upstream — a finer `p_{10}` table, *or* wider
-    // working-word arithmetic that didn't narrow `c·p_{10}` Q.16 down
-    // to Q.8 / Q.0.8 for the predicate compare.  "Bounds" reads off
-    // the rendered `[0, err)` interval directly (the tooltip line
-    // right above the note), so the cause-and-effect — "intervals
-    // overlap → shrink the bounds" — is mechanical.  Don't reintroduce
-    // "the algorithm decides at full precision" wording, which
-    // falsely implies a separate, higher-precision tiebreak exists.
-    //
-    // One shared text covers all three rows since the mechanism is
-    // identical; per-row error widths are already on each operand's
-    // own tooltip so we don't restate them here.
+    // Tooltip on every uncertain comparison operator explaining what the `?`
+    // reports.  Note: ✓/✗ is NOT a higher-precision tiebreak — the predicates
+    // use the same narrowed operands the row prints, so overlapping `[0, err)`
+    // bands mean tighter upstream bounds could legitimately flip the pick.
+    // One shared text; per-operand error widths are on each operand's tooltip.
     attachNoteTooltip(cFlagsEl, "cmp-uncertain",
       `Intervals overlap; tighter bounds could flip ✓/✗.`);
 
-    // Bias-sensitivity tooltip — fires on u_0 cells where the η_c
-    // signed-bias choice is the *only* thing keeping the displayed
-    // ✓/✗ what it is (substituting ε_c on the RHS would flip the
-    // result).  These are exactly the round-half-to-even tie-down
-    // cells on u_0's lower edge — the cells where η_c is doing real
-    // algorithmic work vs being algebraically equivalent to ε_c.
-    // The note names the substitution explicitly so the reader can
-    // tie the marker back to the η_c definition row in the `where`
-    // block above.
+    // Bias-sensitivity tooltip — u_0 cells where only the η_c choice keeps
+    // the displayed ✓/✗ (the round-half-to-even tie-down cells).
     attachNoteTooltip(cFlagsEl, "cmp-bias",
       `Round-half-to-even tie cell: $\\eta_c \\to \\varepsilon_c$ ` +
       `would flip ✓/✗.`);
 
-    // Both kinds of contingency on the same comparison — covered by
-    // a third class so the reader gets a precise diagnosis instead of
-    // having to guess which of the two `?` flavours fired.  Two
-    // sentences in one note (`.bin-tooltip-note` wraps naturally).
+    // Both contingencies on one comparison — a third class for a precise
+    // diagnosis rather than guessing which `?` flavour fired.
     attachNoteTooltip(cFlagsEl, "cmp-both",
       `Intervals overlap; tighter bounds could flip ✓/✗. ` +
       `Also a round-half-to-even tie cell: $\\eta_c \\to \\varepsilon_c$ ` +
       `would flip ✓/✗ on its own.`);
 
-    // Name the picked candidate symbolically on the LHS so the
-    // readout ties the predicate row back to the result, then
-    // substitute numbers on the RHS.  Trailing zeros in the
-    // significand are folded into the exponent — the trim path
-    // always produces a multiple of 10 by construction, and the
-    // keep path can land on one occasionally — so the final term
-    // is the canonical short form.
+    // Name the picked candidate on the LHS, substitute numbers on the RHS,
+    // and fold trailing significand zeros into the exponent (canonical form).
     const selCandTex = selCand === "d0" ? "d_0"
                      : selCand === "u0" ? "u_0"
                      : selCand === "u1" ? "u_1"
@@ -3787,11 +2761,8 @@ function render() {
     });
   }
 
-  // Highlight the p_{10} table row matching the current e_{10}.
-  // Irregular values (c = 8) get their e_{10} computed with the
-  // log₁₀(3/4) bias, matching what the rest of the render pipeline
-  // uses for the decimal-conversion panel — so the highlighted row
-  // always matches the e_{10} shown in the formula preamble.
+  // Highlight the p_{10} row matching the current e_{10} (with the
+  // irregular log₁₀(3/4) bias, so it matches the formula preamble).
   {
     const activeE10 = (d.kind === "zero" || d.kind === "nan")
       ? null
@@ -3808,12 +2779,9 @@ function render() {
   renderGridOverlay();
 }
 
-// The SVG grid overlay — dot fade, selection ring/band, value tooltip —
-// is the only thing a hover changes.  Everything above depends on the
-// *selected* value, not the *hovered* one, so `hoverEnc` calls just this
-// and skips re-rendering (and reflowing) the KaTeX panels on every mouse
-// move.  That stray reflow was making the page jump around while hovering
-// the grid.
+// SVG-only updates (dot fade, selection ring/band, tooltip).  `hoverEnc`
+// calls just this so hovering doesn't re-render the KaTeX panels — that
+// reflow made the page jump around.
 function renderGridOverlay() {
   // dot visibility + selection
   for (const dd of ALL) {
@@ -3838,24 +2806,16 @@ function renderGridOverlay() {
   if (!selHidden) {
     const { x: rx, y: ry } = dotPos(dp);
 
-    // Rounding-interval band: halfway to each value neighbor.  Drawn
-    // on the selected dot's row (zero lives on row -9) as a filled
-    // highlight rectangle, matching the ±δ band in the candidate
-    // diagram below.
+    // Rounding-interval band: halfway to each value neighbor, drawn on the
+    // selected dot's row (zero on row -9), matching the candidate ±δ band.
     const rowE2 = dp.kind === "zero" ? -9 : dp.e2;
     const rowPow = Math.pow(2, rowE2);
     const idx = POS_IDX.get(posEnc);
     const prev = idx > 0 ? SORTED_POS[idx - 1] : null;
     const next = idx >= 0 && idx < SORTED_POS.length - 1
                  ? SORTED_POS[idx + 1] : null;
-    // Half-gaps to each neighbor.  At the top end (largest positive, right
-    // next to NaN) we mirror the prev gap so the interval is shown at its
-    // full ULP width — values past the mirrored right edge overflow /
-    // round to NaN.  Zero and NaN are treated as isolated points — zero
-    // has no left neighbor (the mirrored left half would extend into
-    // negative x territory on this one-sided grid) and NaN isn't a
-    // finite value to begin with, so both fall back to the circular
-    // halo rather than showing a one-sided band.
+    // Half-gaps to each neighbor; at the top end the prev gap is mirrored
+    // for full ULP width.  Zero and NaN are isolated (fall back to the halo).
     const isolated = !(prev || next) || dp.kind === "zero";
     const leftHalf  = prev ? (prev.value + dp.value) / 2 : dp.value;
     const rightHalf = next ? (dp.value + next.value) / 2
@@ -3869,8 +2829,7 @@ function renderGridOverlay() {
       roundBand.setAttribute("width",  Math.max(0, bx2 - bx1));
       roundBand.setAttribute("height", 12);
       roundBand.style.opacity = 0.45;
-      // Band covers the dot's row span — the circular halo would just
-      // add visual noise on top, so suppress it.
+      // Band already covers the row span; suppress the halo.
       halo.style.opacity = 0;
     } else {
       roundBand.style.opacity = 0;
