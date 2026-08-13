@@ -1788,7 +1788,7 @@ tip.style.opacity = "0";
 
 function hoverEnc(enc) {
   state.hover = enc;
-  render();
+  renderGridOverlay();
 }
 
 function selectEnc(enc) {
@@ -3805,6 +3805,16 @@ function render() {
   $("#encInput").value = state.enc;
   $("#hexInput").value = "0x" + state.enc.toString(16).toUpperCase().padStart(2, "0");
 
+  renderGridOverlay();
+}
+
+// The SVG grid overlay — dot fade, selection ring/band, value tooltip —
+// is the only thing a hover changes.  Everything above depends on the
+// *selected* value, not the *hovered* one, so `hoverEnc` calls just this
+// and skips re-rendering (and reflowing) the KaTeX panels on every mouse
+// move.  That stray reflow was making the page jump around while hovering
+// the grid.
+function renderGridOverlay() {
   // dot visibility + selection
   for (const dd of ALL) {
     if (dd.s === 1) continue;
