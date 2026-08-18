@@ -161,10 +161,11 @@ the binary.
 
 On a desktop or server, where `to_chars` comes from a shared libstdc++, 256 kB is
 often noise. It lands hardest where C++ tends to be chosen and the standard
-library is linked statically or shipped whole: embedded and firmware, where the
-entire flash budget is a few hundred kB; WebAssembly, where the binary is
-downloaded before the page can run; and short-lived or serverless processes,
-where it is startup latency on every invocation. `to_chars` is also a primitive,
+library is linked statically or bundled with the application: embedded and
+firmware, where the entire flash budget is a few hundred kB; WebAssembly, where
+the binary is downloaded before the page can run; and short-lived or serverless
+processes, where it is startup latency on every invocation. `to_chars` is also a
+primitive,
 so that cost can propagate into higher-level formatting, logging and
 serialization facilities built on the same conversion machinery.
 
