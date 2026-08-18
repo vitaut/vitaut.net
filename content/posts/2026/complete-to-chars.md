@@ -375,9 +375,9 @@ ones together: the *complete* floating-point `to_chars`, correctly rounded, for
 every format, precision and type, in about 18 kB, while making the common
 shortest-`double` case several times faster than libstdc++ in this benchmark.
 
-Żmij fits in one source file and two headers, exposes a
-[`std::to_chars`-style API](https://github.com/vitaut/zmij/blob/main/zmij-to-chars.h)
-that works in C++14 (`std::to_chars` itself requires C++17), ships under a
+Żmij is a compact, self-contained library with a
+[`std::to_chars`-style API](https://github.com/vitaut/zmij/blob/main/zmij-to-chars.h).
+It works in C++14 (`std::to_chars` itself requires C++17), ships under a
 permissive license, and already has ports to
 [Rust](https://github.com/dtolnay/zmij) and [Zig](https://github.com/de-sh/zmij).
 If you maintain a standard library, a JSON serialization library, or anything
