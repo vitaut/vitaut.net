@@ -130,7 +130,7 @@ ever use one format.
 
 Dropping `-flto` costs Żmij about 1 kB (+19.6 kB at `-Os`, +35.6 kB at `-O2`)
 and changes `std::to_chars` by exactly zero bytes, byte for byte the same
-binary, which is what you would expect for code the linker plugin never sees.
+binary, as expected: LTO cannot optimize the prebuilt library code.
 
 One caveat on the platform: on arm64 macOS `long double` is just `double`, so
 the figures above don't exercise a distinct extended-precision path. On x86-64,
