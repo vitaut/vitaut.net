@@ -117,7 +117,7 @@ complete API correctly.
 | `std::to_chars` (stock libstdc++) | 289.9 kB, +256 kB | same binary |
 
 Żmij covers all of that in about 18 kB optimized for size and 35 kB optimized
-for speed. libstdc++ adds about 256 kB, and it gets a single row on purpose:
+for speed. libstdc++ adds about 256 kB at both optimization levels because
 `-static-libstdc++` links `floating_to_chars.o` out of the `libstdc++.a` that
 Homebrew ships, built once at `-O2` with no LTO information in the archive, so
 my optimization level never reaches it. That is the number you actually get
