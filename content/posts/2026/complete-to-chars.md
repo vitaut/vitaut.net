@@ -360,10 +360,10 @@ the `double` machinery, or factoring the common parts into a single type-erased
 core, should shave off a few more kB for programs that print both.
 
 **`constexpr` `to_chars`.** Whatever happens to the runtime path, the
-compile-time one has to live in headers, so it wants to be small and quick to
-compile. That is where a compact core helps: Żmij's compile-time path can use
-compressed tables, as `ZMIJ_OPTIMIZE_SIZE` already does, rather than the
-full-size tables and SIMD.
+compile-time one has to live in headers, so its implementation needs to be
+compact and quick to compile. That is where a compact core helps: Żmij's
+compile-time path can use compressed tables, as `ZMIJ_OPTIMIZE_SIZE` already
+does, rather than the full-size tables and SIMD.
 
 ## The point
 
