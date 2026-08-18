@@ -16,7 +16,7 @@ formats shortest `double`s about 7x faster in the benchmark below.
 point has been in the standard since C++17. It is the low-level,
 locale-independent, non-throwing primitive that everything else
 (`std::to_string`, `std::format`, your favorite logging library) is supposed to
-sit on top of. It took years to land in the major standard libraries, some cases
+build on. It took years to land in the major standard libraries, some cases
 are still not handled correctly, and where it does exist it is more bloated than
 you might expect for printing a number.
 
