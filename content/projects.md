@@ -13,7 +13,7 @@ noComment: true
 * [AMPL/MP](https://github.com/ampl/mp): an open-source library for mathematical
   programming (a former maintainer)
 
-* [schubfach](https://github.com/vitatu/schubfach): a C++ implementation of the
+* [schubfach](https://github.com/vitaut/schubfach): a C++ implementation of the
   Schubfach algorithm - fast and accurate conversion of IEEE-754 double values
   to decimal strings
 
